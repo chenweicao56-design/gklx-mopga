@@ -1,19 +1,15 @@
 package com.gklx.mopga.admin.module.generate.service;
 
-import cn.hutool.core.util.ObjUtil;
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gklx.mopga.admin.module.generate.dao.GenTableColumnDao;
-import com.gklx.mopga.admin.module.generate.domain.entity.DatabaseEntity;
 import com.gklx.mopga.admin.module.generate.domain.entity.GenTableColumnEntity;
 import com.gklx.mopga.admin.module.generate.domain.form.GenTableColumnAddForm;
 import com.gklx.mopga.admin.module.generate.domain.form.GenTableColumnQueryForm;
 import com.gklx.mopga.admin.module.generate.domain.form.GenTableColumnUpdateForm;
 import com.gklx.mopga.admin.module.generate.domain.vo.GenTableColumnVo;
 import com.gklx.mopga.admin.module.generate.manager.GenTableColumnManager;
-import com.gklx.mopga.admin.module.generate.util.GenUtils;
 import com.gklx.mopga.base.common.domain.PageResult;
 import com.gklx.mopga.base.common.domain.ResponseDTO;
 import com.gklx.mopga.base.common.util.SmartBeanUtil;
@@ -22,7 +18,6 @@ import jakarta.annotation.Resource;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

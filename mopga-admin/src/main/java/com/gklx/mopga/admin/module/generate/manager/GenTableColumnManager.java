@@ -1,8 +1,8 @@
 package com.gklx.mopga.admin.module.generate.manager;
 
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.gklx.mopga.admin.module.generate.dao.GenTableColumnDao;
 import com.gklx.mopga.admin.module.generate.domain.entity.GenTableColumnEntity;
+import com.gklx.mopga.admin.module.generate.dao.GenTableColumnDao;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 /**

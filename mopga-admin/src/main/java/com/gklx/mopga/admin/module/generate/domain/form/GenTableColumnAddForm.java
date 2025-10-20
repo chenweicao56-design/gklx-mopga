@@ -16,9 +16,6 @@ import lombok.Data;
 @Data
 public class GenTableColumnAddForm {
 
-    @Schema(description = "ID")
-    private Long columnId;
-
     @Schema(description = "表id", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotNull(message = "表id 不能为空")
     private Long tableId;
