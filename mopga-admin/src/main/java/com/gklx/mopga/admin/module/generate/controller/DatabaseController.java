@@ -38,9 +38,9 @@ public class DatabaseController {
     }
 
     @Operation(summary = "添加 @author gklx")
-    @GetMapping("/database/{databaseId}")
+    @GetMapping("/database/getDetail/{databaseId}")
     @SaCheckPermission("database:query")
-    public ResponseDTO<DatabaseVo> get(@PathVariable Long databaseId) {
+    public ResponseDTO<DatabaseVo> getDetail(@PathVariable Long databaseId) {
         return ResponseDTO.ok(databaseService.get(databaseId));
     }
 

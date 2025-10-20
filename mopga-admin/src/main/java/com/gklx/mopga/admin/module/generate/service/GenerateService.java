@@ -258,7 +258,7 @@ public class GenerateService {
             JSONObject fileType = new JSONObject();
             fileType.set("label", entry.getKey());
             fileType.set("value", entry.getKey());
-            fileType.set("files", entry.getValue().stream().map(e -> GenUtils.buildFile(table, templateEntity, e, templateCodeItemEntities)).toList());
+            fileType.set("files", entry.getValue().stream().map(e -> GenUtils.buildFile(database,table, templateEntity, e, templateCodeItemEntities)).toList());
             res.add(fileType);
         }
         return res;

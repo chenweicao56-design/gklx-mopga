@@ -125,41 +125,4 @@ public class GenTableColumnService {
         lambdaQuery.eq(GenTableColumnEntity::getTableId, tableId);
        return SmartBeanUtil.copyList(genTableColumnManager.list(lambdaQuery), GenTableColumnVo.class);
     }
-
-    public void syncColumn(List<GenTableColumnEntity> columns, Long tableId, DatabaseEntity database) {
-        List<GenTableColumnVo> oldColumns = getByTableId(tableId);
-        List<GenTableColumnEntity> inserts = new ArrayList<>();
-        List<GenTableColumnEntity> updates = new ArrayList<>();
-        List<GenTableColumnEntity> deletes = new ArrayList<>();
-        if(CollectionUtils.isEmpty(columns)){
-            for (int i = 0; i < columns.size(); i++) {
-                GenTableColumnEntity column = columns.get(i);
-                column.setSort(i + 1);
-                column.setTableId(tableId);
-                column.setDatabaseId(database.getId());
-                column.setFieldName(StrUtil.lowerFirst(StrUtil.toCamelCase(column.getColumnName())));
-                column.setFieldComment(column.getColumnComment());
-                GenUtils.buildIsBase(column, templateColumnMap);
-                GenUtils.buildFileType(column, templateMappingItemEntityMap, defaultMappingMap);
-                if (StrUtil.isEmpty(column.getFieldType())) {
-                    log.error("未找到字段类型：{}:{}", table.getTableName(), column.getFieldName());
-                }
-                column.setIsRequired(column.getIsNull());
-                column.setIsInsert(!column.getIsBase());
-                column.setIsUpdate(column.getIsPk() || !column.getIsBase());
-                column.setIsWhere(false);
-                if (column.getIsPk() || column.getIsBase()) {
-                    column.setIsTable(false);
-                } else {
-                    column.setIsTable(true);
-                }
-                column.setWhereType(null);
-                column.setExtendedData(database.getColumnExtendedData());
-            }
-
-        }else{
-
-        }
-        genTableColumnManager.saveOrUpdateBatch(columns);
-    }
 }

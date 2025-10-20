@@ -1,6 +1,7 @@
 package com.gklx.mopga.admin.module.generate.controller;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import com.gklx.mopga.admin.module.generate.domain.entity.DatabaseEntity;
 import com.gklx.mopga.admin.module.generate.domain.entity.TemplateCodeItemEntity;
 import com.gklx.mopga.admin.module.generate.domain.entity.TemplateEntity;
 import com.gklx.mopga.admin.module.generate.domain.form.TemplateCodeItemAddForm;
@@ -8,6 +9,7 @@ import com.gklx.mopga.admin.module.generate.domain.form.TemplateCodeItemQueryFor
 import com.gklx.mopga.admin.module.generate.domain.form.TemplateCodeItemUpdateForm;
 import com.gklx.mopga.admin.module.generate.domain.vo.TableVO;
 import com.gklx.mopga.admin.module.generate.domain.vo.TemplateCodeItemVO;
+import com.gklx.mopga.admin.module.generate.manager.DatabaseManager;
 import com.gklx.mopga.admin.module.generate.manager.TemplateCodeItemManager;
 import com.gklx.mopga.admin.module.generate.manager.TemplateManager;
 import com.gklx.mopga.admin.module.generate.service.TableService;
@@ -52,6 +54,9 @@ public class TemplateCodeItemController {
 
     @Autowired
     private TableService tableService;
+
+    @Autowired
+    private DatabaseManager databaseManager;
 
     @Operation(summary = "分页查询 @author gklx")
     @PostMapping("/templateCodeItem/queryPage")
@@ -111,7 +116,8 @@ public class TemplateCodeItemController {
         TemplateEntity template = templateManager.getById(templateId);
         List<TemplateCodeItemEntity> templateCodeItemEntities = templateCodeItemService.listByTemplateId(templateId);
         TableVO table = tableService.getById(1L);
-        return ResponseDTO.ok(GenUtils.generateCode(table, template, templateCodeItemEntity, templateCodeItemEntities));
+        DatabaseEntity database = databaseManager.getById(1L);
+        return ResponseDTO.ok(GenUtils.generateCode(database, table, template, templateCodeItemEntity, templateCodeItemEntities));
     }
 
 }

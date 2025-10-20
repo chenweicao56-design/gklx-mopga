@@ -40,17 +40,18 @@ public class GenUtils {
     }
 
 
-    public static String generateCode(TableVO genTable,
+    public static String generateCode(DatabaseEntity database,
+                                      TableVO genTable,
                                       TemplateEntity templateEntity,
                                       TemplateCodeItemEntity templateCodeItemEntity,
                                       List<TemplateCodeItemEntity> templateCodeItemEntities) {
-        VelocityContext context = GenUtils.prepareContext(genTable, templateEntity, templateCodeItemEntity, templateCodeItemEntities);
+        VelocityContext context = GenUtils.prepareContext(database,genTable, templateEntity, templateCodeItemEntity, templateCodeItemEntities);
         StringWriter writer = new StringWriter();
         velocityEngine.evaluate(context, writer, templateCodeItemEntity.getFileName(), new StringReader(templateCodeItemEntity.getContent()));
         return writer.toString();
     }
 
-    public static VelocityContext prepareContext(TableVO genTable,
+    public static VelocityContext prepareContext(DatabaseEntity database,TableVO genTable,
                                                  TemplateEntity templateEntity,
                                                  TemplateCodeItemEntity templateCodeItemEntity,
                                                  List<TemplateCodeItemEntity> templateCodeItemEntities) {
@@ -59,7 +60,8 @@ public class GenUtils {
         genTable.setUpperCamelCase(StrUtil.upperFirst(genTable.getWordName()));
         genTable.setSnakeCase(StrUtil.toUnderlineCase(genTable.getWordName()));
         genTable.setKabadCase(genTable.getSnakeCase().replace("_", "-"));
-
+        velocityContext.put("backendProjectPath", database.getBackendProjectPath());
+        velocityContext.put("frontProjectPath", database.getFrontProjectPath());
         // 表信息
         velocityContext.put("tableName", genTable.getTableName());
         velocityContext.put("tableComment", genTable.getTableComment());
@@ -159,19 +161,20 @@ public class GenUtils {
         });
     }
 
-    public static JSONObject buildFile(TableVO table, TemplateEntity templateEntity, TemplateCodeItemEntity templateCodeItemEntity, List<TemplateCodeItemEntity> templateCodeItemEntities) {
+    public static JSONObject buildFile(DatabaseEntity database, TableVO table, TemplateEntity templateEntity, TemplateCodeItemEntity templateCodeItemEntity, List<TemplateCodeItemEntity> templateCodeItemEntities) {
         JSONObject fileType = new JSONObject();
-
-
-        String projectPath = templateEntity.getProjectPath();
         String filePath = templateCodeItemEntity.getFilePath();
         String packageName = table.getPackageName();
-        if (projectPath.contains("/")) {
+        String backendProjectPath = database.getBackendProjectPath();
+        String frontProjectPath = database.getFrontProjectPath();
+        if (backendProjectPath.contains("/") || frontProjectPath.contains("/")) {
             packageName = packageName.replace(".", "/");
         } else {
             packageName = packageName.replace(".", "\\");
         }
         String wordName = table.getWordName();
+        filePath = StrUtil.replace(filePath, "${backendProjectPath}", backendProjectPath);
+        filePath = StrUtil.replace(filePath, "${frontProjectPath}", frontProjectPath);
         filePath = StrUtil.replace(filePath, "${package}", packageName);
         filePath = StrUtil.replace(filePath, "${module}", table.getModuleName());
         filePath = StrUtil.replace(filePath, "${lowerCamelCase}", StrUtil.lowerFirst(wordName));
@@ -188,8 +191,8 @@ public class GenUtils {
         fileName = StrUtil.replace(fileName, "${kabadCase}", StrUtil.toSymbolCase(wordName, '-'));
         fileType.set("fileName", fileName);
         fileType.set("fileType", templateCodeItemEntity.getFileType());
-        fileType.set("filePath", projectPath + filePath + fileName);
-        fileType.set("fileContent", GenUtils.generateCode(table, templateEntity, templateCodeItemEntity, templateCodeItemEntities));
+        fileType.set("filePath", filePath + fileName);
+        fileType.set("fileContent", GenUtils.generateCode(database,table, templateEntity, templateCodeItemEntity, templateCodeItemEntities));
         fileType.set("checked", true);
         return fileType;
     }
