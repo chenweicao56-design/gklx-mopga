@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gklx.mopga.admin.module.generate.dao.TemplateDao">
+
+    <!-- 查询结果列 -->
+    <sql id="base_columns">
+        gen_template.id,
+        gen_template.create_user_id,
+        gen_template.create_time,
+        gen_template.update_user_id,
+        gen_template.update_time,
+        gen_template.deleted_flag,
+        gen_template.template_name,
+        gen_template.template_type,
+        gen_template.database_type,
+        gen_template.language_type,
+        gen_template.template_files,
+        gen_template.project_path,
+        gen_template.remark,
+        gen_template.sort
+    </sql>
+
+    <!-- 分页查询 -->
+    <select id="queryPage" resultType="com.gklx.mopga.admin.module.generate.domain.vo.TemplateVO">
+        SELECT
+        <include refid="base_columns"/>
+        FROM gen_template
+        <where>
+            <!--模板名称-->
+            <if test="queryForm.templateName != null and queryForm.templateName != ''">
+                AND INSTR(gen_template.template_name,#{queryForm.templateName})
+            </if>
+            <!--数据源类型-->
+            <if test="queryForm.databaseType != null and queryForm.databaseType != ''">
+                AND INSTR(gen_template.database_type,#{queryForm.databaseType})
+            </if>
+            <!--语言类型-->
+            <if test="queryForm.languageType != null and queryForm.languageType != ''">
+                AND INSTR(gen_template.language_type,#{queryForm.languageType})
+            </if>
+            <!--模板类型-->
+            <if test="queryForm.templateType != null and queryForm.templateType != ''">
+                AND INSTR(gen_template.template_type,#{queryForm.templateType})
+            </if>
+        </where>
+        ORDER BY gen_template.sort
+    </select>
+
+
+
+</mapper>

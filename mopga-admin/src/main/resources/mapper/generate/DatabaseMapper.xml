@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gklx.mopga.admin.module.generate.dao.DatabaseDao">
+
+    <!-- 查询结果列 -->
+    <sql id="base_columns">
+        gen_database.id,
+        gen_database.create_user_id,
+        gen_database.create_time,
+        gen_database.update_user_id,
+        gen_database.update_time,
+        gen_database.deleted_flag,
+        gen_database.database_name,
+        gen_database.database_type,
+        gen_database.language_type,
+        gen_database.database_status,
+        gen_database.category_id,
+        gen_database.url,
+        gen_database.user_name,
+        gen_database.password,
+        gen_database.timeout,
+        gen_database.backend_author,
+        gen_database.backend_date,
+        gen_database.copyright,
+        gen_database.front_author,
+        gen_database.front_date,
+        gen_database.package_name,
+        gen_database.module_name,
+        gen_database.table_extended_data,
+        gen_database.column_extended_data,
+        gen_database.is_physically_deleted,
+        gen_database.template_id,
+        gen_database.table_prefix,
+        gen_database.is_page,
+        gen_database.is_detail,
+        gen_database.is_add,
+        gen_database.is_update,
+        gen_database.is_delete,
+        gen_database.is_batch_delete,
+        gen_database.edit_component,
+        gen_database.form_count_line
+    </sql>
+
+    <!-- 分页查询 -->
+    <select id="queryPage" resultType="com.gklx.mopga.admin.module.generate.domain.vo.DatabaseVO">
+        SELECT
+        <include refid="base_columns"/>
+        FROM gen_database
+        <where>
+            <!--名称查询-->
+            <if test="queryForm.databaseName != null and queryForm.databaseName != ''">
+                AND INSTR(gen_database.database_name,#{queryForm.databaseName})
+            </if>
+        </where>
+    </select>
+
+
+
+</mapper>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gklx.mopga.admin.module.generate.dao.GenTableColumnDao">
+
+    <!-- 查询结果列 -->
+    <sql id="base_columns">
+        gen_table_column.column_id,
+        gen_table_column.create_user_id,
+        gen_table_column.create_time,
+        gen_table_column.update_user_id,
+        gen_table_column.update_time,
+        gen_table_column.deleted_flag,
+        gen_table_column.table_id,
+        gen_table_column.database_id,
+        gen_table_column.column_name,
+        gen_table_column.column_comment,
+        gen_table_column.is_pk,
+        gen_table_column.is_increment,
+        gen_table_column.is_null,
+        gen_table_column.column_default,
+        gen_table_column.column_type,
+        gen_table_column.sort,
+        gen_table_column.field_name,
+        gen_table_column.field_comment,
+        gen_table_column.field_type,
+        gen_table_column.js_type,
+        gen_table_column.dict_type,
+        gen_table_column.is_required,
+        gen_table_column.is_insert,
+        gen_table_column.is_update,
+        gen_table_column.front_component,
+        gen_table_column.is_where,
+        gen_table_column.where_type,
+        gen_table_column.extended_data,
+        gen_table_column.is_base,
+        gen_table_column.enum_type,
+        gen_table_column.is_table
+    </sql>
+
+    <!-- 分页查询 -->
+    <select id="queryPage" resultType="com.gklx.mopga.admin.module.generate.domain.vo.GenTableColumnVo">
+        SELECT
+        <include refid="base_columns"/>
+        FROM gen_table_column
+        <where>
+            <!--表id-->
+            <if test="queryForm.tableId != null">
+                AND gen_table_column.table_id = #{queryForm.tableId}
+            </if>
+            <if test="queryForm.keyword != null and queryForm.keyword != ''">
+                AND INSTR(gen_table_column.column_name,#{queryForm.keyword})
+                OR INSTR(gen_table_column.column_comment,#{queryForm.keyword})
+            </if>
+        </where>
+    </select>
+</mapper>

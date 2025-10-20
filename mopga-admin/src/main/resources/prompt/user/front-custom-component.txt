@@ -1,0 +1,18 @@
+以下是你需要开发的自定义组件的具体需求：
+<requirement>
+{{requirement}}
+</requirement>
+
+请先在<思考>标签中详细分析你的开发思路，包括如何使用Ant Design Vue和Tailwind CSS，以及如何确保组件遵循单一职责原则。
+然后，在<code>标签中输出完整的Vue 3自定义组件代码。
+最后，在<explanation>标签中解释代码的设计思路和遵循的原则。
+
+<思考>
+[在此详细说明你的开发思路]
+</思考>
+<code>
+[在此输出Vue 3自定义组件代码]
+</code>
+<explanation>
+[在此解释代码的设计思路和遵循的原则]
+</explanation>

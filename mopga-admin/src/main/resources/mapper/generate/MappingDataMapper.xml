@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gklx.mopga.admin.module.generate.dao.MappingDataDao">
+
+    <!-- 查询结果列 -->
+    <sql id="base_columns">
+        gen_mapping_data.id,
+        gen_mapping_data.mapping_code,
+        gen_mapping_data.database_field_type,
+        gen_mapping_data.java_field_type,
+        gen_mapping_data.front_field_type,
+        gen_mapping_data.front_component,
+        gen_mapping_data.remark,
+        gen_mapping_data.sort,
+        gen_mapping_data.create_user_id,
+        gen_mapping_data.create_time,
+        gen_mapping_data.update_user_id,
+        gen_mapping_data.update_time,
+        gen_mapping_data.deleted_flag
+    </sql>
+
+    <!-- 分页查询 -->
+    <select id="queryPage" resultType="com.gklx.mopga.admin.module.generate.domain.vo.MappingDataVo">
+        SELECT
+        <include refid="base_columns"/>
+        FROM gen_mapping_data
+        <where>
+            <if test="queryForm.mappingCode != null">
+                AND gen_mapping_data.mapping_code = #{queryForm.mappingCode}
+            </if>
+        </where>
+        ORDER BY gen_mapping_data.sort ASC
+    </select>
+</mapper>

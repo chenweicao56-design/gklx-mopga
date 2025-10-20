@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gklx.mopga.admin.module.generate.dao.TemplateMappingItemDao">
+
+    <!-- 查询结果列 -->
+    <sql id="base_columns">
+        gen_template_mapping_item.id,
+        gen_template_mapping_item.create_user_id,
+        gen_template_mapping_item.create_time,
+        gen_template_mapping_item.update_user_id,
+        gen_template_mapping_item.update_time,
+        gen_template_mapping_item.deleted_flag,
+        gen_template_mapping_item.template_id,
+        gen_template_mapping_item.database_column_type,
+        gen_template_mapping_item.back_column_type,
+        gen_template_mapping_item.front_column_type,
+        gen_template_mapping_item.front_component,
+        gen_template_mapping_item.sort
+    </sql>
+
+    <!-- 分页查询 -->
+    <select id="queryPage" resultType="com.gklx.mopga.admin.module.generate.domain.vo.TemplateMappingItemVo">
+        SELECT
+        <include refid="base_columns"/>
+        FROM gen_template_mapping_item
+        <where>
+            <if test="queryForm.templateId!= null">
+                AND gen_template_mapping_item.template_id = #{queryForm.templateId}
+            </if>
+        </where>
+        ORDER BY gen_template_mapping_item.sort
+    </select>
+</mapper>

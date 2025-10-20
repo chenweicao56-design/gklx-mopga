@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gklx.mopga.admin.module.generate.dao.TemplateColumnDao">
+
+    <!-- 查询结果列 -->
+    <sql id="base_columns">
+        gen_template_column.column_id,
+        gen_template_column.create_user_id,
+        gen_template_column.create_time,
+        gen_template_column.update_user_id,
+        gen_template_column.update_time,
+        gen_template_column.deleted_flag,
+        gen_template_column.template_id,
+        gen_template_column.column_name,
+        gen_template_column.column_comment,
+        gen_template_column.is_pk,
+        gen_template_column.is_increment,
+        gen_template_column.is_null,
+        gen_template_column.column_default,
+        gen_template_column.column_type,
+        gen_template_column.sort,
+        gen_template_column.field_name,
+        gen_template_column.field_comment,
+        gen_template_column.field_type,
+        gen_template_column.js_type,
+        gen_template_column.dict_id,
+        gen_template_column.is_required,
+        gen_template_column.is_insert,
+        gen_template_column.is_update,
+        gen_template_column.front_component,
+        gen_template_column.is_where,
+        gen_template_column.where_type,
+        gen_template_column.extended_data,
+        gen_template_column.is_base,
+        gen_template_column.enum_type
+    </sql>
+
+    <!-- 分页查询 -->
+    <select id="queryPage" resultType="com.gklx.mopga.admin.module.generate.domain.vo.TemplateColumnVo">
+        SELECT
+        <include refid="base_columns"/>
+        FROM gen_template_column
+        <where>
+            <!--${queryColumn.label}-->
+            <if test="queryForm.templateId != null">
+                AND gen_template_column.template_id = #{queryForm.templateId}
+            </if>
+            <if test="queryForm.keyword != null and queryForm.keyword != ''">
+                AND INSTR(gen_template_column.column_name,#{queryForm.keyword})
+                OR INSTR(gen_template_column.column_comment,#{queryForm.keyword})
+            </if>
+        </where>
+        ORDER BY gen_template_column.sort
+    </select>
+
+
+
+</mapper>

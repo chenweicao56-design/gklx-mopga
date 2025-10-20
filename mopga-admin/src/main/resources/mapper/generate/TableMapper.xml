@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gklx.mopga.admin.module.generate.dao.TableDao">
+
+    <!-- 查询结果列 -->
+    <sql id="base_columns">
+        gen_table.table_id,
+        gen_table.database_id,
+        gen_table.create_user_id,
+        gen_table.create_time,
+        gen_table.update_user_id,
+        gen_table.update_time,
+        gen_table.deleted_flag,
+        gen_table.table_name,
+        gen_table.table_comment,
+        gen_table.sort,
+        gen_table.backend_author,
+        gen_table.backend_date,
+        gen_table.copyright,
+        gen_table.front_author,
+        gen_table.front_date,
+        gen_table.package_name,
+        gen_table.module_name,
+        gen_table.is_physically_deleted,
+        gen_table.word_name,
+        gen_table.status,
+        gen_table.sub_table_id,
+        gen_table.table_prefix,
+        gen_table.extended_data,
+        gen_table.is_page,
+        gen_table.is_detail,
+        gen_table.is_add,
+        gen_table.is_update,
+        gen_table.is_delete,
+        gen_table.is_batch_delete,
+        gen_table.edit_component,
+        gen_table.form_count_line
+    </sql>
+
+    <!-- 分页查询 -->
+    <select id="queryPage" resultType="com.gklx.mopga.admin.module.generate.domain.vo.TableVO">
+        SELECT
+        <include refid="base_columns"/>
+        FROM gen_table
+        <where>
+            <!--表名称-->
+            <if test="queryForm.tableName != null and queryForm.tableName != ''">
+                AND INSTR(gen_table.table_name,#{queryForm.tableName})
+            </if>
+            <if test="queryForm.keyword != null and queryForm.keyword != ''">
+                AND INSTR(gen_table.table_name,#{queryForm.keyword})
+                OR INSTR(gen_table.table_comment,#{queryForm.keyword})
+            </if>
+            <if test="queryForm.databaseId != null ">
+                AND gen_table.database_id = #{queryForm.databaseId}
+            </if>
+        </where>
+        order by gen_table.update_time desc
+    </select>
+
+
+
+</mapper>

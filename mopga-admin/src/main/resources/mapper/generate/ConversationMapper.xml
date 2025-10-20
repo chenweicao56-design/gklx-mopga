@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gklx.mopga.admin.module.generate.dao.ConversationDao">
+
+    <!-- 查询结果列 -->
+    <sql id="base_columns">
+        ai_conversation.id,
+        ai_conversation.title,
+        ai_conversation.create_user_id,
+        ai_conversation.create_time,
+        ai_conversation.update_user_id,
+        ai_conversation.update_time,
+        ai_conversation.deleted_flag
+    </sql>
+
+    <!-- 分页查询 -->
+    <select id="queryPage" resultType="com.gklx.mopga.admin.module.generate.domain.vo.ConversationVo">
+        SELECT
+        <include refid="base_columns"/>
+        FROM ai_conversation
+        <where>
+            <if test="queryForm.title != null and queryForm.title != ''">
+                AND ai_conversation.title like concat('%', #{queryColumn.fieldName}, '%')
+            </if>
+        </where>
+    </select>
+</mapper>

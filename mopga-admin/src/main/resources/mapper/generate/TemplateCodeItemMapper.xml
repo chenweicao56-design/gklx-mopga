@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gklx.mopga.admin.module.generate.dao.TemplateCodeItemDao">
+
+    <!-- 查询结果列 -->
+    <sql id="base_columns">
+        gen_template_code_item.id,
+        gen_template_code_item.create_user_id,
+        gen_template_code_item.create_time,
+        gen_template_code_item.update_user_id,
+        gen_template_code_item.update_time,
+        gen_template_code_item.deleted_flag,
+        gen_template_code_item.template_id,
+        gen_template_code_item.file_name,
+        gen_template_code_item.file_type,
+        gen_template_code_item.file_path,
+        gen_template_code_item.content,
+        gen_template_code_item.sort
+    </sql>
+
+    <!-- 分页查询 -->
+    <select id="queryPage" resultType="com.gklx.mopga.admin.module.generate.domain.vo.TemplateCodeItemVO">
+        SELECT
+        <include refid="base_columns"/>
+        FROM gen_template_code_item
+        <where>
+            <!--模板id-->
+            <if test="queryForm.templateId != null">
+                AND gen_template_code_item.template_id = #{queryForm.templateId}
+            </if>
+        </where>
+        ORDER BY gen_template_code_item.sort
+    </select>
+
+
+
+</mapper>

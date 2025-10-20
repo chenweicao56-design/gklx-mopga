@@ -1,0 +1,43 @@
+databaseType: 1521
+tableSqlList:
+  - sql: "SELECT t.TABLE_NAME, NVL(c.COMMENTS, '') AS TABLE_COMMENT, o.CREATED AS CREATE_TIME, o.LAST_DDL_TIME AS UPDATE_TIME
+          FROM USER_TABLES t
+          LEFT JOIN USER_TAB_COMMENTS c ON t.TABLE_NAME = c.TABLE_NAME
+          LEFT JOIN USER_OBJECTS o ON t.TABLE_NAME = o.OBJECT_NAME"
+    columns:
+      - "TABLE_NAME"
+      - "TABLE_COMMENT"
+      - "CREATE_TIME"
+      - "UPDATE_TIME"
+tableFieldSqlList:
+  - sql: "SELECT col.COLUMN_NAME,
+                 CASE WHEN col.NULLABLE = 'N' THEN '1' ELSE '0' END AS IS_NULL,
+                 CASE WHEN pk.COLUMN_NAME IS NOT NULL THEN '1' ELSE '0' END AS IS_PK,
+                 col.COLUMN_ID AS SORT,
+                 NVL(cc.COMMENTS, '') AS COLUMN_COMMENT,
+                 CASE WHEN id.COLUMN_NAME IS NOT NULL THEN '1' ELSE '0' END AS IS_INCREMENT,
+                 col.DATA_TYPE || CASE WHEN col.DATA_TYPE IN ('VARCHAR2', 'CHAR') THEN '(' || col.DATA_LENGTH || ')' 
+                                       WHEN col.DATA_TYPE IN ('NUMBER') AND col.DATA_PRECISION IS NOT NULL THEN '(' || col.DATA_PRECISION || CASE WHEN col.DATA_SCALE > 0 THEN ',' || col.DATA_SCALE ELSE '' END || ')'
+                                       ELSE '' END AS COLUMN_TYPE,
+                 col.DATA_DEFAULT AS COLUMN_DEFAULT
+          FROM USER_TAB_COLUMNS col
+          LEFT JOIN USER_COL_COMMENTS cc ON col.TABLE_NAME = cc.TABLE_NAME AND col.COLUMN_NAME = cc.COLUMN_NAME
+          LEFT JOIN (
+              SELECT cu.COLUMN_NAME
+              FROM USER_CONSTRAINTS cs
+              JOIN USER_CONS_COLUMNS cu ON cs.CONSTRAINT_NAME = cu.CONSTRAINT_NAME
+              WHERE cs.TABLE_NAME = ? AND cs.CONSTRAINT_TYPE = 'P'
+          ) pk ON col.COLUMN_NAME = pk.COLUMN_NAME
+          LEFT JOIN USER_TAB_IDENTITY_COLS id ON col.TABLE_NAME = id.TABLE_NAME AND col.COLUMN_NAME = id.COLUMN_NAME
+          WHERE col.TABLE_NAME = ?
+          ORDER BY col.COLUMN_ID"
+    columns:
+      - "COLUMN_NAME"
+      - "IS_NULL"
+      - "IS_PK"
+      - "SORT"
+      - "COLUMN_COMMENT"
+      - "IS_INCREMENT"
+      - "COLUMN_TYPE"
+      - "COLUMN_DEFAULT"
+
