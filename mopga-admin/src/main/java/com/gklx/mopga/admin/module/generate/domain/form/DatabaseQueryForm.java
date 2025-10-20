@@ -16,8 +16,8 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class DatabaseQueryForm extends PageParam {
-
-    @Schema(description = "名称查询")
+    
+    @Schema(description = "名称")
     private String databaseName;
-
+    
 }

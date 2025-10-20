@@ -1,28 +1,28 @@
 package com.gklx.mopga.admin.module.generate.service;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gklx.mopga.admin.module.generate.dao.DatabaseDao;
 import com.gklx.mopga.admin.module.generate.domain.entity.DatabaseEntity;
 import com.gklx.mopga.admin.module.generate.domain.form.DatabaseAddForm;
 import com.gklx.mopga.admin.module.generate.domain.form.DatabaseQueryForm;
 import com.gklx.mopga.admin.module.generate.domain.form.DatabaseUpdateForm;
 import com.gklx.mopga.admin.module.generate.domain.vo.DatabaseVo;
-import com.gklx.mopga.base.common.domain.PageResult;
-import com.gklx.mopga.base.common.domain.ResponseDTO;
+import java.util.List;
 import com.gklx.mopga.base.common.util.SmartBeanUtil;
 import com.gklx.mopga.base.common.util.SmartPageUtil;
-import jakarta.annotation.Resource;
+import com.gklx.mopga.base.common.domain.ResponseDTO;
+import com.gklx.mopga.base.common.domain.PageResult;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.stereotype.Service;
 
-import java.util.List;
+import jakarta.annotation.Resource;
+import org.springframework.stereotype.Service;
 
 /**
  * 数据源表 Service
  *
  * @Author gklx
- * @Date 2025-09-19 13:15:40
- * @Copyright gklx
+ * @Date 2025-09-06 18:37:05
+ * @Copyright 1.0
  */
 
 @Service
@@ -51,21 +51,20 @@ public class DatabaseService {
 
     /**
      * 更新
+     *
      */
     public ResponseDTO<String> update(DatabaseUpdateForm updateForm) {
         DatabaseEntity databaseEntity = SmartBeanUtil.copy(updateForm, DatabaseEntity.class);
         databaseDao.updateById(databaseEntity);
         return ResponseDTO.ok();
     }
-
     /**
      * 批量删除
      */
     public ResponseDTO<String> batchDelete(List<Long> idList) {
-        if (CollectionUtils.isEmpty(idList)) {
+        if (CollectionUtils.isEmpty(idList)){
             return ResponseDTO.ok();
         }
-
         databaseDao.deleteByIds(idList);
         return ResponseDTO.ok();
     }
@@ -74,10 +73,9 @@ public class DatabaseService {
      * 单个删除
      */
     public ResponseDTO<String> delete(Long id) {
-        if (null == id) {
+        if (null == id){
             return ResponseDTO.ok();
         }
-
         databaseDao.deleteById(id);
         return ResponseDTO.ok();
     }

@@ -48,5 +48,10 @@
         SELECT
         <include refid="base_columns"/>
         FROM gen_database
+        <where>
+            <if test="queryForm.databaseName != null and queryForm.databaseName != ''">
+                AND gen_database.database_name like concat('%', #{queryColumn.fieldName}, '%')
+            </if>
+        </where>
     </select>
 </mapper>
