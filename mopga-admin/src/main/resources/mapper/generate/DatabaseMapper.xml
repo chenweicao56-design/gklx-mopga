@@ -21,9 +21,11 @@
         gen_database.timeout,
         gen_database.backend_author,
         gen_database.backend_date,
-        gen_database.copyright,
+        gen_database.backend_project_path,
         gen_database.front_author,
         gen_database.front_date,
+        gen_database.front_project_path,
+        gen_database.copyright,
         gen_database.package_name,
         gen_database.module_name,
         gen_database.table_extended_data,
@@ -42,18 +44,9 @@
     </sql>
 
     <!-- 分页查询 -->
-    <select id="queryPage" resultType="com.gklx.mopga.admin.module.generate.domain.vo.DatabaseVO">
+    <select id="queryPage" resultType="com.gklx.mopga.admin.module.generate.domain.vo.DatabaseVo">
         SELECT
         <include refid="base_columns"/>
         FROM gen_database
-        <where>
-            <!--名称查询-->
-            <if test="queryForm.databaseName != null and queryForm.databaseName != ''">
-                AND INSTR(gen_database.database_name,#{queryForm.databaseName})
-            </if>
-        </where>
     </select>
-
-
-
 </mapper>

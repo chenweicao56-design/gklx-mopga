@@ -1,16 +1,19 @@
 package com.gklx.mopga.admin.module.generate.domain.entity;
 
-import com.baomidou.mybatisplus.annotation.*;
-import lombok.Data;
-
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import java.time.LocalDateTime;
+import lombok.Data;
 
 /**
  * 数据源表 实体类
  *
  * @Author gklx
- * @Date 2025-09-19 13:48:59
- * @Copyright gklx
+ * @Date 2025-09-06 18:37:05
+ * @Copyright 1.0
  */
 
 @Data
@@ -108,9 +111,9 @@ public class DatabaseEntity {
     private LocalDateTime backendDate;
 
     /**
-     * 版权
+     * 后端项目路径
      */
-    private String copyright;
+    private String backendProjectPath;
 
     /**
      * 前端作者
@@ -121,6 +124,16 @@ public class DatabaseEntity {
      * 前端日期
      */
     private LocalDateTime frontDate;
+
+    /**
+     * 前端项目路径
+     */
+    private String frontProjectPath;
+
+    /**
+     * 版权
+     */
+    private String copyright;
 
     /**
      * 包名
@@ -196,5 +209,4 @@ public class DatabaseEntity {
      * 每行几个表单
      */
     private Integer formCountLine;
-
 }

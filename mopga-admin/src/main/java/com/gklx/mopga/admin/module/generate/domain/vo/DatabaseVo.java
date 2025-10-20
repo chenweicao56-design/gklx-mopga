@@ -9,13 +9,12 @@ import java.time.LocalDateTime;
  * $数据源表 列表VO
  *
  * @Author ${.backendAuthor}
- * @Date 2025-09-19 13:48:59
- * @Copyright gklx
+ * @Date 2025-09-06 18:37:05
+ * @Copyright 1.0
  */
 
 @Data
-public class DatabaseVO {
-
+public class DatabaseVo {
 
     @Schema(description = "ID")
     private Long id;
@@ -68,14 +67,20 @@ public class DatabaseVO {
     @Schema(description = "后端日期")
     private LocalDateTime backendDate;
 
-    @Schema(description = "版权")
-    private String copyright;
+    @Schema(description = "后端项目路径")
+    private String backendProjectPath;
 
     @Schema(description = "前端作者")
     private String frontAuthor;
 
     @Schema(description = "前端日期")
     private LocalDateTime frontDate;
+
+    @Schema(description = "前端项目路径")
+    private String frontProjectPath;
+
+    @Schema(description = "版权")
+    private String copyright;
 
     @Schema(description = "包名")
     private String packageName;

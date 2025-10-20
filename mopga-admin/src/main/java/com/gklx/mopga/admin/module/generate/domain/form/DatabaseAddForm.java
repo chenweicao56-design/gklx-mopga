@@ -3,23 +3,19 @@ package com.gklx.mopga.admin.module.generate.domain.form;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
-
 import java.time.LocalDateTime;
+import lombok.Data;
 
 /**
  * 数据源表 更新表单
  *
  * @Author gklx
- * @Date 2025-09-19 13:48:59
- * @Copyright gklx
+ * @Date 2025-09-06 18:37:05
+ * @Copyright 1.0
  */
 
 @Data
 public class DatabaseAddForm {
-
-    @Schema(description = "ID", requiredMode = Schema.RequiredMode.REQUIRED)
-    private Long id;
 
     @Schema(description = "名称", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotBlank(message = "名称 不能为空")
@@ -62,9 +58,8 @@ public class DatabaseAddForm {
     @Schema(description = "后端日期")
     private LocalDateTime backendDate;
 
-    @Schema(description = "版权", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotBlank(message = "版权 不能为空")
-    private String copyright;
+    @Schema(description = "后端项目路径")
+    private String backendProjectPath;
 
     @Schema(description = "前端作者", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotBlank(message = "前端作者 不能为空")
@@ -72,6 +67,13 @@ public class DatabaseAddForm {
 
     @Schema(description = "前端日期")
     private LocalDateTime frontDate;
+
+    @Schema(description = "前端项目路径")
+    private String frontProjectPath;
+
+    @Schema(description = "版权", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotBlank(message = "版权 不能为空")
+    private String copyright;
 
     @Schema(description = "包名", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotBlank(message = "包名 不能为空")

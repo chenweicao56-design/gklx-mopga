@@ -18,6 +18,7 @@ import com.gklx.mopga.admin.module.generate.util.GenUtils;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.velocity.VelocityContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -63,6 +64,8 @@ public class GenerateService {
 
     @Resource
     private MappingDataManager mappingDataManager;
+    @Autowired
+    private GenTableColumnManager genTableColumnManager;
 
     @Transactional(rollbackFor = Exception.class)
     public Boolean syncTable(Long databaseId, Boolean containColumn, String tableNames) {
@@ -85,7 +88,37 @@ public class GenerateService {
                 TableEntity table = records.get(i);
                 TableVO tableVO = tableService.getByName(table.getTableName());
                 if (ObjUtil.isNotNull(tableVO)) {
-                    log.info("表名：{}已存在，跳过同步", table.getTableName());
+                    if (table.getTableComment().equals(tableVO.getTableComment())) {
+                        log.info("表名：{}已存在，跳过同步", table.getTableName());
+                        continue;
+                    }
+                    tableManager.updateById(table);
+                    table.setTableId(tableVO.getTableId());
+                    table.setSort((int) (i + 1 + size * (current - 1)));
+                    table.setDatabaseId(tableVO.getDatabaseId());
+                    table.setIsPhysicallyDeleted(tableVO.getIsPhysicallyDeleted());
+                    table.setBackendAuthor(tableVO.getBackendAuthor());
+                    table.setBackendDate(tableVO.getBackendDate());
+                    table.setFrontAuthor(tableVO.getFrontAuthor());
+                    table.setFrontDate(tableVO.getFrontDate());
+                    table.setCopyright(tableVO.getCopyright());
+                    table.setModuleName(tableVO.getModuleName());
+                    table.setPackageName(tableVO.getPackageName());
+                    table.setExtendedData(tableVO.getExtendedData());
+                    table.setTablePrefix(tableVO.getTablePrefix());
+                    table.setWordName(tableVO.getWordName());
+                    table.setIsPage(tableVO.getIsPage());
+                    table.setIsDetail(tableVO.getIsDetail());
+                    table.setIsAdd(tableVO.getIsAdd());
+                    table.setIsUpdate(tableVO.getIsUpdate());
+                    table.setIsDelete(tableVO.getIsDelete());
+                    table.setIsBatchDelete(tableVO.getIsBatchDelete());
+                    table.setEditComponent(tableVO.getEditComponent());
+                    table.setFormCountLine(tableVO.getFormCountLine());
+                    tableManager.updateById(table);
+                    if (containColumn) {
+                        syncTableColumn(table.getTableId());
+                    }
                 } else {
                     table.setSort((int) (i + 1 + size * (current - 1)));
                     table.setDatabaseId(databaseId);
@@ -140,7 +173,7 @@ public class GenerateService {
         DatabaseEntity database = databaseManager.getById(table.getDatabaseId());
         TemplateVO templateVO = templateService.getById(database.getTemplateId());
 
-        List<MappingDataEntity> mappingDataEntities = mappingDataManager.listByMappingCode(database.getLanguageType().toUpperCase());
+        List<MappingDataEntity> mappingDataEntities = mappingDataManager.listByMappingCode(database.getDatabaseType().toUpperCase());
         Map<String, MappingDataEntity> defaultMappingMap = new HashMap<>();
         if (CollectionUtil.isNotEmpty(mappingDataEntities)) {
             defaultMappingMap = mappingDataEntities.stream().collect(Collectors.toMap(e -> e.getDatabaseFieldType().toUpperCase(), e -> e));
@@ -149,12 +182,13 @@ public class GenerateService {
         Map<String, TemplateMappingItemEntity> templateMappingItemEntityMap = templateVO.getTemplateMappingItems().stream().collect(Collectors.toMap(e -> e.getDatabaseColumnType().toUpperCase(), e -> e));
         IBaseCollector collector = applicationContext.getBean(database.getDatabaseType(), IBaseCollector.class);
         List<GenTableColumnEntity> columns = collector.selectDbTableColumnsByName(database, table.getTableName());
+
+        List<GenTableColumnVo> oldColumns = genTableColumnService.getByTableId(tableId);
+        Map<String, GenTableColumnVo> collect = oldColumns.stream().collect(Collectors.toMap(GenTableColumnVo::getColumnName, e -> e));
         for (int i = 0; i < columns.size(); i++) {
             GenTableColumnEntity column = columns.get(i);
-            GenTableColumnEntity columnEntity = genTableColumnService.getByName(tableId, column.getColumnName());
-            if (ObjUtil.isNotNull(columnEntity)) {
-                log.info("字段名：{}已存在，跳过同步", column.getColumnName());
-            } else {
+            GenTableColumnVo oldColumn = collect.get(column.getColumnName());
+            if (oldColumn == null) {
                 column.setSort(i + 1);
                 column.setTableId(tableId);
                 column.setDatabaseId(database.getId());
@@ -176,8 +210,37 @@ public class GenerateService {
                 }
                 column.setWhereType(null);
                 column.setExtendedData(database.getColumnExtendedData());
-                tableColumnManager.save(column);
+            }else{
+                if(column.getColumnComment().equals(oldColumn.getColumnComment()) && column.getIsPk() == oldColumn.getIsPk() && column.getIsIncrement() == oldColumn.getIsIncrement() && column.getIsNull() == oldColumn.getIsNull() && column.getColumnDefault().equals(oldColumn.getColumnDefault()) && column.getColumnType().equals(oldColumn.getColumnType())){
+                    log.debug("字段：{}:{}已存在，跳过同步", table.getTableName(), column.getColumnName());
+                    continue;
+                }else{
+                    column.setSort(i + 1);
+                    column.setColumnId(oldColumn.getColumnId());
+                    column.setTableId(oldColumn.getTableId());
+                    column.setDatabaseId(oldColumn.getDatabaseId());
+                    column.setFieldName(oldColumn.getColumnName());
+                    column.setFieldComment(column.getColumnComment());
+                    GenUtils.buildIsBase(column, templateColumnMap);
+                    GenUtils.buildFileType(column, templateMappingItemEntityMap, defaultMappingMap);
+                    if (StrUtil.isEmpty(column.getFieldType())) {
+                        log.error("未找到字段类型：{}:{}", table.getTableName(), column.getFieldName());
+                    }
+                    column.setIsRequired(oldColumn.getIsNull());
+                    column.setIsInsert(oldColumn.getIsInsert());
+                    column.setIsUpdate(oldColumn.getIsUpdate());
+                    column.setIsWhere(oldColumn.getIsWhere());
+                    column.setIsTable(oldColumn.getIsTable());
+                    column.setWhereType(oldColumn.getWhereType());
+                    column.setExtendedData(oldColumn.getExtendedData());
+                    collect.remove(column.getColumnName());
+                }
             }
+        }
+        genTableColumnManager.saveOrUpdateBatch(columns);
+        List<Long> deleteIds = collect.values().stream().map(GenTableColumnVo::getColumnId).toList();
+        if (CollectionUtil.isNotEmpty(deleteIds)) {
+            genTableColumnManager.removeByIds(deleteIds);
         }
         return true;
     }

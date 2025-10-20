@@ -6,7 +6,7 @@ import com.gklx.mopga.admin.module.generate.domain.entity.DatabaseEntity;
 import com.gklx.mopga.admin.module.generate.domain.form.DatabaseAddForm;
 import com.gklx.mopga.admin.module.generate.domain.form.DatabaseQueryForm;
 import com.gklx.mopga.admin.module.generate.domain.form.DatabaseUpdateForm;
-import com.gklx.mopga.admin.module.generate.domain.vo.DatabaseVO;
+import com.gklx.mopga.admin.module.generate.domain.vo.DatabaseVo;
 import com.gklx.mopga.base.common.domain.PageResult;
 import com.gklx.mopga.base.common.domain.ResponseDTO;
 import com.gklx.mopga.base.common.util.SmartBeanUtil;
@@ -34,9 +34,9 @@ public class DatabaseService {
     /**
      * 分页查询
      */
-    public PageResult<DatabaseVO> queryPage(DatabaseQueryForm queryForm) {
+    public PageResult<DatabaseVo> queryPage(DatabaseQueryForm queryForm) {
         Page<?> page = SmartPageUtil.convert2PageQuery(queryForm);
-        List<DatabaseVO> list = databaseDao.queryPage(page, queryForm);
+        List<DatabaseVo> list = databaseDao.queryPage(page, queryForm);
         return SmartPageUtil.convert2PageResult(page, list);
     }
 
@@ -82,8 +82,8 @@ public class DatabaseService {
         return ResponseDTO.ok();
     }
 
-    public DatabaseVO get(Long databaseId) {
+    public DatabaseVo get(Long databaseId) {
         DatabaseEntity databaseEntity = databaseDao.selectById(databaseId);
-        return SmartBeanUtil.copy(databaseEntity, DatabaseVO.class);
+        return SmartBeanUtil.copy(databaseEntity, DatabaseVo.class);
     }
 }

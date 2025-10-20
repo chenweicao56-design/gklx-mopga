@@ -4,7 +4,7 @@ import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.gklx.mopga.admin.module.generate.domain.form.DatabaseAddForm;
 import com.gklx.mopga.admin.module.generate.domain.form.DatabaseQueryForm;
 import com.gklx.mopga.admin.module.generate.domain.form.DatabaseUpdateForm;
-import com.gklx.mopga.admin.module.generate.domain.vo.DatabaseVO;
+import com.gklx.mopga.admin.module.generate.domain.vo.DatabaseVo;
 import com.gklx.mopga.admin.module.generate.service.DatabaseService;
 import com.gklx.mopga.base.common.domain.PageResult;
 import com.gklx.mopga.base.common.domain.ResponseDTO;
@@ -33,14 +33,14 @@ public class DatabaseController {
     @Operation(summary = "分页查询 @author gklx")
     @PostMapping("/database/queryPage")
     @SaCheckPermission("database:query")
-    public ResponseDTO<PageResult<DatabaseVO>> queryPage(@RequestBody @Valid DatabaseQueryForm queryForm) {
+    public ResponseDTO<PageResult<DatabaseVo>> queryPage(@RequestBody @Valid DatabaseQueryForm queryForm) {
         return ResponseDTO.ok(databaseService.queryPage(queryForm));
     }
 
     @Operation(summary = "添加 @author gklx")
     @GetMapping("/database/{databaseId}")
     @SaCheckPermission("database:query")
-    public ResponseDTO<DatabaseVO> get(@PathVariable Long databaseId) {
+    public ResponseDTO<DatabaseVo> get(@PathVariable Long databaseId) {
         return ResponseDTO.ok(databaseService.get(databaseId));
     }
 

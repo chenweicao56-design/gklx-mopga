@@ -217,8 +217,9 @@ public class GenUtils {
                 column.setFieldType(templateMappingItemEntity.getBackColumnType());
                 column.setJsType(templateMappingItemEntity.getFrontColumnType());
                 column.setFrontComponent(templateMappingItemEntity.getFrontComponent());
+                return;
             }
-            return;
+
         }
         MappingDataEntity mappingDataEntity = defaultMappingMap.get(columnType.toUpperCase());
         if (ObjUtil.isNotNull(mappingDataEntity)) {
