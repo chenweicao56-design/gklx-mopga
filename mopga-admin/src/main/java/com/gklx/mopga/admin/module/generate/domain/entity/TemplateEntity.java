@@ -1,16 +1,19 @@
 package com.gklx.mopga.admin.module.generate.domain.entity;
 
-import com.baomidou.mybatisplus.annotation.*;
-import lombok.Data;
-
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import java.time.LocalDateTime;
+import lombok.Data;
 
 /**
  * 模板表 实体类
  *
  * @Author gklx
- * @Date 2025-09-18 16:47:49
- * @Copyright gklx
+ * @Date 2025-09-06 18:37:05
+ * @Copyright 1.0
  */
 
 @Data
@@ -73,16 +76,6 @@ public class TemplateEntity {
     private String languageType;
 
     /**
-     * 模板文件
-     */
-    private String templateFiles;
-
-    /**
-     * 项目路径
-     */
-    private String projectPath;
-
-    /**
      * 备注
      */
     private String remark;
@@ -91,5 +84,4 @@ public class TemplateEntity {
      * 排序
      */
     private Integer sort;
-
 }

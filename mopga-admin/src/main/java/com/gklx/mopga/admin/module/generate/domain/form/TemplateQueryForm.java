@@ -11,8 +11,8 @@ import lombok.EqualsAndHashCode;
  * 模板表 分页查询表单
  *
  * @Author gklx
- * @Date 2025-09-18 16:47:49
- * @Copyright gklx
+ * @Date 2025-09-06 18:37:05
+ * @Copyright 1.0
  */
 
 @Data

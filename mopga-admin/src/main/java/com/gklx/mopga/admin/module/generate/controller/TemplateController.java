@@ -4,10 +4,11 @@ import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.gklx.mopga.admin.module.generate.domain.form.TemplateAddForm;
 import com.gklx.mopga.admin.module.generate.domain.form.TemplateQueryForm;
 import com.gklx.mopga.admin.module.generate.domain.form.TemplateUpdateForm;
-import com.gklx.mopga.admin.module.generate.domain.vo.TemplateVO;
+import com.gklx.mopga.admin.module.generate.domain.vo.TemplateVo;
 import com.gklx.mopga.admin.module.generate.service.TemplateService;
 import com.gklx.mopga.base.common.domain.PageResult;
 import com.gklx.mopga.base.common.domain.ResponseDTO;
+import com.gklx.mopga.base.common.domain.ValidateList;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
@@ -18,8 +19,8 @@ import org.springframework.web.bind.annotation.*;
  * 模板表 Controller
  *
  * @Author gklx
- * @Date 2025-09-18 16:47:49
- * @Copyright gklx
+ * @Date 2025-09-06 18:37:05
+ * @Copyright 1.0
  */
 
 @RestController
@@ -32,7 +33,7 @@ public class TemplateController {
     @Operation(summary = "分页查询 @author gklx")
     @PostMapping("/template/queryPage")
     @SaCheckPermission("template:query")
-    public ResponseDTO<PageResult<TemplateVO>> queryPage(@RequestBody @Valid TemplateQueryForm queryForm) {
+    public ResponseDTO<PageResult<TemplateVo>> queryPage(@RequestBody @Valid TemplateQueryForm queryForm) {
         return ResponseDTO.ok(templateService.queryPage(queryForm));
     }
 

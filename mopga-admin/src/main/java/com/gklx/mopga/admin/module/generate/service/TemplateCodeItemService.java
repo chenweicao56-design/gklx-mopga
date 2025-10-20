@@ -8,7 +8,7 @@ import com.gklx.mopga.admin.module.generate.domain.entity.TemplateCodeItemEntity
 import com.gklx.mopga.admin.module.generate.domain.form.TemplateCodeItemAddForm;
 import com.gklx.mopga.admin.module.generate.domain.form.TemplateCodeItemQueryForm;
 import com.gklx.mopga.admin.module.generate.domain.form.TemplateCodeItemUpdateForm;
-import com.gklx.mopga.admin.module.generate.domain.vo.TemplateCodeItemVO;
+import com.gklx.mopga.admin.module.generate.domain.vo.TemplateCodeItemVo;
 import com.gklx.mopga.admin.module.generate.manager.TemplateCodeItemManager;
 import com.gklx.mopga.base.common.domain.PageResult;
 import com.gklx.mopga.base.common.domain.ResponseDTO;
@@ -39,9 +39,9 @@ public class TemplateCodeItemService {
     /**
      * 分页查询
      */
-    public PageResult<TemplateCodeItemVO> queryPage(TemplateCodeItemQueryForm queryForm) {
+    public PageResult<TemplateCodeItemVo> queryPage(TemplateCodeItemQueryForm queryForm) {
         Page<?> page = SmartPageUtil.convert2PageQuery(queryForm);
-        List<TemplateCodeItemVO> list = templateCodeItemDao.queryPage(page, queryForm);
+        List<TemplateCodeItemVo> list = templateCodeItemDao.queryPage(page, queryForm);
         return SmartPageUtil.convert2PageResult(page, list);
     }
 

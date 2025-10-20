@@ -9,15 +9,11 @@ import com.gklx.mopga.admin.module.generate.domain.entity.TemplateMappingItemEnt
 import com.gklx.mopga.admin.module.generate.domain.form.TemplateAddForm;
 import com.gklx.mopga.admin.module.generate.domain.form.TemplateQueryForm;
 import com.gklx.mopga.admin.module.generate.domain.form.TemplateUpdateForm;
-import com.gklx.mopga.admin.module.generate.domain.vo.TemplateVO;
+import com.gklx.mopga.admin.module.generate.domain.vo.TemplateVo;
 import com.gklx.mopga.admin.module.generate.manager.TemplateCodeItemManager;
 import com.gklx.mopga.admin.module.generate.manager.TemplateColumnManager;
 import com.gklx.mopga.admin.module.generate.manager.TemplateManager;
-import com.gklx.mopga.admin.module.generate.manager.TemplateMappingItemManager;
-import com.gklx.mopga.admin.module.generate.util.GenerateConstant;
 import com.gklx.mopga.admin.module.system.role.dao.RoleEmployeeDao;
-import com.gklx.mopga.admin.module.system.role.manager.RoleEmployeeManager;
-import com.gklx.mopga.admin.module.system.role.service.RoleEmployeeService;
 import com.gklx.mopga.base.common.domain.PageResult;
 import com.gklx.mopga.base.common.domain.ResponseDTO;
 import com.gklx.mopga.base.common.exception.BusinessException;
@@ -25,7 +21,6 @@ import com.gklx.mopga.base.common.util.SmartBeanUtil;
 import com.gklx.mopga.base.common.util.SmartPageUtil;
 import com.gklx.mopga.base.common.util.SmartRequestUtil;
 import jakarta.annotation.Resource;
-import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,8 +30,8 @@ import java.util.List;
  * 模板表 Service
  *
  * @Author gklx
- * @Date 2025-09-18 16:47:49
- * @Copyright gklx
+ * @Date 2025-09-06 18:37:05
+ * @Copyright 1.0
  */
 
 @Service
@@ -63,12 +58,11 @@ public class TemplateService {
     /**
      * 分页查询
      */
-    public PageResult<TemplateVO> queryPage(TemplateQueryForm queryForm) {
+    public PageResult<TemplateVo> queryPage(TemplateQueryForm queryForm) {
         Page<?> page = SmartPageUtil.convert2PageQuery(queryForm);
-        List<TemplateVO> list = templateDao.queryPage(page, queryForm);
+        List<TemplateVo> list = templateDao.queryPage(page, queryForm);
         return SmartPageUtil.convert2PageResult(page, list);
     }
-
 
     /**
      * 添加
@@ -81,6 +75,7 @@ public class TemplateService {
 
     /**
      * 更新
+     *
      */
     public ResponseDTO<String> update(TemplateUpdateForm updateForm) {
         TemplateEntity templateEntity = SmartBeanUtil.copy(updateForm, TemplateEntity.class);
@@ -93,25 +88,25 @@ public class TemplateService {
      * 单个删除
      */
     public ResponseDTO<String> delete(Long id) {
-        if (null == id) {
+        if (null == id){
             return ResponseDTO.ok();
         }
         templateDao.deleteById(id);
         return ResponseDTO.ok();
     }
 
-    public TemplateVO getById(Long templateId) {
+    public TemplateVo getById(Long templateId) {
         TemplateEntity templateEntity = templateManager.getById(templateId);
-        TemplateVO templateVO = SmartBeanUtil.copy(templateEntity, TemplateVO.class);
+        TemplateVo templateVo = SmartBeanUtil.copy(templateEntity, TemplateVo.class);
 
         List<TemplateColumnEntity> templateColumnEntities = templateColumnService.listBaseColumnByTemplateId(templateId);
-        templateVO.setTemplateColumns(templateColumnEntities);
+        templateVo.setTemplateColumns(templateColumnEntities);
 
         List<TemplateCodeItemEntity> templateCodeItemEntityList = templateCodeItemService.listByTemplateId(templateId);
-        templateVO.setTemplateCodeItems(templateCodeItemEntityList);
+        templateVo.setTemplateCodeItems(templateCodeItemEntityList);
         List<TemplateMappingItemEntity> templateMappingItemEntityList = templateMappingItemService.listByTemplateId(templateId);
-        templateVO.setTemplateMappingItems(templateMappingItemEntityList);
-        return templateVO;
+        templateVo.setTemplateMappingItems(templateMappingItemEntityList);
+        return templateVo;
 
     }
 

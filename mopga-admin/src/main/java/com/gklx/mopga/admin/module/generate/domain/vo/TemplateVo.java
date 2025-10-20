@@ -12,14 +12,13 @@ import java.util.List;
 /**
  * $模板表 列表VO
  *
- * @Author ${.backendAuthor}
- * @Date 2025-09-18 17:17:12
- * @Copyright gklx
+ * @Author gklx
+ * @Date 2025-09-06 18:37:05
+ * @Copyright 1.0
  */
 
 @Data
-public class TemplateVO {
-
+public class TemplateVo {
 
     @Schema(description = "ID")
     private Long id;
@@ -50,12 +49,6 @@ public class TemplateVO {
 
     @Schema(description = "语言类型")
     private String languageType;
-
-    @Schema(description = "模板文件")
-    private String templateFiles;
-
-    @Schema(description = "项目路径")
-    private String projectPath;
 
     @Schema(description = "备注")
     private String remark;

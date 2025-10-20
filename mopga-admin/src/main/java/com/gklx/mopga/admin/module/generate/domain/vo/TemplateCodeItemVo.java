@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
  */
 
 @Data
-public class TemplateCodeItemVO {
+public class TemplateCodeItemVo {
 
 
     @Schema(description = "ID")

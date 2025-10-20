@@ -8,15 +8,12 @@ import lombok.Data;
  * 模板表 更新表单
  *
  * @Author gklx
- * @Date 2025-09-18 16:47:49
- * @Copyright gklx
+ * @Date 2025-09-06 18:37:05
+ * @Copyright 1.0
  */
 
 @Data
 public class TemplateAddForm {
-
-    @Schema(description = "ID", requiredMode = Schema.RequiredMode.REQUIRED)
-    private Long id;
 
     @Schema(description = "模板名称", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotBlank(message = "模板名称 不能为空")
@@ -33,12 +30,6 @@ public class TemplateAddForm {
     @Schema(description = "语言类型", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotBlank(message = "语言类型 不能为空")
     private String languageType;
-
-    @Schema(description = "模板文件")
-    private String templateFiles;
-
-    @Schema(description = "项目路径")
-    private String projectPath;
 
     @Schema(description = "备注")
     private String remark;

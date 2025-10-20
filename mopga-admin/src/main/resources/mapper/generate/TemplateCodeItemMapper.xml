@@ -19,7 +19,7 @@
     </sql>
 
     <!-- 分页查询 -->
-    <select id="queryPage" resultType="com.gklx.mopga.admin.module.generate.domain.vo.TemplateCodeItemVO">
+    <select id="queryPage" resultType="com.gklx.mopga.admin.module.generate.domain.vo.TemplateCodeItemVo">
         SELECT
         <include refid="base_columns"/>
         FROM gen_template_code_item

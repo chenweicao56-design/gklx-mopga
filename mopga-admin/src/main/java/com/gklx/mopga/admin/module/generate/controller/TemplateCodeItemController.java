@@ -8,7 +8,7 @@ import com.gklx.mopga.admin.module.generate.domain.form.TemplateCodeItemAddForm;
 import com.gklx.mopga.admin.module.generate.domain.form.TemplateCodeItemQueryForm;
 import com.gklx.mopga.admin.module.generate.domain.form.TemplateCodeItemUpdateForm;
 import com.gklx.mopga.admin.module.generate.domain.vo.TableVo;
-import com.gklx.mopga.admin.module.generate.domain.vo.TemplateCodeItemVO;
+import com.gklx.mopga.admin.module.generate.domain.vo.TemplateCodeItemVo;
 import com.gklx.mopga.admin.module.generate.manager.DatabaseManager;
 import com.gklx.mopga.admin.module.generate.manager.TemplateCodeItemManager;
 import com.gklx.mopga.admin.module.generate.manager.TemplateManager;
@@ -61,7 +61,7 @@ public class TemplateCodeItemController {
     @Operation(summary = "分页查询 @author gklx")
     @PostMapping("/templateCodeItem/queryPage")
     @SaCheckPermission("template:query")
-    public ResponseDTO<PageResult<TemplateCodeItemVO>> queryPage(@RequestBody @Valid TemplateCodeItemQueryForm queryForm) {
+    public ResponseDTO<PageResult<TemplateCodeItemVo>> queryPage(@RequestBody @Valid TemplateCodeItemQueryForm queryForm) {
         return ResponseDTO.ok(templateCodeItemService.queryPage(queryForm));
     }
 

@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gklx.mopga.admin.module.generate.domain.entity.TemplateCodeItemEntity;
 import com.gklx.mopga.admin.module.generate.domain.form.TemplateCodeItemQueryForm;
-import com.gklx.mopga.admin.module.generate.domain.vo.TemplateCodeItemVO;
+import com.gklx.mopga.admin.module.generate.domain.vo.TemplateCodeItemVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -28,6 +28,6 @@ public interface TemplateCodeItemDao extends BaseMapper<TemplateCodeItemEntity> 
      * @param queryForm
      * @return
      */
-    List<TemplateCodeItemVO> queryPage(Page page, @Param("queryForm") TemplateCodeItemQueryForm queryForm);
+    List<TemplateCodeItemVo> queryPage(Page page, @Param("queryForm") TemplateCodeItemQueryForm queryForm);
 
 }

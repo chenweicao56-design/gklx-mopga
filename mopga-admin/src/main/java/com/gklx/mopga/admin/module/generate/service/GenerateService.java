@@ -10,7 +10,7 @@ import com.gklx.mopga.admin.module.generate.domain.entity.*;
 import com.gklx.mopga.admin.module.generate.domain.form.TableQueryForm;
 import com.gklx.mopga.admin.module.generate.domain.vo.GenTableColumnVo;
 import com.gklx.mopga.admin.module.generate.domain.vo.TableVo;
-import com.gklx.mopga.admin.module.generate.domain.vo.TemplateVO;
+import com.gklx.mopga.admin.module.generate.domain.vo.TemplateVo;
 import com.gklx.mopga.admin.module.generate.jdbc.IBaseCollector;
 import com.gklx.mopga.admin.module.generate.jdbc.JdbcManager;
 import com.gklx.mopga.admin.module.generate.manager.*;
@@ -171,7 +171,7 @@ public class GenerateService {
     public Boolean syncTableColumn(Long tableId) {
         TableEntity table = tableManager.getById(tableId);
         DatabaseEntity database = databaseManager.getById(table.getDatabaseId());
-        TemplateVO templateVO = templateService.getById(database.getTemplateId());
+        TemplateVo templateVO = templateService.getById(database.getTemplateId());
 
         List<MappingDataEntity> mappingDataEntities = mappingDataManager.listByMappingCode(database.getDatabaseType().toUpperCase());
         Map<String, MappingDataEntity> defaultMappingMap = new HashMap<>();

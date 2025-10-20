@@ -14,14 +14,12 @@
         gen_template.template_type,
         gen_template.database_type,
         gen_template.language_type,
-        gen_template.template_files,
-        gen_template.project_path,
         gen_template.remark,
         gen_template.sort
     </sql>
 
     <!-- 分页查询 -->
-    <select id="queryPage" resultType="com.gklx.mopga.admin.module.generate.domain.vo.TemplateVO">
+    <select id="queryPage" resultType="com.gklx.mopga.admin.module.generate.domain.vo.TemplateVo">
         SELECT
         <include refid="base_columns"/>
         FROM gen_template
@@ -45,7 +43,4 @@
         </where>
         ORDER BY gen_template.sort
     </select>
-
-
-
 </mapper>
