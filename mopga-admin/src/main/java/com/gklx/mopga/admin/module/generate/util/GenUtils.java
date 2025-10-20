@@ -9,7 +9,7 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.gklx.mopga.admin.module.generate.domain.entity.*;
 import com.gklx.mopga.admin.module.generate.domain.vo.GenTableColumnVo;
-import com.gklx.mopga.admin.module.generate.domain.vo.TableVO;
+import com.gklx.mopga.admin.module.generate.domain.vo.TableVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
@@ -41,7 +41,7 @@ public class GenUtils {
 
 
     public static String generateCode(DatabaseEntity database,
-                                      TableVO genTable,
+                                      TableVo genTable,
                                       TemplateEntity templateEntity,
                                       TemplateCodeItemEntity templateCodeItemEntity,
                                       List<TemplateCodeItemEntity> templateCodeItemEntities) {
@@ -51,7 +51,7 @@ public class GenUtils {
         return writer.toString();
     }
 
-    public static VelocityContext prepareContext(DatabaseEntity database,TableVO genTable,
+    public static VelocityContext prepareContext(DatabaseEntity database,TableVo genTable,
                                                  TemplateEntity templateEntity,
                                                  TemplateCodeItemEntity templateCodeItemEntity,
                                                  List<TemplateCodeItemEntity> templateCodeItemEntities) {
@@ -161,7 +161,7 @@ public class GenUtils {
         });
     }
 
-    public static JSONObject buildFile(DatabaseEntity database, TableVO table, TemplateEntity templateEntity, TemplateCodeItemEntity templateCodeItemEntity, List<TemplateCodeItemEntity> templateCodeItemEntities) {
+    public static JSONObject buildFile(DatabaseEntity database, TableVo table, TemplateEntity templateEntity, TemplateCodeItemEntity templateCodeItemEntity, List<TemplateCodeItemEntity> templateCodeItemEntities) {
         JSONObject fileType = new JSONObject();
         String filePath = templateCodeItemEntity.getFilePath();
         String packageName = table.getPackageName();

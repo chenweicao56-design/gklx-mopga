@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gklx.mopga.admin.module.generate.domain.entity.*;
 import com.gklx.mopga.admin.module.generate.domain.form.TableQueryForm;
 import com.gklx.mopga.admin.module.generate.domain.vo.GenTableColumnVo;
-import com.gklx.mopga.admin.module.generate.domain.vo.TableVO;
+import com.gklx.mopga.admin.module.generate.domain.vo.TableVo;
 import com.gklx.mopga.admin.module.generate.domain.vo.TemplateVO;
 import com.gklx.mopga.admin.module.generate.jdbc.IBaseCollector;
 import com.gklx.mopga.admin.module.generate.jdbc.JdbcManager;
@@ -86,7 +86,7 @@ public class GenerateService {
             List<TableEntity> records = genTableIPage.getRecords();
             for (int i = 0; i < records.size(); i++) {
                 TableEntity table = records.get(i);
-                TableVO tableVO = tableService.getByName(table.getTableName());
+                TableVo tableVO = tableService.getByName(table.getTableName());
                 if (ObjUtil.isNotNull(tableVO)) {
                     if (table.getTableComment().equals(tableVO.getTableComment())) {
                         log.info("表名：{}已存在，跳过同步", table.getTableName());
@@ -246,7 +246,7 @@ public class GenerateService {
     }
 
     public List<JSONObject> preview(Long tableId) {
-        TableVO table = tableService.getById(tableId);
+        TableVo table = tableService.getById(tableId);
         DatabaseEntity database = databaseManager.getById(table.getDatabaseId());
         TemplateEntity templateEntity = templateManager.getById(database.getTemplateId());
         List<TemplateCodeItemEntity> templateCodeItemEntities = templateCodeItemService.listByTemplateId(database.getTemplateId());
@@ -264,7 +264,7 @@ public class GenerateService {
         return res;
     }
 
-    public String createTable(TableVO table, boolean isSync) {
+    public String createTable(TableVo table, boolean isSync) {
         DatabaseEntity database = databaseManager.getById(table.getDatabaseId());
         IBaseCollector collector = applicationContext.getBean(database.getDatabaseType(), IBaseCollector.class);
         String createTableSql = buildCreateTableSqlTemplate(table);
@@ -278,7 +278,7 @@ public class GenerateService {
         return createTableSql;
     }
 
-    public String buildCreateTableSqlTemplate(TableVO table) {
+    public String buildCreateTableSqlTemplate(TableVo table) {
         DatabaseEntity database = databaseManager.getById(table.getDatabaseId());
         TemplateCodeItemEntity templateCodeItemEntity = templateCodeItemService.getCreateTableTemplateByTemplateId(database.getTemplateId());
         VelocityContext velocityContext = new VelocityContext();

@@ -2,7 +2,7 @@ package com.gklx.mopga.admin.module.generate.controller;
 
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.json.JSONObject;
-import com.gklx.mopga.admin.module.generate.domain.vo.TableVO;
+import com.gklx.mopga.admin.module.generate.domain.vo.TableVo;
 import com.gklx.mopga.admin.module.generate.service.GenerateService;
 import com.gklx.mopga.base.common.domain.ResponseDTO;
 import com.gklx.mopga.base.common.domain.ValidateList;
@@ -53,12 +53,12 @@ public class GenerateController {
 
     @PostMapping("/gen/create/table")
     public ResponseDTO<String> createTable(@RequestParam(value = "isSync") Boolean isSync,
-                                           @RequestBody TableVO table) {
+                                           @RequestBody TableVo table) {
         return ResponseDTO.ok(generateService.createTable(table, isSync));
     }
 
     @PostMapping("/gen/create/table/preview")
-    public ResponseDTO<String> createTablePreview(@RequestBody TableVO table) {
+    public ResponseDTO<String> createTablePreview(@RequestBody TableVo table) {
         return ResponseDTO.ok(generateService.buildCreateTableSqlTemplate(table));
     }
 

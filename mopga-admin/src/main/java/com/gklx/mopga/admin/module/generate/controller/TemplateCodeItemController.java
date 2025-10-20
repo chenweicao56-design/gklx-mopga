@@ -7,7 +7,7 @@ import com.gklx.mopga.admin.module.generate.domain.entity.TemplateEntity;
 import com.gklx.mopga.admin.module.generate.domain.form.TemplateCodeItemAddForm;
 import com.gklx.mopga.admin.module.generate.domain.form.TemplateCodeItemQueryForm;
 import com.gklx.mopga.admin.module.generate.domain.form.TemplateCodeItemUpdateForm;
-import com.gklx.mopga.admin.module.generate.domain.vo.TableVO;
+import com.gklx.mopga.admin.module.generate.domain.vo.TableVo;
 import com.gklx.mopga.admin.module.generate.domain.vo.TemplateCodeItemVO;
 import com.gklx.mopga.admin.module.generate.manager.DatabaseManager;
 import com.gklx.mopga.admin.module.generate.manager.TemplateCodeItemManager;
@@ -115,7 +115,7 @@ public class TemplateCodeItemController {
         Long templateId = templateCodeItemEntity.getTemplateId();
         TemplateEntity template = templateManager.getById(templateId);
         List<TemplateCodeItemEntity> templateCodeItemEntities = templateCodeItemService.listByTemplateId(templateId);
-        TableVO table = tableService.getById(1L);
+        TableVo table = tableService.getById(1L);
         DatabaseEntity database = databaseManager.getById(1L);
         return ResponseDTO.ok(GenUtils.generateCode(database, table, template, templateCodeItemEntity, templateCodeItemEntities));
     }

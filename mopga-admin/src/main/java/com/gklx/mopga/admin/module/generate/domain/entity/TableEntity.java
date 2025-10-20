@@ -9,8 +9,8 @@ import java.time.LocalDateTime;
  * 表 实体类
  *
  * @Author gklx
- * @Date 2025-09-19 13:31:14
- * @Copyright gklx
+ * @Date 2025-09-06 18:37:05
+ * @Copyright 1.0
  */
 
 @Data
@@ -176,5 +176,4 @@ public class TableEntity {
      * 每行几个表单
      */
     private Integer formCountLine;
-
 }

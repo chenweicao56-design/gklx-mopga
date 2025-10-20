@@ -38,7 +38,7 @@
     </sql>
 
     <!-- 分页查询 -->
-    <select id="queryPage" resultType="com.gklx.mopga.admin.module.generate.domain.vo.TableVO">
+    <select id="queryPage" resultType="com.gklx.mopga.admin.module.generate.domain.vo.TableVo">
         SELECT
         <include refid="base_columns"/>
         FROM gen_table
@@ -57,7 +57,4 @@
         </where>
         order by gen_table.update_time desc
     </select>
-
-
-
 </mapper>

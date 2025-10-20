@@ -9,14 +9,13 @@ import java.util.List;
 /**
  * $表 列表VO
  *
- * @Author ${.backendAuthor}
- * @Date 2025-09-19 13:31:14
- * @Copyright gklx
+ * @Author gklx
+ * @Date 2025-09-06 18:37:05
+ * @Copyright 1.0
  */
 
 @Data
-public class TableVO {
-
+public class TableVo {
 
     @Schema(description = "ID")
     private Long tableId;

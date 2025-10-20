@@ -3,23 +3,19 @@ package com.gklx.mopga.admin.module.generate.domain.form;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
-
 import java.time.LocalDateTime;
+import lombok.Data;
 
 /**
  * 表 更新表单
  *
  * @Author gklx
- * @Date 2025-09-19 13:31:14
- * @Copyright gklx
+ * @Date 2025-09-06 18:37:05
+ * @Copyright 1.0
  */
 
 @Data
 public class TableAddForm {
-
-    @Schema(description = "ID", requiredMode = Schema.RequiredMode.REQUIRED)
-    private Long tableId;
 
     @Schema(description = "数据源Id", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotNull(message = "数据源Id 不能为空")
@@ -71,8 +67,7 @@ public class TableAddForm {
     @NotBlank(message = "单词名 不能为空")
     private String wordName;
 
-    @Schema(description = "状态", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotNull(message = "状态 不能为空")
+    @Schema(description = "状态")
     private Integer status;
 
     @Schema(description = "子表Id")

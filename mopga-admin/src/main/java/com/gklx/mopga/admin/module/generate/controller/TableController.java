@@ -4,7 +4,7 @@ import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.gklx.mopga.admin.module.generate.domain.form.TableAddForm;
 import com.gklx.mopga.admin.module.generate.domain.form.TableQueryForm;
 import com.gklx.mopga.admin.module.generate.domain.form.TableUpdateForm;
-import com.gklx.mopga.admin.module.generate.domain.vo.TableVO;
+import com.gklx.mopga.admin.module.generate.domain.vo.TableVo;
 import com.gklx.mopga.admin.module.generate.service.TableService;
 import com.gklx.mopga.base.common.domain.PageResult;
 import com.gklx.mopga.base.common.domain.ResponseDTO;
@@ -21,8 +21,8 @@ import java.util.List;
  * 表 Controller
  *
  * @Author gklx
- * @Date 2025-09-19 13:31:14
- * @Copyright gklx
+ * @Date 2025-09-06 18:37:05
+ * @Copyright 1.0
  */
 
 @RestController
@@ -35,19 +35,19 @@ public class TableController {
     @Operation(summary = "分页查询 @author gklx")
     @PostMapping("/table/queryPage")
     @SaCheckPermission("database:query")
-    public ResponseDTO<PageResult<TableVO>> queryPage(@RequestBody @Valid TableQueryForm queryForm) {
+    public ResponseDTO<PageResult<TableVo>> queryPage(@RequestBody @Valid TableQueryForm queryForm) {
         return ResponseDTO.ok(tableService.queryPage(queryForm));
     }
     @Operation(summary = "根据ID查询 @author gklx")
-    @GetMapping("/table/{tableId}")
+    @GetMapping("/table/getDetail/{tableId}")
     @SaCheckPermission("database:query")
-    public ResponseDTO<TableVO> get(@PathVariable Long tableId) {
+    public ResponseDTO<TableVo> getDetail(@PathVariable Long tableId) {
         return ResponseDTO.ok(tableService.getById(tableId));
     }
     @Operation(summary = "all @author gklx")
     @GetMapping("/table/all/{databaseId}")
     @SaCheckPermission("database:query")
-    public ResponseDTO<List<TableVO>> getAll(@PathVariable Long databaseId) {
+    public ResponseDTO<List<TableVo>> getAll(@PathVariable Long databaseId) {
         return ResponseDTO.ok(tableService.getAll(databaseId));
     }
 

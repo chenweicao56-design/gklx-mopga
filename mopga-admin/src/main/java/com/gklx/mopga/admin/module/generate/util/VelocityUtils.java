@@ -1,7 +1,7 @@
 package com.gklx.mopga.admin.module.generate.util;
 
 
-import com.gklx.mopga.admin.module.generate.domain.vo.TableVO;
+import com.gklx.mopga.admin.module.generate.domain.vo.TableVo;
 import org.apache.velocity.VelocityContext;
 
 /**
@@ -30,7 +30,7 @@ public class VelocityUtils {
      *
      * @return 模板列表
      */
-    public static VelocityContext prepareContext(TableVO genTable) {
+    public static VelocityContext prepareContext(TableVo genTable) {
 //        String moduleName = genTable.getModuleName();
 //        String businessName = genTable.getBusinessName();
 //        String packageName = genTable.getPackageName();
