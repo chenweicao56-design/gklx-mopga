@@ -1,11 +1,15 @@
 package com.gklx.mopga.admin.module.generate.controller;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import com.gklx.mopga.admin.module.generate.domain.entity.TemplateCodeItemEntity;
+import com.gklx.mopga.admin.module.generate.domain.entity.TemplateColumnEntity;
 import com.gklx.mopga.admin.module.generate.domain.form.TemplateColumnAddForm;
 import com.gklx.mopga.admin.module.generate.domain.form.TemplateColumnQueryForm;
 import com.gklx.mopga.admin.module.generate.domain.form.TemplateColumnUpdateForm;
 import com.gklx.mopga.admin.module.generate.domain.vo.TemplateColumnVo;
+import com.gklx.mopga.admin.module.generate.manager.TemplateColumnManager;
 import com.gklx.mopga.admin.module.generate.service.TemplateColumnService;
+import com.gklx.mopga.admin.module.generate.service.TemplateService;
 import com.gklx.mopga.base.common.domain.PageResult;
 import com.gklx.mopga.base.common.domain.ResponseDTO;
 import com.gklx.mopga.base.common.domain.ValidateList;
@@ -31,6 +35,11 @@ public class TemplateColumnController {
 
     @Resource
     private TemplateColumnService templateColumnService;
+    @Resource
+    private TemplateColumnManager templateColumnManager;
+
+    @Resource
+    private TemplateService templateService;
 
     @Operation(summary = "分页查询 @author gklx")
     @PostMapping("/templateColumn/queryPage")
@@ -43,6 +52,7 @@ public class TemplateColumnController {
     @PostMapping("/templateColumn/batchSaveOrUpdate")
     @SaCheckPermission("template:update")
     public ResponseDTO<String> batchSaveOrUpdate(@RequestBody @Valid List<TemplateColumnAddForm> forms) {
+        templateService.checkEditPermission(forms.get(0).getTemplateId());
         return templateColumnService.batchSaveOrUpdate(forms);
     }
 
@@ -50,6 +60,7 @@ public class TemplateColumnController {
     @PostMapping("/templateColumn/add")
     @SaCheckPermission("template:add")
     public ResponseDTO<String> add(@RequestBody @Valid TemplateColumnAddForm addForm) {
+        templateService.checkEditPermission(addForm.getTemplateId());
         return templateColumnService.add(addForm);
     }
 
@@ -57,6 +68,7 @@ public class TemplateColumnController {
     @PostMapping("/templateColumn/update")
     @SaCheckPermission("template:update")
     public ResponseDTO<String> update(@RequestBody @Valid TemplateColumnUpdateForm updateForm) {
+        templateService.checkEditPermission(updateForm.getTemplateId());
         return templateColumnService.update(updateForm);
     }
 
@@ -64,6 +76,8 @@ public class TemplateColumnController {
     @PostMapping("/templateColumn/batchDelete")
     @SaCheckPermission("template:delete")
     public ResponseDTO<String> batchDelete(@RequestBody ValidateList<Long> idList) {
+        TemplateColumnEntity templateColumnEntity = templateColumnManager.getById(idList.get(0));
+        templateService.checkEditPermission(templateColumnEntity.getTemplateId());
         return templateColumnService.batchDelete(idList);
     }
 
@@ -71,6 +85,8 @@ public class TemplateColumnController {
     @GetMapping("/templateColumn/delete/{columnId}")
     @SaCheckPermission("template:delete")
     public ResponseDTO<String> batchDelete(@PathVariable Long columnId) {
+        TemplateColumnEntity templateColumnEntity = templateColumnManager.getById(columnId);
+        templateService.checkEditPermission(templateColumnEntity.getTemplateId());
         return templateColumnService.delete(columnId);
     }
 

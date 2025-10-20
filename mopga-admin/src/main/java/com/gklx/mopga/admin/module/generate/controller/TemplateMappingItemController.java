@@ -1,11 +1,14 @@
 package com.gklx.mopga.admin.module.generate.controller;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import com.gklx.mopga.admin.module.generate.domain.entity.TemplateMappingItemEntity;
 import com.gklx.mopga.admin.module.generate.domain.form.TemplateMappingItemAddForm;
 import com.gklx.mopga.admin.module.generate.domain.form.TemplateMappingItemQueryForm;
 import com.gklx.mopga.admin.module.generate.domain.form.TemplateMappingItemUpdateForm;
 import com.gklx.mopga.admin.module.generate.domain.vo.TemplateMappingItemVo;
+import com.gklx.mopga.admin.module.generate.manager.TemplateMappingItemManager;
 import com.gklx.mopga.admin.module.generate.service.TemplateMappingItemService;
+import com.gklx.mopga.admin.module.generate.service.TemplateService;
 import com.gklx.mopga.base.common.domain.PageResult;
 import com.gklx.mopga.base.common.domain.ResponseDTO;
 import com.gklx.mopga.base.common.domain.ValidateList;
@@ -31,6 +34,11 @@ public class TemplateMappingItemController {
 
     @Resource
     private TemplateMappingItemService templateMappingItemService;
+    @Resource
+    private TemplateMappingItemManager templateMappingItemManager;
+
+    @Resource
+    private TemplateService templateService;
 
     @Operation(summary = "分页查询 @author gklx")
     @PostMapping("/templateMappingItem/queryPage")
@@ -43,6 +51,7 @@ public class TemplateMappingItemController {
     @PostMapping("/templateMappingItem/add")
     @SaCheckPermission("template:add")
     public ResponseDTO<String> add(@RequestBody @Valid TemplateMappingItemAddForm addForm) {
+        templateService.checkEditPermission(addForm.getTemplateId());
         return templateMappingItemService.add(addForm);
     }
 
@@ -50,6 +59,7 @@ public class TemplateMappingItemController {
     @PostMapping("/templateMappingItem/batchSaveOrUpdate")
     @SaCheckPermission("template:update")
     public ResponseDTO<String> batchSaveOrUpdate(@RequestBody @Valid List<TemplateMappingItemAddForm> forms) {
+        templateService.checkEditPermission(forms.get(0).getTemplateId());
         return templateMappingItemService.batchSaveOrUpdate(forms);
     }
 
@@ -57,6 +67,7 @@ public class TemplateMappingItemController {
     @PostMapping("/templateMappingItem/update")
     @SaCheckPermission("template:update")
     public ResponseDTO<String> update(@RequestBody @Valid TemplateMappingItemUpdateForm updateForm) {
+        templateService.checkEditPermission(updateForm.getTemplateId());
         return templateMappingItemService.update(updateForm);
     }
 
@@ -64,6 +75,8 @@ public class TemplateMappingItemController {
     @PostMapping("/templateMappingItem/batchDelete")
     @SaCheckPermission("template:delete")
     public ResponseDTO<String> batchDelete(@RequestBody ValidateList<Long> idList) {
+        TemplateMappingItemEntity templateMappingItemEntity = templateMappingItemManager.getById(idList.get(0));
+        templateService.checkEditPermission(templateMappingItemEntity.getTemplateId());
         return templateMappingItemService.batchDelete(idList);
     }
 
@@ -71,6 +84,8 @@ public class TemplateMappingItemController {
     @GetMapping("/templateMappingItem/delete/{id}")
     @SaCheckPermission("template:delete")
     public ResponseDTO<String> batchDelete(@PathVariable Long id) {
+        TemplateMappingItemEntity templateMappingItemEntity = templateMappingItemManager.getById(id);
+        templateService.checkEditPermission(templateMappingItemEntity.getTemplateId());
         return templateMappingItemService.delete(id);
     }
 

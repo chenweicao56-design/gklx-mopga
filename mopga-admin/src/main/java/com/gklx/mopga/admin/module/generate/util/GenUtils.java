@@ -236,7 +236,6 @@ public class GenUtils {
                 column.setFrontComponent(mappingDataEntity.getFrontComponent());
                 return;
             }
-            return;
         }
 
     }

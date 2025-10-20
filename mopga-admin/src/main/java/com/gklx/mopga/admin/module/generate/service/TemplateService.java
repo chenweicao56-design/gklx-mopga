@@ -14,9 +14,13 @@ import com.gklx.mopga.admin.module.generate.manager.TemplateCodeItemManager;
 import com.gklx.mopga.admin.module.generate.manager.TemplateColumnManager;
 import com.gklx.mopga.admin.module.generate.manager.TemplateManager;
 import com.gklx.mopga.admin.module.generate.manager.TemplateMappingItemManager;
+import com.gklx.mopga.admin.module.generate.util.GenerateConstant;
+import com.gklx.mopga.admin.module.system.role.dao.RoleEmployeeDao;
 import com.gklx.mopga.admin.module.system.role.manager.RoleEmployeeManager;
+import com.gklx.mopga.admin.module.system.role.service.RoleEmployeeService;
 import com.gklx.mopga.base.common.domain.PageResult;
 import com.gklx.mopga.base.common.domain.ResponseDTO;
+import com.gklx.mopga.base.common.exception.BusinessException;
 import com.gklx.mopga.base.common.util.SmartBeanUtil;
 import com.gklx.mopga.base.common.util.SmartPageUtil;
 import com.gklx.mopga.base.common.util.SmartRequestUtil;
@@ -53,7 +57,7 @@ public class TemplateService {
     @Resource
     private TemplateMappingItemService templateMappingItemService;
     @Resource
-    private RoleEmployeeManager roleEmployeeManager;
+    private RoleEmployeeDao roleEmployeeDao;
 
 
     /**
@@ -80,30 +84,10 @@ public class TemplateService {
      */
     public ResponseDTO<String> update(TemplateUpdateForm updateForm) {
         TemplateEntity templateEntity = SmartBeanUtil.copy(updateForm, TemplateEntity.class);
-
-        TemplateEntity oldTemplateEntity = templateDao.selectById(templateEntity.getId());
-        String templateType = oldTemplateEntity.getTemplateType();
-        if("1".equals(templateType)) {
-            Long requestUserId = SmartRequestUtil.getRequestUserId();
-            roleEmployeeManager.checkContainRole(requestUserId, 1L);
-        }
-
         templateDao.updateById(templateEntity);
         return ResponseDTO.ok();
     }
 
-
-    /**
-     * 批量删除
-     */
-    public ResponseDTO<String> batchDelete(List<Long> idList) {
-        if (CollectionUtils.isEmpty(idList)) {
-            return ResponseDTO.ok();
-        }
-
-        templateDao.deleteByIds(idList);
-        return ResponseDTO.ok();
-    }
 
     /**
      * 单个删除
@@ -112,7 +96,6 @@ public class TemplateService {
         if (null == id) {
             return ResponseDTO.ok();
         }
-
         templateDao.deleteById(id);
         return ResponseDTO.ok();
     }
@@ -133,7 +116,7 @@ public class TemplateService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public  ResponseDTO<String> copy(TemplateUpdateForm form) {
+    public ResponseDTO<String> copy(TemplateUpdateForm form) {
         Long copyTemplateId = form.getId();
         TemplateEntity templateEntity = SmartBeanUtil.copy(form, TemplateEntity.class);
         templateEntity.setId(null);
@@ -155,6 +138,13 @@ public class TemplateService {
         templateColumnManager.saveBatch(templateColumnEntities);
         templateCodeItemManager.saveBatch(templateCodeItemEntityList);
         return ResponseDTO.ok();
+    }
 
+    public void checkEditPermission(Long templateId) {
+        TemplateEntity templateEntity = templateDao.selectById(templateId);
+        Long createUserId = templateEntity.getCreateUserId();
+        if (!createUserId.equals(SmartRequestUtil.getRequestUserId())) {
+            throw new BusinessException("暂无操作权限");
+        }
     }
 }

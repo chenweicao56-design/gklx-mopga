@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gklx.mopga.admin.module.system.role.dao.RoleEmployeeDao;
 import com.gklx.mopga.admin.module.system.role.domain.entity.RoleEmployeeEntity;
 import com.gklx.mopga.admin.module.system.role.domain.entity.RoleEntity;
+import com.gklx.mopga.base.common.exception.BusinessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,14 +22,4 @@ import java.util.List;
  */
 @Service
 public class RoleEmployeeManager extends ServiceImpl<RoleEmployeeDao, RoleEmployeeEntity> {
-
-
-    public boolean checkContainRole(Long userId, Long roleId) {
-        LambdaQueryWrapper<RoleEmployeeEntity> lambdaQueryWrapper = Wrappers.lambdaQuery();
-        lambdaQueryWrapper.eq(RoleEmployeeEntity::getEmployeeId, userId);
-        lambdaQueryWrapper.eq(RoleEmployeeEntity::getRoleId, roleId);
-        return this.count(lambdaQueryWrapper) > 0;
-
-    }
-
 }

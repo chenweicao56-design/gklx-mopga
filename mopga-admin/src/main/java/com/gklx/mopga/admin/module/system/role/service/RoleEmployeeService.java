@@ -1,6 +1,7 @@
 package com.gklx.mopga.admin.module.system.role.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.gklx.mopga.base.common.exception.BusinessException;
 import com.google.common.collect.Lists;
 import jakarta.annotation.Resource;
 import com.gklx.mopga.admin.module.system.department.dao.DepartmentDao;
@@ -36,7 +37,7 @@ import java.util.stream.Collectors;
  * @Date 2021-10-22 23:17:47
  * @Wechat zhuoda1024
  * @Email lab1024@163.com
- * @Copyright  <a href="https://1024lab.net">1024创新实验室</a>
+ * @Copyright <a href="https://1024lab.net">1024创新实验室</a>
  */
 @Service
 public class RoleEmployeeService {
@@ -53,7 +54,6 @@ public class RoleEmployeeService {
 
     /**
      * 批量插入
-     *
      */
     public void batchInsert(List<RoleEmployeeEntity> roleEmployeeList) {
         roleEmployeeManager.saveBatch(roleEmployeeList);
@@ -61,7 +61,6 @@ public class RoleEmployeeService {
 
     /**
      * 通过角色id，分页获取成员员工列表
-     *
      */
     public ResponseDTO<PageResult<EmployeeVO>> queryEmployee(RoleEmployeeQueryForm roleEmployeeQueryForm) {
         Page page = SmartPageUtil.convert2PageQuery(roleEmployeeQueryForm);
@@ -87,7 +86,6 @@ public class RoleEmployeeService {
 
     /**
      * 移除员工角色
-     *
      */
     public ResponseDTO<String> removeRoleEmployee(Long employeeId, Long roleId) {
         if (null == employeeId || null == roleId) {
@@ -99,7 +97,6 @@ public class RoleEmployeeService {
 
     /**
      * 批量删除角色的成员员工
-     *
      */
     public ResponseDTO<String> batchRemoveRoleEmployee(RoleEmployeeUpdateForm roleEmployeeUpdateForm) {
         roleEmployeeDao.batchDeleteEmployeeRole(roleEmployeeUpdateForm.getRoleId(), roleEmployeeUpdateForm.getEmployeeIdList());
@@ -108,7 +105,6 @@ public class RoleEmployeeService {
 
     /**
      * 批量添加角色的成员员工
-     *
      */
     public ResponseDTO<String> batchAddRoleEmployee(RoleEmployeeUpdateForm roleEmployeeUpdateForm) {
         Long roleId = roleEmployeeUpdateForm.getRoleId();
@@ -132,7 +128,6 @@ public class RoleEmployeeService {
 
     /**
      * 通过员工id获取员工角色
-     *
      */
     public List<RoleSelectedVO> getRoleInfoListByEmployeeId(Long employeeId) {
         List<Long> roleIds = roleEmployeeDao.selectRoleIdByEmployeeId(employeeId);
@@ -144,11 +139,9 @@ public class RoleEmployeeService {
 
     /**
      * 根据员工id 查询角色id集合
-     *
      */
     public List<RoleVO> getRoleIdList(Long employeeId) {
         return roleEmployeeDao.selectRoleByEmployeeId(employeeId);
     }
-
 
 }

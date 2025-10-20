@@ -8,7 +8,6 @@ import com.gklx.mopga.admin.module.generate.domain.vo.TemplateVO;
 import com.gklx.mopga.admin.module.generate.service.TemplateService;
 import com.gklx.mopga.base.common.domain.PageResult;
 import com.gklx.mopga.base.common.domain.ResponseDTO;
-import com.gklx.mopga.base.common.domain.ValidateList;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
@@ -48,23 +47,17 @@ public class TemplateController {
     @PostMapping("/template/update")
     @SaCheckPermission("template:update")
     public ResponseDTO<String> update(@RequestBody @Valid TemplateUpdateForm updateForm) {
+        templateService.checkEditPermission(updateForm.getId());
         return templateService.update(updateForm);
-    }
-
-    @Operation(summary = "批量删除 @author gklx")
-    @PostMapping("/template/batchDelete")
-    @SaCheckPermission("template:delete")
-    public ResponseDTO<String> batchDelete(@RequestBody ValidateList<Long> idList) {
-        return templateService.batchDelete(idList);
     }
 
     @Operation(summary = "单个删除 @author gklx")
     @GetMapping("/template/delete/{id}")
     @SaCheckPermission("template:delete")
     public ResponseDTO<String> batchDelete(@PathVariable Long id) {
+        templateService.checkEditPermission(id);
         return templateService.delete(id);
     }
-
 
     @Operation(summary = "添加 @author gklx")
     @PostMapping("/template/copy")

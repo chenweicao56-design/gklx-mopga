@@ -8,9 +8,11 @@ import com.gklx.mopga.admin.module.generate.domain.form.TemplateCodeItemQueryFor
 import com.gklx.mopga.admin.module.generate.domain.form.TemplateCodeItemUpdateForm;
 import com.gklx.mopga.admin.module.generate.domain.vo.TableVO;
 import com.gklx.mopga.admin.module.generate.domain.vo.TemplateCodeItemVO;
+import com.gklx.mopga.admin.module.generate.manager.TemplateCodeItemManager;
 import com.gklx.mopga.admin.module.generate.manager.TemplateManager;
 import com.gklx.mopga.admin.module.generate.service.TableService;
 import com.gklx.mopga.admin.module.generate.service.TemplateCodeItemService;
+import com.gklx.mopga.admin.module.generate.service.TemplateService;
 import com.gklx.mopga.admin.module.generate.util.GenUtils;
 import com.gklx.mopga.base.common.domain.PageResult;
 import com.gklx.mopga.base.common.domain.ResponseDTO;
@@ -39,9 +41,14 @@ public class TemplateCodeItemController {
 
     @Resource
     private TemplateCodeItemService templateCodeItemService;
+    @Resource
+    private TemplateCodeItemManager templateCodeItemManager;
 
     @Resource
     private TemplateManager templateManager;
+
+    @Resource
+    private TemplateService templateService;
 
     @Autowired
     private TableService tableService;
@@ -57,6 +64,7 @@ public class TemplateCodeItemController {
     @PostMapping("/templateCodeItem/add")
     @SaCheckPermission("template:add")
     public ResponseDTO<String> add(@RequestBody @Valid TemplateCodeItemAddForm addForm) {
+        templateService.checkEditPermission(addForm.getTemplateId());
         return templateCodeItemService.add(addForm);
     }
 
@@ -64,6 +72,7 @@ public class TemplateCodeItemController {
     @PostMapping("/templateCodeItem/update")
     @SaCheckPermission("template:update")
     public ResponseDTO<String> update(@RequestBody @Valid TemplateCodeItemUpdateForm updateForm) {
+        templateService.checkEditPermission(updateForm.getTemplateId());
         return templateCodeItemService.update(updateForm);
     }
 
@@ -71,6 +80,7 @@ public class TemplateCodeItemController {
     @PostMapping("/templateCodeItem/batchSaveOrUpdate")
     @SaCheckPermission("template:update")
     public ResponseDTO<String> batchSaveOrUpdate(@RequestBody @Valid List<TemplateCodeItemAddForm> forms) {
+        templateService.checkEditPermission(forms.get(0).getTemplateId());
         return templateCodeItemService.batchSaveOrUpdate(forms);
     }
 
@@ -78,6 +88,8 @@ public class TemplateCodeItemController {
     @PostMapping("/templateCodeItem/batchDelete")
     @SaCheckPermission("template:delete")
     public ResponseDTO<String> batchDelete(@RequestBody ValidateList<Long> idList) {
+        TemplateCodeItemEntity templateCodeItemEntity = templateCodeItemManager.getById(idList.get(0));
+        templateService.checkEditPermission(templateCodeItemEntity.getTemplateId());
         return templateCodeItemService.batchDelete(idList);
     }
 
@@ -85,6 +97,8 @@ public class TemplateCodeItemController {
     @GetMapping("/templateCodeItem/delete/{id}")
     @SaCheckPermission("template:delete")
     public ResponseDTO<String> batchDelete(@PathVariable Long id) {
+        TemplateCodeItemEntity templateCodeItemEntity = templateCodeItemManager.getById(id);
+        templateService.checkEditPermission(templateCodeItemEntity.getTemplateId());
         return templateCodeItemService.delete(id);
     }
 
