@@ -52,14 +52,6 @@ public class TemplateController {
         return templateService.update(updateForm);
     }
 
-    @Operation(summary = "单个删除 @author gklx")
-    @GetMapping("/template/delete/{id}")
-    @SaCheckPermission("template:delete")
-    public ResponseDTO<String> batchDelete(@PathVariable Long id) {
-        templateService.checkEditPermission(id);
-        return templateService.delete(id);
-    }
-
     @Operation(summary = "添加 @author gklx")
     @PostMapping("/template/copy")
     @SaCheckPermission("template:add")

@@ -1,13 +1,16 @@
 package com.gklx.mopga.admin.module.generate.service;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gklx.mopga.admin.module.generate.domain.entity.*;
+import com.gklx.mopga.admin.module.generate.domain.form.DatabaseQueryForm;
 import com.gklx.mopga.admin.module.generate.domain.form.TableQueryForm;
+import com.gklx.mopga.admin.module.generate.domain.vo.DatabaseVo;
 import com.gklx.mopga.admin.module.generate.domain.vo.GenTableColumnVo;
 import com.gklx.mopga.admin.module.generate.domain.vo.TableVo;
 import com.gklx.mopga.admin.module.generate.domain.vo.TemplateVo;
@@ -15,8 +18,10 @@ import com.gklx.mopga.admin.module.generate.jdbc.IBaseCollector;
 import com.gklx.mopga.admin.module.generate.jdbc.JdbcManager;
 import com.gklx.mopga.admin.module.generate.manager.*;
 import com.gklx.mopga.admin.module.generate.util.GenUtils;
+import com.gklx.mopga.base.common.domain.PageResult;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.velocity.VelocityContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -67,6 +72,23 @@ public class GenerateService {
     @Autowired
     private GenTableColumnManager genTableColumnManager;
 
+    public PageResult<TableEntity> dbList(Long databaseId, TableQueryForm form) {
+        DatabaseEntity database = databaseManager.getById(databaseId);
+        IBaseCollector collector = applicationContext.getBean(database.getDatabaseType(), IBaseCollector.class);
+        IPage<TableEntity> page = new Page<>();
+        page.setSize(form.getPageSize());
+        page.setCurrent(form.getPageNum());
+        IPage<TableEntity> entityIPage = collector.selectDbTableList(page, database, form);
+        PageResult<TableEntity> pageResult = new PageResult<>();
+        pageResult.setPageNum(page.getCurrent());
+        pageResult.setPageSize(page.getSize());
+        pageResult.setTotal(page.getTotal());
+        pageResult.setPages(page.getPages());
+        pageResult.setList(entityIPage.getRecords());
+        pageResult.setEmptyFlag(CollectionUtils.isEmpty(entityIPage.getRecords()));
+        return pageResult;
+    }
+
     @Transactional(rollbackFor = Exception.class)
     public Boolean syncTable(Long databaseId, Boolean containColumn, String tableNames) {
         DatabaseEntity database = databaseManager.getById(databaseId);
@@ -90,6 +112,9 @@ public class GenerateService {
                 if (ObjUtil.isNotNull(tableVO)) {
                     if (table.getTableComment().equals(tableVO.getTableComment())) {
                         log.info("表名：{}已存在，跳过同步", table.getTableName());
+                        if (containColumn) {
+                            syncTableColumn(table.getTableId());
+                        }
                         continue;
                     }
                     tableManager.updateById(table);
@@ -185,6 +210,7 @@ public class GenerateService {
 
         List<GenTableColumnVo> oldColumns = genTableColumnService.getByTableId(tableId);
         Map<String, GenTableColumnVo> collect = oldColumns.stream().collect(Collectors.toMap(GenTableColumnVo::getColumnName, e -> e));
+        List<GenTableColumnEntity> columnList = new ArrayList<>();
         for (int i = 0; i < columns.size(); i++) {
             GenTableColumnEntity column = columns.get(i);
             GenTableColumnVo oldColumn = collect.get(column.getColumnName());
@@ -210,11 +236,16 @@ public class GenerateService {
                 }
                 column.setWhereType(null);
                 column.setExtendedData(database.getColumnExtendedData());
-            }else{
-                if(column.getColumnComment().equals(oldColumn.getColumnComment()) && column.getIsPk() == oldColumn.getIsPk() && column.getIsIncrement() == oldColumn.getIsIncrement() && column.getIsNull() == oldColumn.getIsNull() && column.getColumnDefault().equals(oldColumn.getColumnDefault()) && column.getColumnType().equals(oldColumn.getColumnType())){
+                columnList.add(column);
+            } else {
+                if (StrUtil.equals(column.getColumnComment(), oldColumn.getColumnComment())
+                        && column.getIsPk() == oldColumn.getIsPk()
+                        && column.getIsIncrement() == oldColumn.getIsIncrement()
+                        && column.getIsNull()== oldColumn.getIsNull()
+                        && StrUtil.equals(column.getColumnDefault(), oldColumn.getColumnDefault())
+                        && StrUtil.equals(column.getColumnType(), oldColumn.getColumnType())) {
                     log.debug("字段：{}:{}已存在，跳过同步", table.getTableName(), column.getColumnName());
-                    continue;
-                }else{
+                } else {
                     column.setSort(i + 1);
                     column.setColumnId(oldColumn.getColumnId());
                     column.setTableId(oldColumn.getTableId());
@@ -233,11 +264,12 @@ public class GenerateService {
                     column.setIsTable(oldColumn.getIsTable());
                     column.setWhereType(oldColumn.getWhereType());
                     column.setExtendedData(oldColumn.getExtendedData());
-                    collect.remove(column.getColumnName());
+                    columnList.add(column);
                 }
+                collect.remove(column.getColumnName());
             }
         }
-        genTableColumnManager.saveOrUpdateBatch(columns);
+        genTableColumnManager.saveOrUpdateBatch(columnList);
         List<Long> deleteIds = collect.values().stream().map(GenTableColumnVo::getColumnId).toList();
         if (CollectionUtil.isNotEmpty(deleteIds)) {
             genTableColumnManager.removeByIds(deleteIds);
@@ -258,7 +290,7 @@ public class GenerateService {
             JSONObject fileType = new JSONObject();
             fileType.set("label", entry.getKey());
             fileType.set("value", entry.getKey());
-            fileType.set("files", entry.getValue().stream().map(e -> GenUtils.buildFile(database,table, templateEntity, e, templateCodeItemEntities)).toList());
+            fileType.set("files", entry.getValue().stream().map(e -> GenUtils.buildFile(database, table, templateEntity, e, templateCodeItemEntities)).toList());
             res.add(fileType);
         }
         return res;

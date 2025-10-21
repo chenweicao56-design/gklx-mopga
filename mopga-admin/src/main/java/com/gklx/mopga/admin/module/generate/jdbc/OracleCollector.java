@@ -35,6 +35,10 @@ public class OracleCollector extends JdbcManager implements IBaseCollector {
             String[] tableNameArr = Convert.toStrArray(tableNames);
             whereSql = whereSql + String.format(" AND t.TABLE_NAME in (%s)", getSqlStringForIn(Arrays.asList(tableNameArr))); //
         }
+        if (StrUtil.isNotEmpty(params.getKeyword())) {
+            whereSql = whereSql + String.format(" AND t.TABLE_NAME like %s", "'%" + params.getKeyword() + "%'"); //
+
+        }
         sql = String.format(sql, whereSql);
 
 
@@ -60,7 +64,7 @@ public class OracleCollector extends JdbcManager implements IBaseCollector {
     public List<GenTableColumnEntity> selectDbTableColumnsByName(DatabaseEntity database, String tableName) {
         SqlItem sqlItem = JdbcSpiLoader.SqlDefines.get(databaseType).getTableFieldSqlList().get(0);
         List<String> columns = sqlItem.getColumns();
-        List<Map<String, Object>> maps = this.queryMultipleRows(database, sqlItem.getSql(), Arrays.asList(tableName,tableName));
+        List<Map<String, Object>> maps = this.queryMultipleRows(database, sqlItem.getSql(), Arrays.asList(tableName, tableName));
         List<GenTableColumnEntity> tableColumnList = new ArrayList<>();
         if (CollectionUtil.isNotEmpty(maps)) {
             for (Map<String, Object> map : maps) {
@@ -78,6 +82,7 @@ public class OracleCollector extends JdbcManager implements IBaseCollector {
         }
         return tableColumnList;
     }
+
     @Override
     public String getPaginationSql(String originalSql, Long pageNum, Long pageSize) {
         long page = (pageNum == null || pageNum < 1) ? 1 : pageNum;

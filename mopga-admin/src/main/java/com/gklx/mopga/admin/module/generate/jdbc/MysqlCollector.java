@@ -32,6 +32,10 @@ public class MysqlCollector extends JdbcManager implements IBaseCollector {
             String[] tableNameArr = Convert.toStrArray(tableNames);
             whereSql = whereSql + String.format(" AND TABLE_NAME in (%s)", getSqlStringForIn(Arrays.asList(tableNameArr))); //
         }
+        if(StrUtil.isNotEmpty(params.getKeyword())){
+            whereSql = whereSql + String.format(" AND TABLE_NAME like %s", "'%" + params.getKeyword() + "%'"); //
+
+        }
         sql = String.format(sql, whereSql);
 
 

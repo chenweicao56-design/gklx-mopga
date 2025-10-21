@@ -45,13 +45,13 @@ public class GenUtils {
                                       TemplateEntity templateEntity,
                                       TemplateCodeItemEntity templateCodeItemEntity,
                                       List<TemplateCodeItemEntity> templateCodeItemEntities) {
-        VelocityContext context = GenUtils.prepareContext(database,genTable, templateEntity, templateCodeItemEntity, templateCodeItemEntities);
+        VelocityContext context = GenUtils.prepareContext(database, genTable, templateEntity, templateCodeItemEntity, templateCodeItemEntities);
         StringWriter writer = new StringWriter();
         velocityEngine.evaluate(context, writer, templateCodeItemEntity.getFileName(), new StringReader(templateCodeItemEntity.getContent()));
         return writer.toString();
     }
 
-    public static VelocityContext prepareContext(DatabaseEntity database,TableVo genTable,
+    public static VelocityContext prepareContext(DatabaseEntity database, TableVo genTable,
                                                  TemplateEntity templateEntity,
                                                  TemplateCodeItemEntity templateCodeItemEntity,
                                                  List<TemplateCodeItemEntity> templateCodeItemEntities) {
@@ -99,9 +99,11 @@ public class GenUtils {
         if (StrUtil.isNotBlank(extendedData)) {
             JSONUtil.parseObj(extendedData).forEach(velocityContext::put);
         }
-
+        String backendProjectPath = database.getBackendProjectPath();
+        String frontProjectPath = database.getFrontProjectPath();
+        String projectPath = StrUtil.isNotBlank(backendProjectPath) ? backendProjectPath : frontProjectPath;
         String filePath = templateCodeItemEntity.getFilePath();
-        if (templateEntity.getProjectPath().contains("/")) {
+        if (projectPath.contains("/")) {
             velocityContext.put("modulePackage",
                     StrUtil.subAfter(filePath, "}/", true)
                             .replace("/", ".")
@@ -134,19 +136,22 @@ public class GenUtils {
         }
         velocityContext.put("columns", genTable.getColumns());
         //模板信息
-        buildFilePackages(velocityContext, templateEntity, templateCodeItemEntities);
+        buildFilePackages(database, velocityContext, templateEntity, templateCodeItemEntities);
         return velocityContext;
     }
 
 
-    private static void buildFilePackages(VelocityContext velocityContext, TemplateEntity templateEntity, List<TemplateCodeItemEntity> templateCodeItemEntities) {
+    private static void buildFilePackages(DatabaseEntity database, VelocityContext velocityContext, TemplateEntity templateEntity, List<TemplateCodeItemEntity> templateCodeItemEntities) {
         templateCodeItemEntities.forEach(item -> {
+            String backendProjectPath = database.getBackendProjectPath();
+            String frontProjectPath = database.getFrontProjectPath();
+            String projectPath = StrUtil.isNotBlank(backendProjectPath) ? backendProjectPath : frontProjectPath;
             String fileType = item.getFileType();
             String fileName = item.getFileName();
             String filePath = item.getFilePath();
             String modulePackage = "";
             if (fileType.equalsIgnoreCase("java")) {
-                if (templateEntity.getProjectPath().contains("/")) {
+                if (projectPath.contains("/")) {
                     modulePackage = StrUtil.subAfter(filePath, "}/", true)
                             .replace("/", ".")
                             .replaceAll("\\.*$", "");
@@ -192,7 +197,7 @@ public class GenUtils {
         fileType.set("fileName", fileName);
         fileType.set("fileType", templateCodeItemEntity.getFileType());
         fileType.set("filePath", filePath + fileName);
-        fileType.set("fileContent", GenUtils.generateCode(database,table, templateEntity, templateCodeItemEntity, templateCodeItemEntities));
+        fileType.set("fileContent", GenUtils.generateCode(database, table, templateEntity, templateCodeItemEntity, templateCodeItemEntities));
         fileType.set("checked", true);
         return fileType;
     }

@@ -47,14 +47,6 @@ public class TemplateMappingItemController {
         return ResponseDTO.ok(templateMappingItemService.queryPage(queryForm));
     }
 
-    @Operation(summary = "添加 @author gklx")
-    @PostMapping("/templateMappingItem/add")
-    @SaCheckPermission("template:add")
-    public ResponseDTO<String> add(@RequestBody @Valid TemplateMappingItemAddForm addForm) {
-        templateService.checkEditPermission(addForm.getTemplateId());
-        return templateMappingItemService.add(addForm);
-    }
-
     @Operation(summary = "添加/更新 @author gklx")
     @PostMapping("/templateMappingItem/batchSaveOrUpdate")
     @SaCheckPermission("template:update")

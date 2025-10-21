@@ -2,8 +2,13 @@ package com.gklx.mopga.admin.module.generate.controller;
 
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.json.JSONObject;
+import com.gklx.mopga.admin.module.generate.domain.entity.TableEntity;
+import com.gklx.mopga.admin.module.generate.domain.form.DatabaseQueryForm;
+import com.gklx.mopga.admin.module.generate.domain.form.TableQueryForm;
+import com.gklx.mopga.admin.module.generate.domain.vo.DatabaseVo;
 import com.gklx.mopga.admin.module.generate.domain.vo.TableVo;
 import com.gklx.mopga.admin.module.generate.service.GenerateService;
+import com.gklx.mopga.base.common.domain.PageResult;
 import com.gklx.mopga.base.common.domain.ResponseDTO;
 import com.gklx.mopga.base.common.domain.ValidateList;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,11 +34,17 @@ public class GenerateController {
     @Resource
     private GenerateService generateService;
 
+    @GetMapping("/gen/db/table/list/{databaseId}")
+    public ResponseDTO<PageResult<TableEntity>> dbList(@PathVariable("databaseId") Long databaseId, TableQueryForm form) {
+        return ResponseDTO.ok(generateService.dbList(databaseId, form));
+    }
+
 
     @GetMapping("/gen/sync/table/{databaseId}")
     public ResponseDTO<Boolean> syncTable(@PathVariable("databaseId") Long databaseId,
-                                          @RequestParam(value = "containColumn") Boolean containColumn) {
-        return ResponseDTO.ok(generateService.syncTable(databaseId, containColumn, null));
+                                          @RequestParam(value = "containColumn") Boolean containColumn,
+                                          @RequestParam(value = "tableNames") String tableNames) {
+        return ResponseDTO.ok(generateService.syncTable(databaseId, containColumn, tableNames));
     }
 
     @GetMapping("/gen/sync/column/{tableId}")

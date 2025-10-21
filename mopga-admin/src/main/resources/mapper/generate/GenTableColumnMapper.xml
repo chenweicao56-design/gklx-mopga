@@ -52,5 +52,6 @@
                 OR INSTR(gen_table_column.column_comment,#{queryForm.keyword})
             </if>
         </where>
+        ORDER BY gen_table_column.sort ASC
     </select>
 </mapper>
