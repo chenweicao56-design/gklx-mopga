@@ -177,4 +177,9 @@ public class GenTableColumnEntity {
      * 是否表格
      */
     private Boolean isTable;
+
+    /**
+     * 更新策略
+     */
+    private String updateStrategy;
 }

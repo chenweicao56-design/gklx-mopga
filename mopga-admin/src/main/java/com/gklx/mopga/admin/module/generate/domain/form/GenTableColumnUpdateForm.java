@@ -112,5 +112,9 @@ public class GenTableColumnUpdateForm {
     @Schema(description = "是否表格", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotNull(message = "是否表格 不能为空")
     private Boolean isTable;
+
+    @Schema(description = "更新策略", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotBlank(message = "更新策略 不能为空")
+    private String updateStrategy;
     
 }

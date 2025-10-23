@@ -126,6 +126,7 @@ public class GenUtils {
                     velocityContext.put("primaryKeyFieldType", column.getFieldType());
                     velocityContext.put("primaryKeyJsType", column.getJsType());
                     velocityContext.put("primaryKeyFieldName", column.getFieldName());
+                    velocityContext.put("primaryKeyUpperFieldName",StrUtil.upperFirst(column.getFieldName()));
                 }
                 if (column.getIsWhere()) {
                     queryColumns.add(column);

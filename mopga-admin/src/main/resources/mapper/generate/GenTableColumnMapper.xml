@@ -34,7 +34,8 @@
         gen_table_column.extended_data,
         gen_table_column.is_base,
         gen_table_column.enum_type,
-        gen_table_column.is_table
+        gen_table_column.is_table,
+        gen_table_column.update_strategy
     </sql>
 
     <!-- 分页查询 -->

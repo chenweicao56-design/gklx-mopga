@@ -109,6 +109,9 @@ public class GenTableColumnVo {
     @Schema(description = "是否表格")
     private Boolean isTable;
 
+    @Schema(description = "更新策略")
+    private String updateStrategy;
+
     @Schema(description = "大写驼峰")
     private String upperCamelCase;
 

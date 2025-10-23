@@ -1,16 +1,13 @@
 package com.gklx.mopga.admin.module.generate.service;
 
 import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gklx.mopga.admin.module.generate.domain.entity.*;
-import com.gklx.mopga.admin.module.generate.domain.form.DatabaseQueryForm;
 import com.gklx.mopga.admin.module.generate.domain.form.TableQueryForm;
-import com.gklx.mopga.admin.module.generate.domain.vo.DatabaseVo;
 import com.gklx.mopga.admin.module.generate.domain.vo.GenTableColumnVo;
 import com.gklx.mopga.admin.module.generate.domain.vo.TableVo;
 import com.gklx.mopga.admin.module.generate.domain.vo.TemplateVo;
