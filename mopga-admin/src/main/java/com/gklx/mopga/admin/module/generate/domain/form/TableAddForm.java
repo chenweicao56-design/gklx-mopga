@@ -67,12 +67,6 @@ public class TableAddForm {
     @NotBlank(message = "单词名 不能为空")
     private String wordName;
 
-    @Schema(description = "状态")
-    private Integer status;
-
-    @Schema(description = "子表Id")
-    private Long subTableId;
-
     @Schema(description = "表前缀")
     private String tablePrefix;
 
@@ -110,4 +104,8 @@ public class TableAddForm {
     @Schema(description = "每行几个表单", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotNull(message = "每行几个表单 不能为空")
     private Integer formCountLine;
+
+    @Schema(description = "是否是树", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotNull(message = "是否是树 不能为空")
+    private Boolean isTree;
 }

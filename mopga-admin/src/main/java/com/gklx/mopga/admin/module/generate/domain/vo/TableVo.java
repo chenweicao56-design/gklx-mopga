@@ -74,18 +74,6 @@ public class TableVo {
     @Schema(description = "单词名")
     private String wordName;
 
-    @Schema(description = "小驼峰")
-    private String lowerCamelCase;
-
-    @Schema(description = "大驼峰")
-    private String upperCamelCase;
-
-    @Schema(description = "下划线")
-    private String snakeCase;
-
-    @Schema(description = "中横线")
-    private String kabadCase;
-
     @Schema(description = "状态")
     private Integer status;
 
@@ -122,7 +110,24 @@ public class TableVo {
     @Schema(description = "每行几个表单")
     private Integer formCountLine;
 
+    @Schema(description = "是否是树")
+    private Boolean isTree;
+
+    @Schema(description = "小驼峰")
+    private String lowerCamelCase;
+
+    @Schema(description = "大驼峰")
+    private String upperCamelCase;
+
+    @Schema(description = "下划线")
+    private String snakeCase;
+
+    @Schema(description = "中横线")
+    private String kabadCase;
+
+
     @Schema(description = "字段列表")
     private List<GenTableColumnVo> columns;
+
 
 }

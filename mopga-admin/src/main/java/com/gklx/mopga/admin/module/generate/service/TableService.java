@@ -52,6 +52,11 @@ public class TableService {
         List<TableVo> list = tableDao.queryPage(page, queryForm);
         return SmartPageUtil.convert2PageResult(page, list);
     }
+    public ResponseDTO<TableVo> getDetail(Long tableId) {
+        TableEntity tableEntity = tableDao.selectById(tableId);
+	    TableVo tableVo = SmartBeanUtil.copy(tableEntity,TableVo.class);
+	    return ResponseDTO.ok(tableVo);
+    }
 
     /**
      * 添加
