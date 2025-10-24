@@ -110,7 +110,7 @@ public class GenerateService {
                     if (table.getTableComment().equals(tableVO.getTableComment())) {
                         log.info("表名：{}已存在，跳过同步", table.getTableName());
                         if (containColumn) {
-                            syncTableColumn(table.getTableId());
+                            syncTableColumn(tableVO.getTableId());
                         }
                         continue;
                     }

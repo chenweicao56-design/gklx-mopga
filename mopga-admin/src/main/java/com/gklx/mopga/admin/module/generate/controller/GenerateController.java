@@ -43,7 +43,7 @@ public class GenerateController {
     @GetMapping("/gen/sync/table/{databaseId}")
     public ResponseDTO<Boolean> syncTable(@PathVariable("databaseId") Long databaseId,
                                           @RequestParam(value = "containColumn") Boolean containColumn,
-                                          @RequestParam(value = "tableNames") String tableNames) {
+                                          @RequestParam(value = "tableNames", required = false) String tableNames) {
         return ResponseDTO.ok(generateService.syncTable(databaseId, containColumn, tableNames));
     }
 
