@@ -3,9 +3,7 @@ package com.gklx.mopga.admin.module.generate.controller;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.json.JSONObject;
 import com.gklx.mopga.admin.module.generate.domain.entity.TableEntity;
-import com.gklx.mopga.admin.module.generate.domain.form.DatabaseQueryForm;
 import com.gklx.mopga.admin.module.generate.domain.form.TableQueryForm;
-import com.gklx.mopga.admin.module.generate.domain.vo.DatabaseVo;
 import com.gklx.mopga.admin.module.generate.domain.vo.TableVo;
 import com.gklx.mopga.admin.module.generate.service.GenerateService;
 import com.gklx.mopga.base.common.domain.PageResult;
@@ -45,16 +43,6 @@ public class GenerateController {
                                           @RequestParam(value = "containColumn") Boolean containColumn,
                                           @RequestParam(value = "tableNames", required = false) String tableNames) {
         return ResponseDTO.ok(generateService.syncTable(databaseId, containColumn, tableNames));
-    }
-
-    @GetMapping("/gen/sync/column/{tableId}")
-    public ResponseDTO<Boolean> syncTableColumn(@PathVariable("tableId") Long tableId) {
-        return ResponseDTO.ok(generateService.syncTableColumn(tableId));
-    }
-
-    @PostMapping("/gen/batch/sync/column")
-    public ResponseDTO<Boolean> syncTableColumn(@RequestBody ValidateList<Long> tableIds) {
-        return ResponseDTO.ok(generateService.syncTableColumn(tableIds));
     }
 
     @GetMapping("/gen/preview/{tableId}")
