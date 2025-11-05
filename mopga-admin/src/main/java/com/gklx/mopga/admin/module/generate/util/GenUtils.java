@@ -39,6 +39,12 @@ public class GenUtils {
         velocityEngine.init();
     }
 
+    public static  VelocityContext initContext(){
+        VelocityContext velocityContext = new VelocityContext();
+        velocityContext.put("t", new VelocityTools());
+        return velocityContext;
+    }
+
 
     public static String generateCode(DatabaseEntity database,
                                       TableVo genTable,
@@ -55,11 +61,7 @@ public class GenUtils {
                                                  TemplateEntity templateEntity,
                                                  TemplateCodeItemEntity templateCodeItemEntity,
                                                  List<TemplateCodeItemEntity> templateCodeItemEntities) {
-        VelocityContext velocityContext = new VelocityContext();
-        genTable.setLowerCamelCase(StrUtil.lowerFirst(genTable.getWordName()));
-        genTable.setUpperCamelCase(StrUtil.upperFirst(genTable.getWordName()));
-        genTable.setSnakeCase(StrUtil.toUnderlineCase(genTable.getWordName()));
-        genTable.setKabadCase(genTable.getSnakeCase().replace("_", "-"));
+        VelocityContext velocityContext = initContext();
         velocityContext.put("backendProjectPath", database.getBackendProjectPath());
         velocityContext.put("frontProjectPath", database.getFrontProjectPath());
         // 表信息
@@ -81,11 +83,9 @@ public class GenUtils {
         velocityContext.put("moduleName", genTable.getModuleName());
         velocityContext.put("isPhysicallyDeleted", genTable.getIsPhysicallyDeleted());
         velocityContext.put("wordName", genTable.getWordName());
-        velocityContext.put("lowerCamelCase", genTable.getLowerCamelCase());
-        velocityContext.put("upperCamelCase", genTable.getUpperCamelCase());
-        velocityContext.put("kabadCase", genTable.getKabadCase());
-        velocityContext.put("snakeCase", genTable.getSnakeCase());
-
+        velocityContext.put("WordName", StrUtil.upperFirst(genTable.getWordName()));
+        velocityContext.put("word_name", StrUtil.toUnderlineCase(genTable.getWordName()));
+        velocityContext.put("wordname", StrUtil.toUnderlineCase(genTable.getWordName()).replace("_", "-"));
         velocityContext.put("isPage", genTable.getIsPage());
         velocityContext.put("isDetail", genTable.getIsDetail());
         velocityContext.put("isAdd", genTable.getIsAdd());
@@ -120,7 +120,7 @@ public class GenUtils {
         if (CollectionUtil.isNotEmpty(columns)) {
             List<GenTableColumnVo> queryColumns = new ArrayList<>();
             for (GenTableColumnVo column : columns) {
-                column.setUpperCamelCase(StrUtil.upperFirst(column.getFieldName()));
+                column.setWordName(StrUtil.upperFirst(column.getFieldName()));
                 if (column.getIsPk()) {
                     velocityContext.put("primaryKeyColumnName", column.getColumnName());
                     velocityContext.put("primaryKeyFieldType", column.getFieldType());
@@ -183,18 +183,18 @@ public class GenUtils {
         filePath = StrUtil.replace(filePath, "${frontProjectPath}", frontProjectPath);
         filePath = StrUtil.replace(filePath, "${package}", packageName);
         filePath = StrUtil.replace(filePath, "${module}", table.getModuleName());
-        filePath = StrUtil.replace(filePath, "${lowerCamelCase}", StrUtil.lowerFirst(wordName));
-        filePath = StrUtil.replace(filePath, "${upperCamelCase}", StrUtil.upperFirst(wordName));
-        filePath = StrUtil.replace(filePath, "${snakeCase}", StrUtil.toSymbolCase(wordName, '_'));
-        filePath = StrUtil.replace(filePath, "${kabadCase}", StrUtil.toSymbolCase(wordName, '-'));
+        filePath = StrUtil.replace(filePath, "${wordName}", StrUtil.lowerFirst(wordName));
+        filePath = StrUtil.replace(filePath, "${WordName}", StrUtil.upperFirst(wordName));
+        filePath = StrUtil.replace(filePath, "${word_name}", StrUtil.toSymbolCase(wordName, '_'));
+        filePath = StrUtil.replace(filePath, "${wordname}", StrUtil.toSymbolCase(wordName, '-'));
 
         String fileName = templateCodeItemEntity.getFileName();
         fileName = StrUtil.replace(fileName, "${package}", packageName);
         fileName = StrUtil.replace(fileName, "${module}", table.getModuleName());
-        fileName = StrUtil.replace(fileName, "${lowerCamelCase}", StrUtil.lowerFirst(wordName));
-        fileName = StrUtil.replace(fileName, "${upperCamelCase}", StrUtil.upperFirst(wordName));
-        fileName = StrUtil.replace(fileName, "${snakeCase}", StrUtil.toSymbolCase(wordName, '_'));
-        fileName = StrUtil.replace(fileName, "${kabadCase}", StrUtil.toSymbolCase(wordName, '-'));
+        fileName = StrUtil.replace(fileName, "${wordName}", StrUtil.lowerFirst(wordName));
+        fileName = StrUtil.replace(fileName, "${WordName}", StrUtil.upperFirst(wordName));
+        fileName = StrUtil.replace(fileName, "${word_name}", StrUtil.toSymbolCase(wordName, '_'));
+        fileName = StrUtil.replace(fileName, "${wordname}", StrUtil.toSymbolCase(wordName, '-'));
         fileType.set("fileName", fileName);
         fileType.set("fileType", templateCodeItemEntity.getFileType());
         fileType.set("filePath", filePath + fileName);
@@ -204,7 +204,7 @@ public class GenUtils {
     }
 
     public static void buildIsBase(GenTableColumnEntity column, Map<String, TemplateColumnEntity> templateBaseClassItemMap) {
-        TemplateColumnEntity templateBaseClassItemEntity = templateBaseClassItemMap.get(column.getFieldName().toUpperCase());
+        TemplateColumnEntity templateBaseClassItemEntity = templateBaseClassItemMap.get(column.getColumnName().toUpperCase());
         column.setIsBase(ObjUtil.isNotNull(templateBaseClassItemEntity));
     }
 

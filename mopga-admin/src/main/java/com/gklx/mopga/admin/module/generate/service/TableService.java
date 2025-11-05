@@ -52,10 +52,11 @@ public class TableService {
         List<TableVo> list = tableDao.queryPage(page, queryForm);
         return SmartPageUtil.convert2PageResult(page, list);
     }
+
     public ResponseDTO<TableVo> getDetail(Long tableId) {
         TableEntity tableEntity = tableDao.selectById(tableId);
-	    TableVo tableVo = SmartBeanUtil.copy(tableEntity,TableVo.class);
-	    return ResponseDTO.ok(tableVo);
+        TableVo tableVo = SmartBeanUtil.copy(tableEntity, TableVo.class);
+        return ResponseDTO.ok(tableVo);
     }
 
     /**
@@ -76,11 +77,12 @@ public class TableService {
         tableDao.updateById(tableEntity);
         return ResponseDTO.ok();
     }
+
     /**
      * 批量删除
      */
     public ResponseDTO<String> batchDelete(List<Long> idList) {
-        if (CollectionUtils.isEmpty(idList)){
+        if (CollectionUtils.isEmpty(idList)) {
             return ResponseDTO.ok();
         }
         tableDao.deleteByIds(idList);
@@ -91,7 +93,7 @@ public class TableService {
      * 单个删除
      */
     public ResponseDTO<String> delete(Long tableId) {
-        if (null == tableId){
+        if (null == tableId) {
             return ResponseDTO.ok();
         }
         tableDao.deleteById(tableId);
@@ -110,7 +112,7 @@ public class TableService {
         return TableVo;
     }
 
-    public TableVo getByName(String name) {
+    public TableVo getByName(Long databaseId,String name) {
         LambdaQueryWrapper<TableEntity> lambdaQuery = Wrappers.lambdaQuery();
         lambdaQuery.eq(TableEntity::getTableName, name);
         TableEntity tableEntity = tableManager.getOne(lambdaQuery);
@@ -124,6 +126,25 @@ public class TableService {
             }
         }
         return TableVo;
+    }
+
+    public List<TableVo> getByNames(Long databaseId,List<String> tableNames) {
+        LambdaQueryWrapper<TableEntity> lambdaQuery = Wrappers.lambdaQuery();
+        lambdaQuery.in(TableEntity::getTableName, tableNames);
+        List<TableEntity> tables = tableManager.list(lambdaQuery);
+        if (CollectionUtils.isEmpty(tables)) {
+            return new ArrayList<>();
+        } else {
+            List<TableVo> tableVos = SmartBeanUtil.copyList(tables, TableVo.class);
+            tableVos.forEach(tableVo -> {
+                List<GenTableColumnVo> tableColumnVos = genTableColumnService.getByTableId(tableVo.getTableId());
+                if (CollectionUtils.isNotEmpty(tableColumnVos)) {
+                    tableVo.setColumns(tableColumnVos);
+                }
+            });
+            return tableVos;
+        }
+
     }
 
     public List<TableVo> getAll(Long databaseId) {

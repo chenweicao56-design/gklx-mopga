@@ -1,0 +1,64 @@
+<select id="functionName" parameterType="${packageName}.domain.${ClassName}"
+        resultMap="${ClassName}Result">
+    SELECT
+    #if($t.CollectionIsNotEmpty($selects))
+        #foreach($select in $selects)
+    $select.tableAlias.$select.columnName#if($t.StringIsNotEmpty($select.columnAlias)) AS $select.columnAlias#end#if($velocityCount != $selects.size()),#end
+        #end
+    #end
+    FROM ${mainTableName} as ${mainTableAlias}
+    #if($t.CollectionIsNotEmpty($froms))
+        #foreach($from in $froms)
+    $from.joinType $from.tableName AS $from.tableAlias
+            #foreach($on in $from.ons)
+    $on.type  $on.tableAlias.$on.columnName = $on.targetTableAlias.$on.targetColumnName
+            #end
+        #end
+    #end
+    #if($t.CollectionIsNotEmpty($wheres))
+    <where>
+    #foreach($where in $wheres)
+        #if($where.whereType == "EQ")
+        <if test="$where.fieldName != null #if($where.fieldType == 'String' ) and $where.fieldName.trim() != ''#end">
+            and $where.tableAlias.$where.columnName = #{$fieldName}
+        </if>
+        #elseif($whereType == "NE")
+        <if test="$where.fieldName != null #if($where.fieldType == 'String' ) and $where.fieldName.trim() != ''#end">
+            and $where.tableAlias.$where.columnName != #{$fieldName}
+        </if>
+        #elseif($whereType == "GT")
+        <if test="$where.fieldName != null #if($where.fieldType == 'String' ) and $where.fieldName.trim() != ''#end">
+            and $where.tableAlias.$where.columnName > #{$fieldName}
+        </if>
+        #elseif($whereType == "GTE")
+        <if test="$where.fieldName != null #if($where.fieldType == 'String' ) and $where.fieldName.trim() != ''#end">
+            and $where.tableAlias.$where.columnName >= #{$fieldName}
+        </if>
+        #elseif($whereType == "LT")
+        <if test="$where.fieldName != null #if($where.fieldType == 'String' ) and $where.fieldName.trim() != ''#end">
+            and $where.tableAlias.$where.columnName < #{$fieldName}
+        </if>
+        #elseif($whereType == "LTE")
+        <if test="$where.fieldName != null #if($where.fieldType == 'String' ) and $where.fieldName.trim() != ''#end">
+            and $where.tableAlias.$where.columnName <= #{$fieldName}
+        </if>
+        #elseif($whereType == "LIKE")
+        <if test="$where.fieldName != null #if($where.fieldType == 'String' ) and $where.fieldName.trim() != ''#end">
+            and $where.tableAlias.$where.columnName like concat('%', #{$fieldName}, '%')
+        </if>
+        #elseif($whereType == "BETWEEN")
+        <if test="${fieldName}Start != null and ${fieldName}End != null">
+            and $where.tableAlias.$where.columnName between #{$fieldName}Start  and #{$fieldName}End
+        </if>
+        #end
+    #end
+    </where>
+    #end
+    #if($t.CollectionIsNotEmpty($orderBys))
+    GROUP BY #foreach($orderby in $orderBys) ${orderby.tableAlias}.${orderby.columnName} ${orderby.groupByType} #if ($velocityCount != $selects.size()),#end#end
+    #end
+    #if($limit)
+    limit $limit.offset,$limit.limit
+    #end
+    
+</select>

@@ -54,54 +54,8 @@ public class TemplateColumnUpdateForm {
     @Schema(description = "排序")
     private Integer sort;
 
-    @Schema(description = "字段名称", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotNull(message = "字段名称 不能为空")
-    private String fieldName;
-
-    @Schema(description = "字段注释", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotNull(message = "字段注释 不能为空")
-    private String fieldComment;
-
-    @Schema(description = "字段类型", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotNull(message = "字段类型 不能为空")
-    private String fieldType;
-
-    @Schema(description = "前端类型", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotNull(message = "前端类型 不能为空")
-    private String jsType;
-
-    @Schema(description = "字典类型")
-    private String dictType;
-
-    @Schema(description = "是否必填", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotNull(message = "是否必填 不能为空")
-    private Boolean isRequired;
-
-    @Schema(description = "是否新增", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotNull(message = "是否新增 不能为空")
-    private Boolean isInsert;
-
-    @Schema(description = "是否修改", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotNull(message = "是否修改 不能为空")
-    private Boolean isUpdate;
-
-    @Schema(description = "前端组件")
-    private String frontComponent;
-
-    @Schema(description = "是否查询条件", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotNull(message = "是否查询条件 不能为空")
-    private Boolean isWhere;
-
-    @Schema(description = "查询类型")
-    private String whereType;
-
-    @Schema(description = "扩展字段")
-    private String extendedData;
-
-    @Schema(description = "是否基类字段", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotNull(message = "是否基类字段 不能为空")
+    /**
+     * 是否基类字段
+     */
     private Boolean isBase;
-
-    @Schema(description = "枚举类型")
-    private String enumType;
 }

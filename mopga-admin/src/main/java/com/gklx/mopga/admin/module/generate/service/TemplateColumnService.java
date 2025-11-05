@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gklx.mopga.admin.module.generate.dao.TemplateColumnDao;
 import com.gklx.mopga.admin.module.generate.domain.entity.DatabaseEntity;
+import com.gklx.mopga.admin.module.generate.domain.entity.GenTableColumnEntity;
 import com.gklx.mopga.admin.module.generate.domain.entity.TemplateColumnEntity;
 import com.gklx.mopga.admin.module.generate.domain.entity.TemplateMappingItemEntity;
 import com.gklx.mopga.admin.module.generate.domain.form.TemplateColumnAddForm;
@@ -14,6 +15,7 @@ import com.gklx.mopga.admin.module.generate.domain.form.TemplateColumnQueryForm;
 import com.gklx.mopga.admin.module.generate.domain.form.TemplateColumnUpdateForm;
 import com.gklx.mopga.admin.module.generate.domain.vo.TemplateColumnVo;
 import com.gklx.mopga.admin.module.generate.manager.DatabaseManager;
+import com.gklx.mopga.admin.module.generate.manager.GenTableColumnManager;
 import com.gklx.mopga.admin.module.generate.manager.TemplateColumnManager;
 import com.gklx.mopga.base.common.domain.PageResult;
 import com.gklx.mopga.base.common.domain.ResponseDTO;
@@ -48,6 +50,7 @@ public class TemplateColumnService {
     @Resource
     private TemplateMappingItemService templateMappingItemService;
 
+
     /**
      * 分页查询
      */
@@ -69,6 +72,7 @@ public class TemplateColumnService {
         templateColumnDao.insert(templateColumnEntity);
         return ResponseDTO.ok();
     }
+
 
     /**
      * 更新
@@ -114,62 +118,10 @@ public class TemplateColumnService {
     public ResponseDTO<String> batchSaveOrUpdate(@Valid List<TemplateColumnAddForm> forms) {
         if (CollectionUtils.isNotEmpty(forms)) {
             List<TemplateColumnEntity> templateColumnEntities = SmartBeanUtil.copyList(forms, TemplateColumnEntity.class);
-            List<TemplateMappingItemEntity> templateMappingItemEntities = templateMappingItemService.listByTemplateId(templateColumnEntities.get(0).getTemplateId());
-            Map<String, TemplateMappingItemEntity> templateMappingItemEntityMap = templateMappingItemEntities.stream().collect(Collectors.toMap(e -> e.getDatabaseColumnType().toUpperCase(), e -> e));
-            for (TemplateColumnEntity templateColumnEntity : templateColumnEntities) {
-                if (ObjUtil.isNull(templateColumnEntity.getColumnId())) {
-
-                    if (StrUtil.isEmpty(templateColumnEntity.getFieldName())) {
-                        templateColumnEntity.setFieldName(StrUtil.lowerFirst(StrUtil.toCamelCase(templateColumnEntity.getColumnName())));
-                    }
-                    if (StrUtil.isEmpty(templateColumnEntity.getFieldComment())) {
-                        templateColumnEntity.setFieldComment(templateColumnEntity.getColumnComment());
-                    }
-                    buildFileType(templateColumnEntity, templateMappingItemEntityMap);
-                    if (ObjUtil.isNotEmpty(templateColumnEntity.getIsNull())) {
-                        templateColumnEntity.setIsRequired(templateColumnEntity.getIsNull());
-                    }
-                    if (ObjUtil.isNotEmpty(templateColumnEntity.getIsInsert())) {
-                        templateColumnEntity.setIsInsert(!templateColumnEntity.getIsBase());
-                    }
-
-                    if (ObjUtil.isNotEmpty(templateColumnEntity.getIsUpdate())) {
-                        templateColumnEntity.setIsUpdate(templateColumnEntity.getIsPk() || !templateColumnEntity.getIsBase());
-                    }
-                    if (StrUtil.isNotEmpty(templateColumnEntity.getFrontComponent())) {
-                        templateColumnEntity.setFrontComponent(null);
-                    }
-
-                    if (ObjUtil.isNotEmpty(templateColumnEntity.getIsWhere())) {
-                        templateColumnEntity.setIsWhere(false);
-                    }
-
-                    if (StrUtil.isNotEmpty(templateColumnEntity.getWhereType())) {
-                        templateColumnEntity.setWhereType(null);
-                    }
-                }
-            }
             templateColumnManager.saveOrUpdateBatch(templateColumnEntities);
         }
         return ResponseDTO.ok();
     }
 
-    public static void buildFileType(TemplateColumnEntity column, Map<String, TemplateMappingItemEntity> templateMappingItemEntityMap) {
-        String columnType = column.getColumnType();
-        TemplateMappingItemEntity templateMappingItemEntity = templateMappingItemEntityMap.get(columnType.toUpperCase());
-        if (ObjUtil.isNotNull(templateMappingItemEntity)) {
-            column.setFieldType(templateMappingItemEntity.getBackColumnType());
-            column.setJsType(templateMappingItemEntity.getFrontColumnType());
-            return;
-        }
-        if (columnType.contains("(") && columnType.contains(")")) {
-            columnType = columnType.substring(0, columnType.indexOf("("));
-            templateMappingItemEntity = templateMappingItemEntityMap.get(columnType.toUpperCase());
-            if (ObjUtil.isNotNull(templateMappingItemEntity)) {
-                column.setFieldType(templateMappingItemEntity.getBackColumnType());
-                column.setJsType(templateMappingItemEntity.getFrontColumnType());
-            }
-        }
-    }
 
 }

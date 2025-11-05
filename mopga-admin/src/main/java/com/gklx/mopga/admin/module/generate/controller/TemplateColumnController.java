@@ -1,12 +1,15 @@
 package com.gklx.mopga.admin.module.generate.controller;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
-import com.gklx.mopga.admin.module.generate.domain.entity.TemplateCodeItemEntity;
+import com.gklx.mopga.admin.module.generate.domain.entity.DatabaseEntity;
+import com.gklx.mopga.admin.module.generate.domain.entity.GenTableColumnEntity;
 import com.gklx.mopga.admin.module.generate.domain.entity.TemplateColumnEntity;
 import com.gklx.mopga.admin.module.generate.domain.form.TemplateColumnAddForm;
 import com.gklx.mopga.admin.module.generate.domain.form.TemplateColumnQueryForm;
 import com.gklx.mopga.admin.module.generate.domain.form.TemplateColumnUpdateForm;
 import com.gklx.mopga.admin.module.generate.domain.vo.TemplateColumnVo;
+import com.gklx.mopga.admin.module.generate.manager.DatabaseManager;
+import com.gklx.mopga.admin.module.generate.manager.GenTableColumnManager;
 import com.gklx.mopga.admin.module.generate.manager.TemplateColumnManager;
 import com.gklx.mopga.admin.module.generate.service.TemplateColumnService;
 import com.gklx.mopga.admin.module.generate.service.TemplateService;
@@ -40,6 +43,10 @@ public class TemplateColumnController {
 
     @Resource
     private TemplateService templateService;
+    @Resource
+    private GenTableColumnManager genTableColumnManager;
+    @Resource
+    private DatabaseManager databaseManager;
 
     @Operation(summary = "分页查询 @author gklx")
     @PostMapping("/templateColumn/queryPage")
@@ -88,6 +95,28 @@ public class TemplateColumnController {
         TemplateColumnEntity templateColumnEntity = templateColumnManager.getById(columnId);
         templateService.checkEditPermission(templateColumnEntity.getTemplateId());
         return templateColumnService.delete(columnId);
+    }
+
+    @Operation(summary = "根据数据库字段生成模板字段 @author gklx")
+    @GetMapping("/templateColumn/add/{columnId}")
+    @SaCheckPermission("template:add")
+    public ResponseDTO<String> add(@PathVariable Long columnId) {
+        GenTableColumnEntity genTableColumnEntity = genTableColumnManager.getById(columnId);
+        Long databaseId = genTableColumnEntity.getDatabaseId();
+        DatabaseEntity database = databaseManager.getById(databaseId);
+        templateService.checkEditPermission(database.getTemplateId());
+        TemplateColumnAddForm addForm = new TemplateColumnAddForm();
+        addForm.setTemplateId(database.getTemplateId());
+        addForm.setColumnName(genTableColumnEntity.getColumnName());
+        addForm.setColumnType(genTableColumnEntity.getColumnType());
+        addForm.setColumnComment(genTableColumnEntity.getColumnComment());
+        addForm.setColumnDefault(genTableColumnEntity.getColumnDefault());
+        addForm.setIsPk(genTableColumnEntity.getIsPk());
+        addForm.setIsIncrement(genTableColumnEntity.getIsIncrement());
+        addForm.setIsNull(genTableColumnEntity.getIsNull());
+        addForm.setIsBase(genTableColumnEntity.getIsBase());
+        addForm.setSort(1);
+        return templateColumnService.batchSaveOrUpdate(List.of(addForm));
     }
 
 }

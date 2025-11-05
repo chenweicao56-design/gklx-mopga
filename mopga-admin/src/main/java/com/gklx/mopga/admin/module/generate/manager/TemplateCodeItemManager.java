@@ -1,8 +1,11 @@
 package com.gklx.mopga.admin.module.generate.manager;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gklx.mopga.admin.module.generate.dao.TemplateCodeItemDao;
 import com.gklx.mopga.admin.module.generate.domain.entity.TemplateCodeItemEntity;
+import com.gklx.mopga.admin.module.generate.domain.entity.TemplateColumnEntity;
 import org.springframework.stereotype.Service;
 
 /**
@@ -16,4 +19,9 @@ import org.springframework.stereotype.Service;
 public class TemplateCodeItemManager extends ServiceImpl<TemplateCodeItemDao, TemplateCodeItemEntity> {
 
 
+    public void deleteByTemplateId(Long id) {
+        LambdaQueryWrapper<TemplateCodeItemEntity> lqw = Wrappers.lambdaQuery();
+        lqw.eq(TemplateCodeItemEntity::getTemplateId, id);
+        this.remove(lqw);
+    }
 }

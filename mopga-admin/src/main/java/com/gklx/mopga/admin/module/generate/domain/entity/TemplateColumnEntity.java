@@ -98,73 +98,8 @@ public class TemplateColumnEntity {
     private Integer sort;
 
     /**
-     * 字段名称
-     */
-    private String fieldName;
-
-    /**
-     * 字段注释
-     */
-    private String fieldComment;
-
-    /**
-     * 字段类型
-     */
-    private String fieldType;
-
-    /**
-     * 前端类型
-     */
-    private String jsType;
-
-    /**
-     * 字典id
-     */
-    private Long dictId;
-
-    /**
-     * 是否必填
-     */
-    private Boolean isRequired;
-
-    /**
-     * 是否新增
-     */
-    private Boolean isInsert;
-
-    /**
-     * 是否修改
-     */
-    private Boolean isUpdate;
-
-    /**
-     * 前端组件
-     */
-    private String frontComponent;
-
-    /**
-     * 是否查询条件
-     */
-    private Boolean isWhere;
-
-    /**
-     * 查询类型
-     */
-    private String whereType;
-
-    /**
-     * 扩展字段
-     */
-    private String extendedData;
-
-    /**
      * 是否基类字段
      */
     private Boolean isBase;
-
-    /**
-     * 枚举类型
-     */
-    private String enumType;
 
 }

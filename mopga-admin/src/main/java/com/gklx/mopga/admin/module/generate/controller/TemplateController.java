@@ -8,7 +8,6 @@ import com.gklx.mopga.admin.module.generate.domain.vo.TemplateVo;
 import com.gklx.mopga.admin.module.generate.service.TemplateService;
 import com.gklx.mopga.base.common.domain.PageResult;
 import com.gklx.mopga.base.common.domain.ResponseDTO;
-import com.gklx.mopga.base.common.domain.ValidateList;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
@@ -59,4 +58,10 @@ public class TemplateController {
         return templateService.copy(from);
     }
 
+    @Operation(summary = "单个删除 @author gklx")
+    @GetMapping("/template/delete/{id}")
+    @SaCheckPermission("template:delete")
+    public ResponseDTO<String> batchDelete(@PathVariable Long id) {
+        return templateService.delete(id);
+    }
 }

@@ -13,6 +13,7 @@ import com.gklx.mopga.admin.module.generate.domain.vo.TemplateVo;
 import com.gklx.mopga.admin.module.generate.manager.TemplateCodeItemManager;
 import com.gklx.mopga.admin.module.generate.manager.TemplateColumnManager;
 import com.gklx.mopga.admin.module.generate.manager.TemplateManager;
+import com.gklx.mopga.admin.module.generate.manager.TemplateMappingItemManager;
 import com.gklx.mopga.admin.module.system.role.dao.RoleEmployeeDao;
 import com.gklx.mopga.base.common.domain.PageResult;
 import com.gklx.mopga.base.common.domain.ResponseDTO;
@@ -21,6 +22,7 @@ import com.gklx.mopga.base.common.util.SmartBeanUtil;
 import com.gklx.mopga.base.common.util.SmartPageUtil;
 import com.gklx.mopga.base.common.util.SmartRequestUtil;
 import jakarta.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,6 +55,8 @@ public class TemplateService {
     private TemplateMappingItemService templateMappingItemService;
     @Resource
     private RoleEmployeeDao roleEmployeeDao;
+    @Autowired
+    private TemplateMappingItemManager templateMappingItemManager;
 
 
     /**
@@ -87,10 +91,14 @@ public class TemplateService {
     /**
      * 单个删除
      */
+    @Transactional(rollbackFor = Exception.class)
     public ResponseDTO<String> delete(Long id) {
         if (null == id){
             return ResponseDTO.ok();
         }
+        templateColumnManager.deleteByTemplateId(id);
+        templateCodeItemManager.deleteByTemplateId(id);
+        templateMappingItemManager.deleteByTemplateId(id);
         templateDao.deleteById(id);
         return ResponseDTO.ok();
     }
@@ -120,18 +128,33 @@ public class TemplateService {
         List<TemplateColumnEntity> templateColumnEntities = templateColumnService.listBaseColumnByTemplateId(copyTemplateId);
         templateColumnEntities.forEach(templateColumnEntity -> {
             templateColumnEntity.setTemplateId(templateEntity.getId());
+            templateColumnEntity.setColumnId(null);
+            templateColumnEntity.setCreateTime(null);
+            templateColumnEntity.setCreateUserId(null);
+            templateColumnEntity.setUpdateTime(null);
+            templateColumnEntity.setUpdateUserId(null);
         });
         List<TemplateCodeItemEntity> templateCodeItemEntityList = templateCodeItemService.listByTemplateId(copyTemplateId);
         templateCodeItemEntityList.forEach(templateCodeItemEntity -> {
             templateCodeItemEntity.setTemplateId(templateEntity.getId());
+            templateCodeItemEntity.setId(null);
+            templateCodeItemEntity.setCreateTime(null);
+            templateCodeItemEntity.setCreateUserId(null);
+            templateCodeItemEntity.setUpdateTime(null);
+            templateCodeItemEntity.setUpdateUserId(null);
         });
         List<TemplateMappingItemEntity> templateMappingItemEntityList = templateMappingItemService.listByTemplateId(copyTemplateId);
         templateMappingItemEntityList.forEach(templateMappingItemEntity -> {
             templateMappingItemEntity.setTemplateId(templateEntity.getId());
+            templateMappingItemEntity.setId(null);
+            templateMappingItemEntity.setCreateTime(null);
+            templateMappingItemEntity.setCreateUserId(null);
+            templateMappingItemEntity.setUpdateTime(null);
+            templateMappingItemEntity.setUpdateUserId(null);
         });
         templateColumnManager.saveBatch(templateColumnEntities);
-        templateColumnManager.saveBatch(templateColumnEntities);
         templateCodeItemManager.saveBatch(templateCodeItemEntityList);
+        templateMappingItemManager.saveBatch(templateMappingItemEntityList);
         return ResponseDTO.ok();
     }
 

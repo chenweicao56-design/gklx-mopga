@@ -4,6 +4,7 @@ import cn.hutool.core.io.IoUtil;
 import cn.hutool.json.JSONObject;
 import com.gklx.mopga.admin.module.generate.domain.entity.TableEntity;
 import com.gklx.mopga.admin.module.generate.domain.form.TableQueryForm;
+import com.gklx.mopga.admin.module.generate.domain.form.sql.SqlForm;
 import com.gklx.mopga.admin.module.generate.domain.vo.TableVo;
 import com.gklx.mopga.admin.module.generate.service.GenerateService;
 import com.gklx.mopga.base.common.domain.PageResult;
@@ -72,6 +73,11 @@ public class GenerateController {
         response.addHeader("Content-Length", "" + data.length);
         response.setContentType("application/octet-stream; charset=UTF-8");
         IoUtil.write(response.getOutputStream(), true, data);
+    }
+
+    @PostMapping("/gen/mybatis/preview")
+    public ResponseDTO<String> generateMybatis(@RequestBody SqlForm form) {
+        return ResponseDTO.ok(generateService.generateMybatis(form));
     }
 
 

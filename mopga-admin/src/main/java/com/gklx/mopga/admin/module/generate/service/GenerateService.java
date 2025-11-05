@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gklx.mopga.admin.module.generate.domain.entity.*;
 import com.gklx.mopga.admin.module.generate.domain.form.TableQueryForm;
+import com.gklx.mopga.admin.module.generate.domain.form.sql.*;
 import com.gklx.mopga.admin.module.generate.domain.vo.GenTableColumnVo;
 import com.gklx.mopga.admin.module.generate.domain.vo.TableVo;
 import com.gklx.mopga.admin.module.generate.domain.vo.TemplateVo;
@@ -15,11 +16,14 @@ import com.gklx.mopga.admin.module.generate.jdbc.IBaseCollector;
 import com.gklx.mopga.admin.module.generate.jdbc.JdbcManager;
 import com.gklx.mopga.admin.module.generate.manager.*;
 import com.gklx.mopga.admin.module.generate.util.GenUtils;
+import com.gklx.mopga.admin.module.generate.util.VelocityInitializer;
 import com.gklx.mopga.base.common.domain.PageResult;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.Velocity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
@@ -105,7 +109,7 @@ public class GenerateService {
             List<TableEntity> records = genTableIPage.getRecords();
             for (int i = 0; i < records.size(); i++) {
                 TableEntity table = records.get(i);
-                TableVo tableVO = tableService.getByName(table.getTableName());
+                TableVo tableVO = tableService.getByName(database.getId(), table.getTableName());
                 if (ObjUtil.isNotNull(tableVO)) {
                     if (table.getTableComment().equals(tableVO.getTableComment())) {
                         log.info("表名：{}已存在，跳过同步", table.getTableName());
@@ -152,7 +156,7 @@ public class GenerateService {
                     table.setCopyright(database.getCopyright());
                     String moduleName = database.getModuleName();
                     table.setModuleName(moduleName);
-                    table.setPackageName(StrUtil.isEmpty(moduleName) ? database.getPackageName() : database.getPackageName() + "." + moduleName.toLowerCase());
+                    table.setPackageName(database.getPackageName());
                     table.setExtendedData(database.getTableExtendedData());
                     String tablePrefixs = database.getTablePrefix();
                     if (StrUtil.isNotBlank(tablePrefixs)) {
@@ -200,7 +204,7 @@ public class GenerateService {
         if (CollectionUtil.isNotEmpty(mappingDataEntities)) {
             defaultMappingMap = mappingDataEntities.stream().collect(Collectors.toMap(e -> e.getDatabaseFieldType().toUpperCase(), e -> e));
         }
-        Map<String, TemplateColumnEntity> templateColumnMap = templateVO.getTemplateColumns().stream().collect(Collectors.toMap(e -> e.getFieldName().toUpperCase(), e -> e));
+        Map<String, TemplateColumnEntity> templateColumnMap = templateVO.getTemplateColumns().stream().collect(Collectors.toMap(e -> e.getColumnName().toUpperCase(), e -> e));
         Map<String, TemplateMappingItemEntity> templateMappingItemEntityMap = templateVO.getTemplateMappingItems().stream().collect(Collectors.toMap(e -> e.getDatabaseColumnType().toUpperCase(), e -> e));
         IBaseCollector collector = applicationContext.getBean(database.getDatabaseType(), IBaseCollector.class);
         List<GenTableColumnEntity> columns = collector.selectDbTableColumnsByName(database, table.getTableName());
@@ -238,7 +242,7 @@ public class GenerateService {
                 if (StrUtil.equals(column.getColumnComment(), oldColumn.getColumnComment())
                         && column.getIsPk() == oldColumn.getIsPk()
                         && column.getIsIncrement() == oldColumn.getIsIncrement()
-                        && column.getIsNull()== oldColumn.getIsNull()
+                        && column.getIsNull() == oldColumn.getIsNull()
                         && StrUtil.equals(column.getColumnDefault(), oldColumn.getColumnDefault())
                         && StrUtil.equals(column.getColumnType(), oldColumn.getColumnType())) {
                     log.debug("字段：{}:{}已存在，跳过同步", table.getTableName(), column.getColumnName());
@@ -335,4 +339,82 @@ public class GenerateService {
     }
 
 
+    public String generateMybatis(SqlForm form) {
+        Long databaseId = form.getDatabaseId();
+        List<SelectForm> selects = form.getSelects();
+        Map<String, GenTableColumnVo> columnMap = new HashMap<>();
+        Map<String, TableVo> tableMap = new HashMap<>();
+        form.setMainTableAlias(StrUtil.isNotEmpty(form.getMainTableAlias()) ? form.getMainTableAlias() : form.getMainTableName());
+        if (CollectionUtils.isNotEmpty(selects)) {
+            List<String> tableNames = selects.stream().map(SelectForm::getTableName).distinct().toList();
+            List<TableVo> tables = tableService.getByNames(databaseId, tableNames);
+            tables.forEach(table -> {
+                tableMap.put(table.getTableName(), table);
+                List<GenTableColumnVo> columns = table.getColumns();
+                if (CollectionUtils.isNotEmpty(columns)) {
+                    columns.forEach(column -> {
+                        columnMap.put(table.getTableName() + ":" + column.getColumnName(), column);
+                    });
+                }
+            });
+
+            selects.forEach(select -> {
+                select.setTableAlias(StrUtil.isNotEmpty(select.getTableAlias()) ? select.getTableAlias() : select.getTableName());
+                String columnAlias = select.getColumnAlias();
+                if (StrUtil.isNotEmpty(columnAlias)) {
+                    if (!columnAlias.equals(select.getTableName())) {
+                        select.setColumnAlias(null);
+                    }
+                }
+            });
+        }
+        List<FromForm> froms = form.getFroms();
+        if (CollectionUtils.isNotEmpty(froms)) {
+            froms.forEach(from -> {
+                from.setTableAlias(StrUtil.isNotBlank(from.getTableAlias()) ? from.getTableAlias() : from.getTableName());
+                from.getOns().forEach(on -> {
+                    on.setTableAlias(StrUtil.isNotEmpty(on.getTableAlias()) ? on.getTableAlias() : on.getTableName());
+                    on.setColumnAlias(StrUtil.isNotEmpty(on.getColumnAlias()) ? on.getColumnAlias() : on.getColumnName());
+                    on.setTargetTableAlias(StrUtil.isNotEmpty(on.getTargetTableAlias()) ? from.getTableAlias() : from.getTableName());
+                    on.setTargetColumnAlias(StrUtil.isNotEmpty(on.getTargetColumnAlias()) ? from.getTableAlias() : from.getTableName());
+                });
+            });
+        }
+        List<WhereForm> wheres = form.getWheres();
+        if (CollectionUtils.isNotEmpty(wheres)) {
+            wheres.forEach(where -> {
+                GenTableColumnVo genTableColumnVo = columnMap.get(where.getTableName() + ":" + where.getColumnName());
+                where.setFieldName(genTableColumnVo.getFieldName());
+                where.setFieldType(genTableColumnVo.getFieldType());
+                where.setTableAlias(StrUtil.isNotEmpty(where.getTableAlias()) ? where.getTableAlias() : where.getTableName());
+                where.setColumnAlias(StrUtil.isNotEmpty(where.getColumnAlias()) ? where.getColumnAlias() : where.getColumnName());
+            });
+        }
+        List<GroupByForm> groupBys = form.getGroupBys();
+        if (CollectionUtils.isNotEmpty(groupBys)) {
+            groupBys.forEach(groupBy -> {
+                groupBy.setTableAlias(StrUtil.isNotEmpty(groupBy.getTableAlias()) ? groupBy.getTableAlias() : groupBy.getTableName());
+                groupBy.setColumnAlias(StrUtil.isNotEmpty(groupBy.getColumnAlias()) ? groupBy.getColumnAlias() : groupBy.getColumnName());
+            });
+        }
+        VelocityInitializer.initVelocity();
+        VelocityContext velocityContext = GenUtils.initContext();
+        velocityContext.put("mainTableName", form.getMainTableName());
+        velocityContext.put("mainTableAlias", form.getMainTableAlias());
+        TableVo genTable = tableMap.get(form.getMainTableName());
+        velocityContext.put("wordName", genTable.getWordName());
+        velocityContext.put("WordName", StrUtil.upperFirst(genTable.getWordName()));
+        velocityContext.put("word_name", StrUtil.toUnderlineCase(genTable.getWordName()));
+        velocityContext.put("wordname", StrUtil.toUnderlineCase(genTable.getWordName()).replace("_", "-"));
+        velocityContext.put("mainTable", genTable);
+        velocityContext.put("selects", selects);
+        velocityContext.put("froms", froms);
+        velocityContext.put("wheres", wheres);
+        velocityContext.put("groupBys", groupBys);
+        StringWriter sw = new StringWriter();
+        Template tpl = Velocity.getTemplate("vm/join.vm", "UTF-8");
+        tpl.merge(velocityContext, sw);
+        return sw.toString();
+
+    }
 }

@@ -113,6 +113,6 @@ public class GenTableColumnVo {
     private String updateStrategy;
 
     @Schema(description = "大写驼峰")
-    private String upperCamelCase;
+    private String WordName;
 
 }
