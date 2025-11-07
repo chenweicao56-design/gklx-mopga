@@ -55,8 +55,8 @@ public class TableService {
 
     public ResponseDTO<TableVo> getDetail(Long tableId) {
         TableEntity tableEntity = tableDao.selectById(tableId);
-        TableVo tableVo = SmartBeanUtil.copy(tableEntity, TableVo.class);
-        return ResponseDTO.ok(tableVo);
+	    TableVo tableVo = SmartBeanUtil.copy(tableEntity,TableVo.class);
+	    return ResponseDTO.ok(tableVo);
     }
 
     /**
@@ -77,12 +77,11 @@ public class TableService {
         tableDao.updateById(tableEntity);
         return ResponseDTO.ok();
     }
-
     /**
      * 批量删除
      */
     public ResponseDTO<String> batchDelete(List<Long> idList) {
-        if (CollectionUtils.isEmpty(idList)) {
+        if (CollectionUtils.isEmpty(idList)){
             return ResponseDTO.ok();
         }
         tableDao.deleteByIds(idList);
@@ -93,7 +92,7 @@ public class TableService {
      * 单个删除
      */
     public ResponseDTO<String> delete(Long tableId) {
-        if (null == tableId) {
+        if (null == tableId){
             return ResponseDTO.ok();
         }
         tableDao.deleteById(tableId);

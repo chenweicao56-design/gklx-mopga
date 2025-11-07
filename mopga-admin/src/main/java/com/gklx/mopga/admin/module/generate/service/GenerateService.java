@@ -168,7 +168,7 @@ public class GenerateService {
                         String wordName = StrUtil.removePrefix(table.getTableName(), tablePrefix);
                         table.setWordName(StrUtil.toCamelCase(wordName));
                     } else {
-                        table.setWordName(StrUtil.toCamelCase(table.getWordName()));
+                        table.setWordName(StrUtil.toCamelCase(table.getTableName()));
                     }
                     table.setIsPage(database.getIsPage());
                     table.setIsDetail(database.getIsDetail());
@@ -188,10 +188,6 @@ public class GenerateService {
 
     }
 
-    public Boolean syncTableColumn(List<Long> tableIds) {
-        tableIds.forEach(this::syncTableColumn);
-        return true;
-    }
 
     @Transactional(rollbackFor = Exception.class)
     public Boolean syncTableColumn(Long tableId) {

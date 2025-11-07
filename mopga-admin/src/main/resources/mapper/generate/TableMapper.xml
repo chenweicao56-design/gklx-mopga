@@ -34,7 +34,10 @@
         gen_table.is_delete,
         gen_table.is_batch_delete,
         gen_table.edit_component,
-        gen_table.form_count_line
+        gen_table.form_count_line,
+        gen_table.is_tree,
+        gen_table.is_import,
+        gen_table.is_export
     </sql>
 
     <!-- 分页查询 -->

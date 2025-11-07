@@ -108,4 +108,12 @@ public class TableAddForm {
     @Schema(description = "是否是树", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotNull(message = "是否是树 不能为空")
     private Boolean isTree;
+
+    @Schema(description = "是否导入", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotNull(message = "是否导入 不能为空")
+    private Boolean isImport;
+
+    @Schema(description = "是否导出", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotNull(message = "是否导出 不能为空")
+    private Boolean isExport;
 }

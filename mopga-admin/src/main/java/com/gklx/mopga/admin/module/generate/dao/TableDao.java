@@ -11,12 +11,12 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 /**
- * 表 Dao
- *
- * @Author gklx
- * @Date 2025-09-06 18:37:05
- * @Copyright 1.0
- */
+* 表 Dao
+*
+* @Author gklx
+* @Date 2025-09-06 18:37:05
+* @Copyright 1.0
+  */
 
 @Mapper
 public interface TableDao extends BaseMapper<TableEntity> {

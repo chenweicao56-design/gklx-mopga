@@ -113,8 +113,12 @@ public class TableVo {
     @Schema(description = "是否是树")
     private Boolean isTree;
 
+    @Schema(description = "是否导入")
+    private Boolean isImport;
+
+    @Schema(description = "是否导出")
+    private Boolean isExport;
+
     @Schema(description = "字段列表")
     private List<GenTableColumnVo> columns;
-
-
 }

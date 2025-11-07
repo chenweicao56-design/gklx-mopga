@@ -31,7 +31,7 @@ public class MvcConfig implements WebMvcConfigurer {
                 .excludePathPatterns(SwaggerConfig.SWAGGER_WHITELIST)
                 .addPathPatterns("/**")
                 .excludePathPatterns(
-                        "/chat"
+                        "/chat","/sync"
                 )
         ;
     }

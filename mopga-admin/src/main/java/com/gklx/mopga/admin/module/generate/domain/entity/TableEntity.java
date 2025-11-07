@@ -5,18 +5,16 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-
 import java.time.LocalDateTime;
-
 import lombok.Data;
 
 /**
- * 表 实体类
- *
- * @Author gklx
- * @Date 2025-09-06 18:37:05
- * @Copyright 1.0
- */
+* 表 实体类
+*
+* @Author gklx
+* @Date 2025-09-06 18:37:05
+* @Copyright 1.0
+  */
 
 @Data
 @TableName("gen_table")
@@ -186,4 +184,14 @@ public class TableEntity {
      * 是否是树
      */
     private Boolean isTree;
+
+    /**
+     * 是否导入
+     */
+    private Boolean isImport;
+
+    /**
+     * 是否导出
+     */
+    private Boolean isExport;
 }
