@@ -24,7 +24,7 @@
         gen_table.is_physically_deleted,
         gen_table.word_name,
         gen_table.status,
-        gen_table.sub_table_id,
+        gen_table.sub_table_name,
         gen_table.table_prefix,
         gen_table.extended_data,
         gen_table.is_page,

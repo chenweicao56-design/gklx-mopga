@@ -3,6 +3,7 @@ package com.gklx.mopga.admin.module.generate.domain.form;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import lombok.Data;
 
 /**
@@ -112,4 +113,8 @@ public class GenTableColumnAddForm {
     @Schema(description = "更新策略", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotBlank(message = "更新策略 不能为空")
     private String updateStrategy;
+
+    @Schema(description = "是否唯一", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotNull(message = "是否唯一 不能为空")
+    private Boolean isUnique;
 }

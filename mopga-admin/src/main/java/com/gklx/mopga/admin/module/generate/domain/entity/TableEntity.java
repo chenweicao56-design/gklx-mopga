@@ -126,9 +126,9 @@ public class TableEntity {
     private Integer status;
 
     /**
-     * 子表Id
+     * 子表名
      */
-    private Long subTableId;
+    private String subTableName;
 
     /**
      * 表前缀

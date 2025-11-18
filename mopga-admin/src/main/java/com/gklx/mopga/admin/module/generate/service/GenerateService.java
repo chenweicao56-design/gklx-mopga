@@ -276,6 +276,12 @@ public class GenerateService {
 
     public List<JSONObject> preview(Long tableId) {
         TableVo table = tableService.getById(tableId);
+        String subTableName = table.getSubTableName();
+        if(StrUtil.isNotEmpty(subTableName)){
+            TableVo subTable = tableService.getByName(table.getDatabaseId(), subTableName);
+            table.setSubTable(subTable);
+        }
+
         DatabaseEntity database = databaseManager.getById(table.getDatabaseId());
         TemplateEntity templateEntity = templateManager.getById(database.getTemplateId());
         List<TemplateCodeItemEntity> templateCodeItemEntities = templateCodeItemService.listByTemplateId(database.getTemplateId());

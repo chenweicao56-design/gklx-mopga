@@ -1,6 +1,9 @@
 package com.gklx.mopga.admin.ai.serivce;
 
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.json.JSONUtil;
+import com.gklx.mopga.admin.ai.agent.TestAgent;
 import com.gklx.mopga.admin.ai.domain.form.ChatQueryForm;
 import com.gklx.mopga.admin.ai.domain.vo.ChatVo;
 import jakarta.annotation.Resource;
@@ -17,16 +20,28 @@ public class ChatService {
 
     @Resource
     private FrontCustomComponentService frontCustomComponentService;
+    @Resource
+    private TestAgent testAgent;
 
 
     public Flux<String> chat(ChatQueryForm chatQueryForm) {
+        String agentNo = chatQueryForm.getAgentNo();
+        if (StrUtil.isNotEmpty(agentNo)) {
+            switch (agentNo) {
+                case "testAgent":
+                    return  Flux.just("你好，我不明白你的意思，请问有什么可以帮助您?");
+                default:
+                    return Flux.just("你好，我不明白你的意思，请问有什么可以帮助您?");
 
-        return frontCustomComponentService.chat(chatQueryForm.getQuestion()).map(e -> {
-            ChatVo chatVo = new ChatVo();
-            chatVo.setContent(e);
-            chatVo.setType("ai");
-            return JSONUtil.toJsonStr(chatVo);
-        });
+            }
+        } else {
+            return frontCustomComponentService.chat(chatQueryForm.getQuestion()).map(e -> {
+                ChatVo chatVo = new ChatVo();
+                chatVo.setContent(e);
+                chatVo.setType("ai");
+                return JSONUtil.toJsonStr(chatVo);
+            });
+        }
     }
 
 

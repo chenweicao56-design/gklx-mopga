@@ -9,7 +9,7 @@ public class ChatQueryForm {
 
     private Long conversationId;
 
-
+    private String agentNo;
 
 
 }

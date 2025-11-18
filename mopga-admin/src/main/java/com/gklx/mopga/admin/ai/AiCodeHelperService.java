@@ -11,7 +11,6 @@ import reactor.core.publisher.Flux;
 import java.util.List;
 
 //改为手动构建，更灵活
-//@AiService
 @InputGuardrails({SafeInputGuardrail.class})
 public interface AiCodeHelperService {
 

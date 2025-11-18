@@ -19,6 +19,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,7 +40,7 @@ public class GenUtils {
         velocityEngine.init();
     }
 
-    public static  VelocityContext initContext(){
+    public static VelocityContext initContext() {
         VelocityContext velocityContext = new VelocityContext();
         velocityContext.put("t", new VelocityTools());
         return velocityContext;
@@ -64,52 +65,64 @@ public class GenUtils {
         VelocityContext velocityContext = initContext();
         velocityContext.put("backendProjectPath", database.getBackendProjectPath());
         velocityContext.put("frontProjectPath", database.getFrontProjectPath());
-        // 表信息
-        velocityContext.put("tableName", genTable.getTableName());
-        velocityContext.put("tableComment", genTable.getTableComment());
-        velocityContext.put("backendAuthor", genTable.getBackendAuthor());
-        velocityContext.put("backendDate",
+        Map<String, Object> tableMap = buildTable(database, genTable, templateCodeItemEntity);
+        tableMap.forEach(velocityContext::put);
+        TableVo subTable = genTable.getSubTable();
+        if (ObjUtil.isNotEmpty(subTable)) {
+            velocityContext.put("subTable", subTable);
+        }
+        //模板信息
+        buildFilePackages(database, velocityContext, templateEntity, templateCodeItemEntities);
+        return velocityContext;
+    }
+
+    private static Map<String, Object> buildTable(DatabaseEntity database, TableVo genTable, TemplateCodeItemEntity templateCodeItemEntity) {
+        Map<String, Object> tableMap = new HashMap<>();
+        tableMap.put("tableName", genTable.getTableName());
+        tableMap.put("tableComment", genTable.getTableComment());
+        tableMap.put("backendAuthor", genTable.getBackendAuthor());
+        tableMap.put("backendDate",
                 ObjUtil.isNotNull(genTable.getBackendDate()) ?
                         DateUtil.format(genTable.getBackendDate(), "yyyy-MM-dd HH:mm:ss") :
                         DateUtil.format(LocalDateTime.now(), "yyyy-MM-dd HH:mm:ss")
         );
-        velocityContext.put("copyright", genTable.getCopyright());
-        velocityContext.put("frontAuthor", genTable.getFrontAuthor());
-        velocityContext.put("frontDate", ObjUtil.isNotNull(genTable.getFrontDate()) ?
+        tableMap.put("copyright", genTable.getCopyright());
+        tableMap.put("frontAuthor", genTable.getFrontAuthor());
+        tableMap.put("frontDate", ObjUtil.isNotNull(genTable.getFrontDate()) ?
                 DateUtil.format(genTable.getFrontDate(), "yyyy-MM-dd HH:mm:ss") :
                 DateUtil.format(LocalDateTime.now(), "yyyy-MM-dd HH:mm:ss")
         );
-        velocityContext.put("packageName", genTable.getPackageName());
-        velocityContext.put("moduleName", genTable.getModuleName());
-        velocityContext.put("isPhysicallyDeleted", genTable.getIsPhysicallyDeleted());
-        velocityContext.put("wordName", genTable.getWordName());
-        velocityContext.put("WordName", StrUtil.upperFirst(genTable.getWordName()));
-        velocityContext.put("word_name", StrUtil.toUnderlineCase(genTable.getWordName()));
-        velocityContext.put("wordname", StrUtil.toUnderlineCase(genTable.getWordName()).replace("_", "-"));
-        velocityContext.put("isPage", genTable.getIsPage());
-        velocityContext.put("isDetail", genTable.getIsDetail());
-        velocityContext.put("isAdd", genTable.getIsAdd());
-        velocityContext.put("isUpdate", genTable.getIsUpdate());
-        velocityContext.put("isDelete", genTable.getIsDelete());
-        velocityContext.put("isBatchDelete", genTable.getIsBatchDelete());
-        velocityContext.put("editComponent", genTable.getEditComponent());
-        velocityContext.put("formCountLine", genTable.getFormCountLine());
+        tableMap.put("packageName", genTable.getPackageName());
+        tableMap.put("moduleName", genTable.getModuleName());
+        tableMap.put("isPhysicallyDeleted", genTable.getIsPhysicallyDeleted());
+        tableMap.put("wordName", genTable.getWordName());
+        tableMap.put("WordName", StrUtil.upperFirst(genTable.getWordName()));
+        tableMap.put("word_name", StrUtil.toUnderlineCase(genTable.getWordName()));
+        tableMap.put("wordname", StrUtil.toUnderlineCase(genTable.getWordName()).replace("_", "-"));
+        tableMap.put("isPage", genTable.getIsPage());
+        tableMap.put("isDetail", genTable.getIsDetail());
+        tableMap.put("isAdd", genTable.getIsAdd());
+        tableMap.put("isUpdate", genTable.getIsUpdate());
+        tableMap.put("isDelete", genTable.getIsDelete());
+        tableMap.put("isBatchDelete", genTable.getIsBatchDelete());
+        tableMap.put("editComponent", genTable.getEditComponent());
+        tableMap.put("formCountLine", genTable.getFormCountLine());
 
         String extendedData = genTable.getExtendedData();
         if (StrUtil.isNotBlank(extendedData)) {
-            JSONUtil.parseObj(extendedData).forEach(velocityContext::put);
+            tableMap.putAll(JSONUtil.parseObj(extendedData));
         }
         String backendProjectPath = database.getBackendProjectPath();
         String frontProjectPath = database.getFrontProjectPath();
         String projectPath = StrUtil.isNotBlank(backendProjectPath) ? backendProjectPath : frontProjectPath;
         String filePath = templateCodeItemEntity.getFilePath();
         if (projectPath.contains("/")) {
-            velocityContext.put("modulePackage",
+            tableMap.put("modulePackage",
                     StrUtil.subAfter(filePath, "}/", true)
                             .replace("/", ".")
                             .replaceAll("\\.*$", ""));
         } else {
-            velocityContext.put("modulePackage",
+            tableMap.put("modulePackage",
                     StrUtil.subAfter(filePath, "}\\", true)
                             .replace("\\", ".")
                             .replaceAll("\\.*$", ""));
@@ -122,23 +135,22 @@ public class GenUtils {
             for (GenTableColumnVo column : columns) {
                 column.setWordName(StrUtil.upperFirst(column.getFieldName()));
                 if (column.getIsPk()) {
-                    velocityContext.put("primaryKeyColumnName", column.getColumnName());
-                    velocityContext.put("primaryKeyFieldType", column.getFieldType());
-                    velocityContext.put("primaryKeyJsType", column.getJsType());
-                    velocityContext.put("primaryKeyFieldName", column.getFieldName());
-                    velocityContext.put("primaryKeyUpperFieldName",StrUtil.upperFirst(column.getFieldName()));
+                    tableMap.put("primaryKeyColumnName", column.getColumnName());
+                    tableMap.put("primaryKeyFieldType", column.getFieldType());
+                    tableMap.put("primaryKeyJsType", column.getJsType());
+                    tableMap.put("primaryKeyFieldName", column.getFieldName());
+                    tableMap.put("primaryKeyIsIncrement", column.getIsIncrement());
+                    tableMap.put("primaryKeyUpperFieldName", StrUtil.upperFirst(column.getFieldName()));
                 }
                 if (column.getIsWhere()) {
                     queryColumns.add(column);
                 }
 
             }
-            velocityContext.put("queryColumns", queryColumns);
+            tableMap.put("queryColumns", queryColumns);
         }
-        velocityContext.put("columns", genTable.getColumns());
-        //模板信息
-        buildFilePackages(database, velocityContext, templateEntity, templateCodeItemEntities);
-        return velocityContext;
+        tableMap.put("columns", genTable.getColumns());
+        return tableMap;
     }
 
 

@@ -6,12 +6,12 @@ import java.time.LocalDateTime;
 import lombok.Data;
 
 /**
- * 模板 实体类
- *
- * @Author gklx
- * @Date 2025-09-06 18:37:05
- * @Copyright 1.0
- */
+* 模板 实体类
+*
+* @Author gklx
+* @Date 2025-09-06 18:37:05
+* @Copyright 1.0
+  */
 
 @Data
 @TableName("gen_table_column")
@@ -182,4 +182,9 @@ public class GenTableColumnEntity {
      * 更新策略
      */
     private String updateStrategy;
+
+    /**
+     * 是否唯一
+     */
+    private Boolean isUnique;
 }

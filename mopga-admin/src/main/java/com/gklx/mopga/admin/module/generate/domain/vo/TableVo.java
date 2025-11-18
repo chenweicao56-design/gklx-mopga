@@ -77,8 +77,8 @@ public class TableVo {
     @Schema(description = "状态")
     private Integer status;
 
-    @Schema(description = "子表Id")
-    private Long subTableId;
+    @Schema(description = "子表名")
+    private String subTableName;
 
     @Schema(description = "表前缀")
     private String tablePrefix;
@@ -121,4 +121,7 @@ public class TableVo {
 
     @Schema(description = "字段列表")
     private List<GenTableColumnVo> columns;
+
+    @Schema(description = "子表")
+    private TableVo subTable;
 }

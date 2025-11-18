@@ -112,6 +112,10 @@ public class GenTableColumnVo {
     @Schema(description = "更新策略")
     private String updateStrategy;
 
+    @Schema(description = "是否唯一")
+    private Boolean isUnique;
+
+
     @Schema(description = "大写驼峰")
     private String WordName;
 
