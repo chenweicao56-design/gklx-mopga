@@ -16,10 +16,18 @@ server:
   servlet:
     context-path: /
 
+
+
 # 环境
 spring:
   profiles:
     active: '@profiles.active@'
+  ai:
+    deepseek:
+      api-key: sk-ae13e92d22164178bf5a27d84e1be35c
+      chat:
+        options:
+          model: deepseek-chat
 mopga:
   translate:
     url: https://fanyi-api.baidu.com/api/trans/vip/translate
@@ -35,11 +43,11 @@ langchain4j:
       chat-model:
         base-url:  https://api.deepseek.com
         model-name: deepseek-chat
-        api-key: sk-958d51674c754020b24eefad6a2fb854
+        api-key: sk-ae13e92d22164178bf5a27d84e1be35c
       streaming-chat-model:
         base-url:  https://api.deepseek.com
         model-name: deepseek-chat
-        api-key: sk-958d51674c754020b24eefad6a2fb854
+        api-key: sk-ae13e92d22164178bf5a27d84e1be35c
       embedding-model:
         base-url:  https://api.deepseek.com
         model-name: text-embedding-v4

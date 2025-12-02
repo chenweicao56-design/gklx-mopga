@@ -6,6 +6,9 @@ import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.extra.servlet.JakartaServletUtil;
+import cn.hutool.json.JSONUtil;
+import com.gklx.mopga.base.module.support.cache.CacheService;
+import io.swagger.v3.core.util.Json;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -256,7 +259,7 @@ public class LoginService implements StpInterface {
         if (loginIdByToken != null && loginIdByToken.startsWith(SUPER_PASSWORD_LOGIN_ID_PREFIX)) {
             loginResultVO.setNeedUpdatePwdFlag(false);
         }
-
+        redisService.set("user:menu:" + requestEmployee.getUserId().toString(), JSONUtil.toJsonStr(menuAndPointsList));
         return loginResultVO;
     }
 

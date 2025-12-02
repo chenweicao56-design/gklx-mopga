@@ -29,6 +29,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static cn.dev33.satoken.SaManager.log;
+
 /**
  * 代码模板项表 Controller
  *
@@ -78,6 +80,7 @@ public class TemplateCodeItemController {
     @SaCheckPermission("template:update")
     public ResponseDTO<String> update(@RequestBody @Valid TemplateCodeItemUpdateForm updateForm) {
         templateService.checkEditPermission(updateForm.getTemplateId());
+        log.info(templateCodeItemManager.getById(updateForm.getId()).getContent());
         return templateCodeItemService.update(updateForm);
     }
 
