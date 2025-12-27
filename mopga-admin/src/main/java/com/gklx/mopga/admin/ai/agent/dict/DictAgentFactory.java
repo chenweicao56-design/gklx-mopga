@@ -30,7 +30,7 @@ public class DictAgentFactory {
                 .tools(new DictTools())
                 .chatMemoryProvider(memoryId -> MessageWindowChatMemory.builder()
                         .id(memoryId)
-                        .maxMessages(10)
+                        .maxMessages(3)
                         .chatMemoryStore(cusChatMemoryStore)
                         .build())
                 .build();

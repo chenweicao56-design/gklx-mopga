@@ -13,7 +13,7 @@ public class MenuAgentService extends BaseAgentService {
     public static final String AGENT_ALIAS = "menuAgent";
 
     @Resource
-    private menuAgent menuAgent;
+    private MenuAgent menuAgent;
 
 
     @Override

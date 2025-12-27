@@ -8,7 +8,7 @@ import dev.langchain4j.service.*;
 public interface DictAgent {
 
     @SystemMessage(fromResource = "prompt/dict/system.txt")
-    @UserMessage(fromResource = "prompt/dict/user.txt")
+    @UserMessage(fromResource = "prompt/user.txt")
     TokenStream run(@MemoryId String memoryId, @V("query") String query);
 
     @SystemMessage(fromResource = "prompt/dict/system.txt")

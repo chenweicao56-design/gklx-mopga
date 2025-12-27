@@ -47,8 +47,6 @@ public class AiController {
 
     @PostMapping("/chat")
     public Flux<ChatResponse> chat(@RequestBody AgentContext context) {
-        RequestEmployee requestUser = AdminRequestUtil.getRequestUser();
-        context.setUserId(requestUser.getUserId().toString());
         return chatService.chat(context);
     }
 

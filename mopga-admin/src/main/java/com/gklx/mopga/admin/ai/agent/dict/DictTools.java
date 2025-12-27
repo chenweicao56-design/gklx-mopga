@@ -1,6 +1,7 @@
 package com.gklx.mopga.admin.ai.agent.dict;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dev.langchain4j.agent.tool.P;
 import dev.langchain4j.agent.tool.Tool;
 import dev.langchain4j.model.output.structured.Description;
 
@@ -23,6 +24,7 @@ public class DictTools {
 
         return "新增字典成功";
     }
+
     @Tool(name = "updateDict", value = """
             该工具用于在系统中更新字典。
             """
@@ -30,6 +32,15 @@ public class DictTools {
     public String update(Dict dict) {
 
         return "更新字典成功";
+    }
+
+    @Tool(name = "transfer", value = """
+            用户的问题跟字典模型没有关系，转交给你的上级领导
+            """
+    )
+    public String transfer(@P("领导名字") String leader) {
+
+        return leader;
     }
 
 }

@@ -25,7 +25,7 @@ public class ManagerAgentService extends BaseAgentService {
     public void run(AgentContext agentContext) {
         ChatHandler handler = agentContext.getChatHandler();
         List<AgentEntity> agentList = getAgentList();
-        ManagerAgentVo run = managerAgent.run(agentContext.getQuery(), formatAgents(agentList));
+        ManagerAgentVo run = managerAgent.run(agentContext.getConversationId()+":manager",agentContext.getQuery(), formatAgents(agentList));
         if (!"0".equals(run.id())) {
             agentContext.setAgentAlias(run.alias());
             handler.onTransfer(agentContext);
@@ -78,6 +78,15 @@ public class ManagerAgentService extends BaseAgentService {
         routerAgent.setDescription("负责管理整个系统的路由");
         routerAgent.setKeywords(List.of("路由", "跳转"));
         list.add(routerAgent);
+
+
+        AgentEntity docAgent = new AgentEntity();
+        docAgent.setId("6");
+        docAgent.setName("文档模块工程师");
+        docAgent.setAlias("docAgent");
+        docAgent.setDescription("负责管理整个系统的文档");
+        docAgent.setKeywords(List.of("规范", "文档"));
+        list.add(docAgent);
 
         return list;
     }

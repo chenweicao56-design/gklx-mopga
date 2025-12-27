@@ -1,5 +1,7 @@
-package com.gklx.mopga.admin.ai.agent.menu;
+package com.gklx.mopga.admin.ai.agent.doc;
 
+import com.gklx.mopga.admin.ai.memory.CusChatMemoryStore;
+import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.chat.StreamingChatModel;
 import dev.langchain4j.rag.content.retriever.ContentRetriever;
@@ -9,10 +11,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class MenuAgentFactory {
+public class DocAgentFactory {
 
     @Resource
-    private ContentRetriever menuContentRetriever;
+    private ContentRetriever docContentRetriever;
     @Resource
     private ChatModel chatModel;
 
@@ -20,13 +22,16 @@ public class MenuAgentFactory {
     private StreamingChatModel streamingChatModel;
 
 
-    @Bean(name = "menuAgent")
-    public MenuAgent menuAgent() {
+    @Resource
+    private CusChatMemoryStore cusChatMemoryStore;
 
-        return AiServices.builder(MenuAgent.class)
+    @Bean
+    public DocAgent docAgent() {
+        return AiServices.builder(DocAgent.class)
                 .chatModel(chatModel)
                 .streamingChatModel(streamingChatModel)
-                .contentRetriever(menuContentRetriever) // RAG 检索增强生成
+                .contentRetriever(docContentRetriever)
+                .chatMemoryProvider(memoryId -> MessageWindowChatMemory.builder().id(memoryId).maxMessages(10).chatMemoryStore(cusChatMemoryStore).build())
                 .build();
     }
 }
