@@ -209,4 +209,9 @@ public class DatabaseEntity {
      * 每行几个表单
      */
     private Integer formCountLine;
+
+    /**
+     * 模式
+     */
+    private String schemaName;
 }

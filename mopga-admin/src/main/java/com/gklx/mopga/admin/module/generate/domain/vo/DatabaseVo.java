@@ -127,4 +127,7 @@ public class DatabaseVo {
     @Schema(description = "每行几个表单")
     private Integer formCountLine;
 
+    @Schema(description = "模式")
+    private String schemaName;
+
 }

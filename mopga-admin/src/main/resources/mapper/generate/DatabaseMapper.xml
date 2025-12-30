@@ -40,7 +40,8 @@
         gen_database.is_delete,
         gen_database.is_batch_delete,
         gen_database.edit_component,
-        gen_database.form_count_line
+        gen_database.form_count_line,
+        gen_database.schema_name
     </sql>
 
     <!-- 分页查询 -->

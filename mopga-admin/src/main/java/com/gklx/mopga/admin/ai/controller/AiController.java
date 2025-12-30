@@ -2,12 +2,9 @@ package com.gklx.mopga.admin.ai.controller;
 
 import com.gklx.mopga.admin.ai.McpService;
 import com.gklx.mopga.admin.ai.agent.menu.MenuAgentService;
-import com.gklx.mopga.admin.ai.domain.AgentContext;
 import com.gklx.mopga.admin.ai.core.ChatResponse;
+import com.gklx.mopga.admin.ai.domain.AgentContext;
 import com.gklx.mopga.admin.ai.serivce.ChatService;
-import com.gklx.mopga.admin.module.system.login.domain.RequestEmployee;
-import com.gklx.mopga.admin.module.system.menu.service.MenuService;
-import com.gklx.mopga.admin.util.AdminRequestUtil;
 import dev.langchain4j.mcp.McpToolProvider;
 import dev.langchain4j.mcp.client.DefaultMcpClient;
 import dev.langchain4j.mcp.client.McpClient;
@@ -19,8 +16,6 @@ import dev.langchain4j.rag.content.retriever.ContentRetriever;
 import dev.langchain4j.rag.query.Query;
 import dev.langchain4j.service.AiServices;
 import jakarta.annotation.Resource;
-import org.springframework.ai.chat.prompt.Prompt;
-import org.springframework.ai.deepseek.DeepSeekChatModel;
 import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,7 +26,6 @@ import reactor.core.publisher.Flux;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @RestController
 public class AiController {
@@ -40,8 +34,6 @@ public class AiController {
     private OpenAiStreamingChatModel openAiStreamingChatModel;
     @Resource
     private ChatService chatService;
-    @Resource
-    private DeepSeekChatModel deepSeekChatModel;
     @Resource
     private MenuAgentService menuAgentService;
 
