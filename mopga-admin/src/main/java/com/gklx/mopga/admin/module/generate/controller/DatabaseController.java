@@ -1,6 +1,7 @@
 package com.gklx.mopga.admin.module.generate.controller;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import com.gklx.mopga.admin.module.generate.domain.entity.MappingDataEntity;
 import com.gklx.mopga.admin.module.generate.domain.form.DatabaseAddForm;
 import com.gklx.mopga.admin.module.generate.domain.form.DatabaseQueryForm;
 import com.gklx.mopga.admin.module.generate.domain.form.DatabaseUpdateForm;
@@ -14,6 +15,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 数据源表 Controller
@@ -71,6 +74,14 @@ public class DatabaseController {
     @SaCheckPermission("database:delete")
     public ResponseDTO<String> batchDelete(@PathVariable Long id) {
         return databaseService.delete(id);
+    }
+
+
+    @Operation(summary = "获取相关的数据库字典类型 @author gklx")
+    @GetMapping("/database/getColumnTypes/{databaseId}")
+    @SaCheckPermission("database:query")
+    public ResponseDTO<List<MappingDataEntity>> getColumnTypes(@PathVariable Long databaseId) {
+        return ResponseDTO.ok(databaseService.getColumnTypes(databaseId));
     }
 
 }

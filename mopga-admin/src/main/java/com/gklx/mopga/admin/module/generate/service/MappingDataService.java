@@ -1,8 +1,11 @@
 package com.gklx.mopga.admin.module.generate.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gklx.mopga.admin.module.generate.dao.MappingDataDao;
 import com.gklx.mopga.admin.module.generate.domain.entity.MappingDataEntity;
+import com.gklx.mopga.admin.module.generate.domain.entity.TemplateMappingItemEntity;
 import com.gklx.mopga.admin.module.generate.domain.form.MappingDataAddForm;
 import com.gklx.mopga.admin.module.generate.domain.form.MappingDataQueryForm;
 import com.gklx.mopga.admin.module.generate.domain.form.MappingDataUpdateForm;
@@ -80,4 +83,9 @@ public class MappingDataService {
         return ResponseDTO.ok();
     }
 
+    public List<MappingDataEntity> listByMappingCode(String databaseType) {
+        LambdaQueryWrapper<MappingDataEntity> lambdaQuery = Wrappers.lambdaQuery();
+        lambdaQuery.eq(MappingDataEntity::getMappingCode, databaseType);
+        return mappingDataDao.selectList(lambdaQuery);
+    }
 }

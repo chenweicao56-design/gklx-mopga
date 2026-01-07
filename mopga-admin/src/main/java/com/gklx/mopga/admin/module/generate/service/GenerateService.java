@@ -277,7 +277,7 @@ public class GenerateService {
     public List<JSONObject> preview(Long tableId) {
         TableVo table = tableService.getById(tableId);
         String subTableName = table.getSubTableName();
-        if(StrUtil.isNotEmpty(subTableName)){
+        if (StrUtil.isNotEmpty(subTableName)) {
             TableVo subTable = tableService.getByName(table.getDatabaseId(), subTableName);
             table.setSubTable(subTable);
         }
@@ -319,6 +319,7 @@ public class GenerateService {
         VelocityContext velocityContext = new VelocityContext();
         velocityContext.put("tableName", table.getTableName());
         velocityContext.put("tableComment", table.getTableComment());
+        velocityContext.put("schemaName", database.getSchemaName());
         List<GenTableColumnVo> columns = table.getColumns();
 
         //补充
