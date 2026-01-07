@@ -107,6 +107,7 @@ public class GenUtils {
         tableMap.put("isBatchDelete", genTable.getIsBatchDelete());
         tableMap.put("editComponent", genTable.getEditComponent());
         tableMap.put("formCountLine", genTable.getFormCountLine());
+        tableMap.put("schemaName", database.getSchemaName());
 
         String extendedData = genTable.getExtendedData();
         if (StrUtil.isNotBlank(extendedData)) {

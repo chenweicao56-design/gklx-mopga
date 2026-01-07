@@ -14,10 +14,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-@Service("mysql")
-public class MysqlCollector extends JdbcManager implements IBaseCollector {
+@Service("dm")
+public class DMCollector extends JdbcManager implements IBaseCollector {
 
-    private final String databaseType = "3306";
+    private final String databaseType = "5236";
 
     @Override
     public IPage<TableEntity> selectDbTableList(IPage<TableEntity> page, DatabaseEntity database, TableQueryForm params) {
@@ -37,13 +37,11 @@ public class MysqlCollector extends JdbcManager implements IBaseCollector {
 
         }
         sql = sql + whereSql;
-
-
-        Map<String, Object> countMap = this.querySingleRow(database, getCountSql(sql, "*"), null);
+        Map<String, Object> countMap = this.querySingleRow(database, getCountSql(sql, "*"), Collections.singletonList(database.getSchemaName()));
         Integer total = MapUtil.getInt(countMap, "COUNT(*)");
 
         sql = getPaginationSql(sql, page.getCurrent(), page.getSize());
-        List<Map<String, Object>> maps = this.queryMultipleRows(database, sql, null);
+        List<Map<String, Object>> maps = this.queryMultipleRows(database, sql, Collections.singletonList(database.getSchemaName()));
         if (maps != null && !maps.isEmpty()) {
             for (Map<String, Object> map : maps) {
                 TableEntity genTable = new TableEntity();
@@ -61,7 +59,7 @@ public class MysqlCollector extends JdbcManager implements IBaseCollector {
     public List<GenTableColumnEntity> selectDbTableColumnsByName(DatabaseEntity database, String tableName) {
         SqlItem sqlItem = JdbcSpiLoader.SqlDefines.get(databaseType).getTableFieldSqlList().get(0);
         List<String> columns = sqlItem.getColumns();
-        List<Map<String, Object>> maps = this.queryMultipleRows(database, sqlItem.getSql(), Collections.singletonList(tableName));
+        List<Map<String, Object>> maps = this.queryMultipleRows(database, sqlItem.getSql(), Arrays.asList(database.getSchemaName(),database.getSchemaName(),tableName,database.getSchemaName(),tableName));
         List<GenTableColumnEntity> tableColumnList = new ArrayList<>();
         if (CollectionUtil.isNotEmpty(maps)) {
             for (Map<String, Object> map : maps) {

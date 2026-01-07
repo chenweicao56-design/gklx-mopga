@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * $数据源表 列表VO
@@ -129,5 +130,8 @@ public class DatabaseVo {
 
     @Schema(description = "模式")
     private String schemaName;
+
+    @Schema(description = "表")
+    private List<TableVo> tables;
 
 }

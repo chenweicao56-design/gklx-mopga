@@ -1,0 +1,12 @@
+【DB_ID】 Sample_Database, 样例数据库
+<intro>
+    # Table: Sample_Database.sample_country_gdp, 各国GDP数据
+    [
+    (id: bigint, Primary key, ID),
+    (country: varchar, 国家),
+    (continent: varchar, 所在洲, examples:['亚洲','美洲','欧洲','非洲']),
+    (year: varchar, 年份, examples:['2020','2021','2022']),
+    (gdp: bigint, GDP(美元)),
+    ]
+</intro>
+【Schema】
