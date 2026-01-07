@@ -51,6 +51,15 @@ public class DatabaseService {
     }
 
     /**
+     * 详情
+     */
+    public ResponseDTO<DatabaseVo> getDetail(Long id) {
+        DatabaseEntity databaseEntity = databaseDao.selectById(id);
+        DatabaseVo databaseVo = SmartBeanUtil.copy(databaseEntity, DatabaseVo.class);
+        return ResponseDTO.ok(databaseVo);
+    }
+
+    /**
      * 添加
      */
     public ResponseDTO<String> add(DatabaseAddForm addForm) {

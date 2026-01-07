@@ -130,7 +130,11 @@ public class DatabaseAddForm {
     @Schema(description = "每行几个表单", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotNull(message = "每行几个表单 不能为空")
     private Integer formCountLine;
-
+    
     @Schema(description = "模式")
     private String schemaName;
+    
+    @Schema(description = "权限（0没有）", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotNull(message = "权限（0没有） 不能为空")
+    private Integer permission;
 }
