@@ -11,12 +11,12 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 /**
-* 模板 Dao
-*
-* @Author gklx
-* @Date 2025-09-06 18:37:05
-* @Copyright 1.0
-  */
+ * 模板 Dao
+ *
+ * @Author gklx
+ * @Date 2025-09-06 18:37:05
+ * @Copyright 1.0
+ */
 
 @Mapper
 public interface GenTableColumnDao extends BaseMapper<GenTableColumnEntity> {

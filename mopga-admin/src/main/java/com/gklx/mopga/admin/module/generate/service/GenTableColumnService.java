@@ -63,6 +63,7 @@ public class GenTableColumnService {
         genTableColumnDao.updateById(genTableColumnEntity);
         return ResponseDTO.ok();
     }
+
     /**
      * 批量删除
      */

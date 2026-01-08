@@ -16,12 +16,12 @@ import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 /**
-* 模板 Controller
-*
-* @Author gklx
-* @Date 2025-09-06 18:37:05
-* @Copyright 1.0
-  */
+ * 模板 Controller
+ *
+ * @Author gklx
+ * @Date 2025-09-06 18:37:05
+ * @Copyright 1.0
+ */
 
 @RestController
 @Tag(name = "模板")

@@ -14,5 +14,4 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class GenTableColumnManager extends ServiceImpl<GenTableColumnDao, GenTableColumnEntity> {
-
 }
