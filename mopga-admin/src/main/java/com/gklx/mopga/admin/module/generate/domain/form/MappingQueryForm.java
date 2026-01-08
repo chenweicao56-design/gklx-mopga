@@ -1,7 +1,7 @@
 package com.gklx.mopga.admin.module.generate.domain.form;
 
-import com.gklx.mopga.base.common.domain.PageParam;
 import io.swagger.v3.oas.annotations.media.Schema;
+import com.gklx.mopga.base.common.domain.PageParam;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
