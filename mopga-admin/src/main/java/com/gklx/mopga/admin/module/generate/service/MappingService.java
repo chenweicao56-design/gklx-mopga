@@ -1,21 +1,21 @@
 package com.gklx.mopga.admin.module.generate.service;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gklx.mopga.admin.module.generate.dao.MappingDao;
 import com.gklx.mopga.admin.module.generate.domain.entity.MappingEntity;
 import com.gklx.mopga.admin.module.generate.domain.form.MappingAddForm;
 import com.gklx.mopga.admin.module.generate.domain.form.MappingQueryForm;
 import com.gklx.mopga.admin.module.generate.domain.form.MappingUpdateForm;
 import com.gklx.mopga.admin.module.generate.domain.vo.MappingVo;
-import com.gklx.mopga.base.common.domain.PageResult;
-import com.gklx.mopga.base.common.domain.ResponseDTO;
+import java.util.List;
 import com.gklx.mopga.base.common.util.SmartBeanUtil;
 import com.gklx.mopga.base.common.util.SmartPageUtil;
-import jakarta.annotation.Resource;
+import com.gklx.mopga.base.common.domain.ResponseDTO;
+import com.gklx.mopga.base.common.domain.PageResult;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.stereotype.Service;
 
-import java.util.List;
+import jakarta.annotation.Resource;
+import org.springframework.stereotype.Service;
 
 /**
  * 映射表 Service
@@ -58,6 +58,7 @@ public class MappingService {
         mappingDao.updateById(mappingEntity);
         return ResponseDTO.ok();
     }
+
     /**
      * 批量删除
      */
@@ -79,5 +80,4 @@ public class MappingService {
         mappingDao.deleteById(id);
         return ResponseDTO.ok();
     }
-
 }
