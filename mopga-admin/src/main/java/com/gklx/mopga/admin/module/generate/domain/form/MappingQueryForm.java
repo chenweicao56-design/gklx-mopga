@@ -22,5 +22,4 @@ public class MappingQueryForm extends PageParam {
 
     @Schema(description = "映射编码")
     private String code;
-
 }
