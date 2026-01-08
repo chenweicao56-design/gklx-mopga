@@ -14,5 +14,5 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class TableManager extends ServiceImpl<TableDao, TableEntity> {
-
+    
 }

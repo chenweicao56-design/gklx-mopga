@@ -24,7 +24,6 @@
         gen_table.is_physically_deleted,
         gen_table.word_name,
         gen_table.status,
-        gen_table.sub_table_name,
         gen_table.table_prefix,
         gen_table.extended_data,
         gen_table.is_page,
@@ -37,7 +36,9 @@
         gen_table.form_count_line,
         gen_table.is_tree,
         gen_table.is_import,
-        gen_table.is_export
+        gen_table.is_export,
+        gen_table.sub_table_name,
+        gen_table.permission
     </sql>
 
     <!-- 分页查询 -->

@@ -108,6 +108,7 @@ public class GenUtils {
         tableMap.put("editComponent", genTable.getEditComponent());
         tableMap.put("formCountLine", genTable.getFormCountLine());
         tableMap.put("schemaName", database.getSchemaName());
+        tableMap.put("permission", genTable.getPermission());
 
         String extendedData = genTable.getExtendedData();
         if (StrUtil.isNotBlank(extendedData)) {

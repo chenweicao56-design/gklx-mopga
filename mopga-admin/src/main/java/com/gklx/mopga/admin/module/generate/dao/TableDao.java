@@ -20,7 +20,7 @@ import java.util.List;
 
 @Mapper
 public interface TableDao extends BaseMapper<TableEntity> {
-
+    
     /**
      * 分页 查询
      *
