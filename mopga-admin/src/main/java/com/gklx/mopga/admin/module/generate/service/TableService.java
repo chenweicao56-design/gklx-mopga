@@ -53,6 +53,9 @@ public class TableService {
         return SmartPageUtil.convert2PageResult(page, list);
     }
 
+     /**
+     * 详情
+     */
     public ResponseDTO<TableVo> getDetail(Long tableId) {
         TableEntity tableEntity = tableDao.selectById(tableId);
 	    TableVo tableVo = SmartBeanUtil.copy(tableEntity,TableVo.class);
@@ -77,6 +80,7 @@ public class TableService {
         tableDao.updateById(tableEntity);
         return ResponseDTO.ok();
     }
+
     /**
      * 批量删除
      */

@@ -18,12 +18,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
-* 表 Controller
-*
-* @Author gklx
-* @Date 2025-09-06 18:37:05
-* @Copyright 1.0
-  */
+ * 表 Controller
+ *
+ * @Author gklx
+ * @Date 2025-09-06 18:37:05
+ * @Copyright 1.0
+ */
 
 @RestController
 @Tag(name = "表")
@@ -38,17 +38,12 @@ public class TableController {
     public ResponseDTO<PageResult<TableVo>> queryPage(@RequestBody @Valid TableQueryForm queryForm) {
         return ResponseDTO.ok(tableService.queryPage(queryForm));
     }
-    @Operation(summary = "根据ID查询 @author gklx")
+
+    @Operation(summary = "详情 @author gklx")
     @GetMapping("/table/getDetail/{tableId}")
     @SaCheckPermission("database:query")
     public ResponseDTO<TableVo> getDetail(@PathVariable Long tableId) {
-        return ResponseDTO.ok(tableService.getById(tableId));
-    }
-    @Operation(summary = "all @author gklx")
-    @GetMapping("/table/all/{databaseId}")
-    @SaCheckPermission("database:query")
-    public ResponseDTO<List<TableVo>> getAll(@PathVariable Long databaseId) {
-        return ResponseDTO.ok(tableService.getAll(databaseId));
+        return tableService.getDetail(tableId);
     }
 
     @Operation(summary = "添加 @author gklx")
@@ -77,6 +72,13 @@ public class TableController {
     @SaCheckPermission("database:delete")
     public ResponseDTO<String> batchDelete(@PathVariable Long tableId) {
         return tableService.delete(tableId);
+    }
+
+    @Operation(summary = "all @author gklx")
+    @GetMapping("/table/all/{databaseId}")
+    @SaCheckPermission("database:query")
+    public ResponseDTO<List<TableVo>> getAll(@PathVariable Long databaseId) {
+        return ResponseDTO.ok(tableService.getAll(databaseId));
     }
 
 }
