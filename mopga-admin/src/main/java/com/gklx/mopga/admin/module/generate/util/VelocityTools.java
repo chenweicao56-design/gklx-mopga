@@ -4,9 +4,11 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 
 import java.util.Collection;
+import java.util.regex.Pattern;
 
 public class VelocityTools {
 
+    private static final Pattern BRACKET_PATTERN = Pattern.compile("(\\([^)]*\\)|（[^）]*）)");
 
     public boolean StringIsEmpty(String string) {
         return StrUtil.isEmpty(string);
@@ -22,5 +24,9 @@ public class VelocityTools {
 
     public boolean CollectionIsNotEmpty(Collection<?> collection) {
         return CollectionUtil.isNotEmpty(collection);
+    }
+
+    public String FormatComment(String comment) {
+        return BRACKET_PATTERN.matcher(comment).replaceAll("");
     }
 }

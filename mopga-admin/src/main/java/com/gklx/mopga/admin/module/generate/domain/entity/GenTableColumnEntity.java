@@ -187,4 +187,9 @@ public class GenTableColumnEntity {
      * 是否唯一
      */
     private Boolean isUnique;
+
+    /**
+     * 排序类型（字典：ORDER_TYPE）
+     */
+    private String orderType;
 }

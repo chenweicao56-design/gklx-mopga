@@ -115,8 +115,9 @@ public class GenTableColumnVo {
     @Schema(description = "是否唯一")
     private Boolean isUnique;
 
+    @Schema(description = "排序类型（字典：ORDER_TYPE）")
+    private String orderType;
 
     @Schema(description = "大写驼峰")
     private String WordName;
-
 }

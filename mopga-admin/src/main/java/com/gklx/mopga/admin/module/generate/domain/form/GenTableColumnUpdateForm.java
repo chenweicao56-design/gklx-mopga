@@ -120,4 +120,7 @@ public class GenTableColumnUpdateForm {
     @NotNull(message = "是否唯一 不能为空")
     private Boolean isUnique;
 
+    @Schema(description = "排序类型（字典：ORDER_TYPE）")
+    private String orderType;
+
 }
