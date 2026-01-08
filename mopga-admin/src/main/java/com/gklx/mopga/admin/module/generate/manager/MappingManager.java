@@ -1,8 +1,8 @@
 package com.gklx.mopga.admin.module.generate.manager;
 
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.gklx.mopga.admin.module.generate.dao.MappingDao;
 import com.gklx.mopga.admin.module.generate.domain.entity.MappingEntity;
+import com.gklx.mopga.admin.module.generate.dao.MappingDao;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 /**
@@ -14,5 +14,4 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class MappingManager extends ServiceImpl<MappingDao, MappingEntity> {
-
 }
