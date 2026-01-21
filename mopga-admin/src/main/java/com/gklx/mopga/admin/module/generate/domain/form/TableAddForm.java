@@ -127,4 +127,8 @@ public class TableAddForm {
     @Schema(description = "日志（0没有）", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotNull(message = "日志（0没有） 不能为空")
     private Integer log;
+
+    @Schema(description = "表状态（dict:TABLE_TYPE）", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotNull(message = "表状态（dict:TABLE_TYPE） 不能为空")
+    private String tableType;
 }

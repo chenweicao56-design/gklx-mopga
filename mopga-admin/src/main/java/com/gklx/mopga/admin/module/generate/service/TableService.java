@@ -124,6 +124,7 @@ public class TableService {
     public TableVo getByName(Long databaseId,String name) {
         LambdaQueryWrapper<TableEntity> lambdaQuery = Wrappers.lambdaQuery();
         lambdaQuery.eq(TableEntity::getTableName, name);
+        lambdaQuery.eq(TableEntity::getDatabaseId, databaseId);
         TableEntity tableEntity = tableManager.getOne(lambdaQuery);
         TableVo TableVo = SmartBeanUtil.copy(tableEntity, TableVo.class);
         if (ObjUtil.isNotNull(TableVo)) {

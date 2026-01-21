@@ -125,9 +125,13 @@ public class TableVo {
     @Schema(description = "日志（0没有）")
     private Integer log;
 
+    @Schema(description = "表状态（dict:TABLE_TYPE）")
+    private String tableType;
+
     @Schema(description = "字段列表")
     private List<GenTableColumnVo> columns;
 
     @Schema(description = "子表")
-    private TableVo subTable;
+    private List<TableVo> subTables;
+
 }

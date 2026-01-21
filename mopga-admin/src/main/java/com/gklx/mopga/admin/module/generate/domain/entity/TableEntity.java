@@ -206,4 +206,9 @@ public class TableEntity {
      * 日志（0没有）
      */
     private Integer log;
+
+    /**
+     * 表状态（dict:TABLE_TYPE）
+     */
+    private String tableType;
 }

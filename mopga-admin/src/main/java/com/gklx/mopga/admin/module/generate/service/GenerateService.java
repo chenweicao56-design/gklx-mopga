@@ -1,6 +1,7 @@
 package com.gklx.mopga.admin.module.generate.service;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
@@ -278,8 +279,15 @@ public class GenerateService {
         TableVo table = tableService.getById(tableId);
         String subTableName = table.getSubTableName();
         if (StrUtil.isNotEmpty(subTableName)) {
-            TableVo subTable = tableService.getByName(table.getDatabaseId(), subTableName);
-            table.setSubTable(subTable);
+            List<String> subTableNames = StrUtil.split(subTableName, ",");
+            List<TableVo> subTables = new ArrayList<>();
+            for (String item : subTableNames){
+                TableVo subTable = tableService.getByName(table.getDatabaseId(), item);
+                if(ObjUtil.isNotNull(subTable)){
+                    subTables.add(subTable);
+                }
+            }
+            table.setSubTables(subTables);
         }
 
         DatabaseEntity database = databaseManager.getById(table.getDatabaseId());

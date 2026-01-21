@@ -67,10 +67,7 @@ public class GenUtils {
         velocityContext.put("frontProjectPath", database.getFrontProjectPath());
         Map<String, Object> tableMap = buildTable(database, genTable, templateCodeItemEntity);
         tableMap.forEach(velocityContext::put);
-        TableVo subTable = genTable.getSubTable();
-        if (ObjUtil.isNotEmpty(subTable)) {
-            velocityContext.put("subTable", subTable);
-        }
+        velocityContext.put("subTables", genTable.getSubTables());
         //模板信息
         buildFilePackages(database, velocityContext, templateEntity, templateCodeItemEntities);
         return velocityContext;
