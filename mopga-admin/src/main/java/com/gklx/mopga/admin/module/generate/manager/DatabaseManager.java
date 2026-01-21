@@ -14,5 +14,4 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class DatabaseManager extends ServiceImpl<DatabaseDao, DatabaseEntity> {
-    
 }

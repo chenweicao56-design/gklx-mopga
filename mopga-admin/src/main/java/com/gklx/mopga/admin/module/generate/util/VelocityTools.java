@@ -29,4 +29,16 @@ public class VelocityTools {
     public String FormatComment(String comment) {
         return BRACKET_PATTERN.matcher(comment).replaceAll("");
     }
+
+    public String WordName(String value) {
+        return StrUtil.upperFirst(value);
+    }
+
+    public String word_name(String value) {
+        return StrUtil.toUnderlineCase(value);
+    }
+
+    public String wordname(String value) {
+        return StrUtil.toUnderlineCase(value).replace("_", "-");
+    }
 }

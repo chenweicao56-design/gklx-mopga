@@ -42,7 +42,8 @@
         gen_database.edit_component,
         gen_database.form_count_line,
         gen_database.schema_name,
-        gen_database.permission
+        gen_database.permission,
+        gen_database.log
     </sql>
 
     <!-- 分页查询 -->

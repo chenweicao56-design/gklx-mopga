@@ -109,6 +109,9 @@ public class GenUtils {
         tableMap.put("formCountLine", genTable.getFormCountLine());
         tableMap.put("schemaName", database.getSchemaName());
         tableMap.put("permission", genTable.getPermission());
+        tableMap.put("isTree", genTable.getIsTree());
+        tableMap.put("isImport", genTable.getIsImport());
+        tableMap.put("isExport", genTable.getIsExport());
 
         String extendedData = genTable.getExtendedData();
         if (StrUtil.isNotBlank(extendedData)) {
@@ -134,6 +137,7 @@ public class GenUtils {
         List<GenTableColumnVo> columns = genTable.getColumns();
         if (CollectionUtil.isNotEmpty(columns)) {
             List<GenTableColumnVo> queryColumns = new ArrayList<>();
+            List<GenTableColumnVo> uniqueColumns = new ArrayList<>();
             for (GenTableColumnVo column : columns) {
                 column.setWordName(StrUtil.upperFirst(column.getFieldName()));
                 if (column.getIsPk()) {
@@ -147,9 +151,14 @@ public class GenUtils {
                 if (column.getIsWhere()) {
                     queryColumns.add(column);
                 }
-
+                if (column.getIsUnique()) {
+                    uniqueColumns.add(column);
+                }
             }
             tableMap.put("queryColumns", queryColumns);
+            tableMap.put("isUnique", !uniqueColumns.isEmpty());
+            tableMap.put("uniqueColumns", uniqueColumns);
+
         }
         tableMap.put("columns", genTable.getColumns());
         return tableMap;
@@ -212,6 +221,7 @@ public class GenUtils {
         fileType.set("fileName", fileName);
         fileType.set("fileType", templateCodeItemEntity.getFileType());
         fileType.set("filePath", filePath + fileName);
+        fileType.set("id", templateCodeItemEntity.getId());
         fileType.set("fileContent", GenUtils.generateCode(database, table, templateEntity, templateCodeItemEntity, templateCodeItemEntities));
         fileType.set("checked", true);
         return fileType;

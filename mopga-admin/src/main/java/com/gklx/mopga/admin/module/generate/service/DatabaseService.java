@@ -50,13 +50,13 @@ public class DatabaseService {
         return SmartPageUtil.convert2PageResult(page, list);
     }
 
-    /**
+     /**
      * 详情
      */
     public ResponseDTO<DatabaseVo> getDetail(Long id) {
         DatabaseEntity databaseEntity = databaseDao.selectById(id);
-        DatabaseVo databaseVo = SmartBeanUtil.copy(databaseEntity, DatabaseVo.class);
-        return ResponseDTO.ok(databaseVo);
+	    DatabaseVo databaseVo = SmartBeanUtil.copy(databaseEntity,DatabaseVo.class);
+	    return ResponseDTO.ok(databaseVo);
     }
 
     /**
@@ -82,7 +82,7 @@ public class DatabaseService {
      * 批量删除
      */
     public ResponseDTO<String> batchDelete(List<Long> idList) {
-        if (CollectionUtils.isEmpty(idList)) {
+        if (CollectionUtils.isEmpty(idList)){
             return ResponseDTO.ok();
         }
         databaseDao.deleteByIds(idList);
@@ -93,7 +93,7 @@ public class DatabaseService {
      * 单个删除
      */
     public ResponseDTO<String> delete(Long id) {
-        if (null == id) {
+        if (null == id){
             return ResponseDTO.ok();
         }
         databaseDao.deleteById(id);
