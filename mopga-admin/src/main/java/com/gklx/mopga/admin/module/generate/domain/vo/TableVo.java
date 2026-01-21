@@ -122,6 +122,9 @@ public class TableVo {
     @Schema(description = "权限（0没有）")
     private Integer permission;
 
+    @Schema(description = "日志（0没有）")
+    private Integer log;
+
     @Schema(description = "字段列表")
     private List<GenTableColumnVo> columns;
 

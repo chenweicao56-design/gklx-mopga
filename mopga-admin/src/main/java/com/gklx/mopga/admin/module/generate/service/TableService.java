@@ -1,30 +1,21 @@
 package com.gklx.mopga.admin.module.generate.service;
 
-import cn.hutool.core.util.ObjUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gklx.mopga.admin.module.generate.dao.TableDao;
-import com.gklx.mopga.admin.module.generate.domain.entity.GenTableColumnEntity;
 import com.gklx.mopga.admin.module.generate.domain.entity.TableEntity;
 import com.gklx.mopga.admin.module.generate.domain.form.TableAddForm;
 import com.gklx.mopga.admin.module.generate.domain.form.TableQueryForm;
 import com.gklx.mopga.admin.module.generate.domain.form.TableUpdateForm;
-import com.gklx.mopga.admin.module.generate.domain.vo.GenTableColumnVo;
 import com.gklx.mopga.admin.module.generate.domain.vo.TableVo;
-import com.gklx.mopga.admin.module.generate.manager.TableManager;
-import com.gklx.mopga.base.common.domain.PageResult;
-import com.gklx.mopga.base.common.domain.ResponseDTO;
+import java.util.List;
 import com.gklx.mopga.base.common.util.SmartBeanUtil;
 import com.gklx.mopga.base.common.util.SmartPageUtil;
-import jakarta.annotation.Resource;
+import com.gklx.mopga.base.common.domain.ResponseDTO;
+import com.gklx.mopga.base.common.domain.PageResult;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import jakarta.annotation.Resource;
+import org.springframework.stereotype.Service;
 
 /**
  * 表 Service
@@ -39,10 +30,6 @@ public class TableService {
 
     @Resource
     private TableDao tableDao;
-    @Resource
-    private TableManager tableManager;
-    @Resource
-    private GenTableColumnService genTableColumnService;
 
     /**
      * 分页查询
@@ -101,65 +88,5 @@ public class TableService {
         }
         tableDao.deleteById(tableId);
         return ResponseDTO.ok();
-    }
-
-    public TableVo getById(Long tableId) {
-        TableEntity tableEntity = tableManager.getById(tableId);
-        TableVo TableVo = SmartBeanUtil.copy(tableEntity, TableVo.class);
-        List<GenTableColumnEntity> columns = genTableColumnService.listByTableId(tableId);
-        if (CollectionUtils.isNotEmpty(columns)) {
-            TableVo.setColumns(SmartBeanUtil.copyList(columns, GenTableColumnVo.class));
-        } else {
-            TableVo.setColumns(new ArrayList<>());
-        }
-        return TableVo;
-    }
-
-    public TableVo getByName(Long databaseId,String name) {
-        LambdaQueryWrapper<TableEntity> lambdaQuery = Wrappers.lambdaQuery();
-        lambdaQuery.eq(TableEntity::getTableName, name);
-        TableEntity tableEntity = tableManager.getOne(lambdaQuery);
-        TableVo TableVo = SmartBeanUtil.copy(tableEntity, TableVo.class);
-        if (ObjUtil.isNotNull(TableVo)) {
-            List<GenTableColumnEntity> columns = genTableColumnService.listByTableId(tableEntity.getTableId());
-            if (CollectionUtils.isEmpty(columns)) {
-                TableVo.setColumns(SmartBeanUtil.copyList(columns, GenTableColumnVo.class));
-            } else {
-                TableVo.setColumns(new ArrayList<>());
-            }
-        }
-        return TableVo;
-    }
-
-    public List<TableVo> getByNames(Long databaseId,List<String> tableNames) {
-        LambdaQueryWrapper<TableEntity> lambdaQuery = Wrappers.lambdaQuery();
-        lambdaQuery.in(TableEntity::getTableName, tableNames);
-        List<TableEntity> tables = tableManager.list(lambdaQuery);
-        if (CollectionUtils.isEmpty(tables)) {
-            return new ArrayList<>();
-        } else {
-            List<TableVo> tableVos = SmartBeanUtil.copyList(tables, TableVo.class);
-            tableVos.forEach(tableVo -> {
-                List<GenTableColumnVo> tableColumnVos = genTableColumnService.getByTableId(tableVo.getTableId());
-                if (CollectionUtils.isNotEmpty(tableColumnVos)) {
-                    tableVo.setColumns(tableColumnVos);
-                }
-            });
-            return tableVos;
-        }
-
-    }
-
-    public List<TableVo> getAll(Long databaseId) {
-        LambdaQueryWrapper<TableEntity> lambdaQuery = Wrappers.lambdaQuery();
-        lambdaQuery.eq(TableEntity::getDatabaseId, databaseId);
-        List<TableEntity> tableEntities = tableManager.list(lambdaQuery);
-        List<TableVo> TableVoS = SmartBeanUtil.copyList(tableEntities, TableVo.class);
-        List<GenTableColumnVo> columnVOS = genTableColumnService.getByDatabaseId(databaseId);
-        Map<Long, List<GenTableColumnVo>> collect = columnVOS.stream().collect(Collectors.groupingBy(GenTableColumnVo::getTableId));
-        TableVoS.forEach(TableVo -> {
-            TableVo.setColumns(collect.get(TableVo.getTableId()));
-        });
-        return TableVoS;
     }
 }

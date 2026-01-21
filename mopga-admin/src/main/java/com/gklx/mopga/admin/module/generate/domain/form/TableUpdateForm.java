@@ -128,4 +128,8 @@ public class TableUpdateForm {
     @NotNull(message = "权限（0没有） 不能为空")
     private Integer permission;
 
+    @Schema(description = "日志（0没有）", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotNull(message = "日志（0没有） 不能为空")
+    private Integer log;
+
 }

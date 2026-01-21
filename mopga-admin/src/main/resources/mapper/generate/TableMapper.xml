@@ -38,7 +38,8 @@
         gen_table.is_import,
         gen_table.is_export,
         gen_table.sub_table_name,
-        gen_table.permission
+        gen_table.permission,
+        gen_table.log
     </sql>
 
     <!-- 分页查询 -->

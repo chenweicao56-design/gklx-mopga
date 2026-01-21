@@ -201,4 +201,9 @@ public class TableEntity {
      * 权限（0没有）
      */
     private Integer permission;
+
+    /**
+     * 日志（0没有）
+     */
+    private Integer log;
 }
