@@ -109,6 +109,7 @@ public class GenUtils {
         tableMap.put("formCountLine", genTable.getFormCountLine());
         tableMap.put("schemaName", database.getSchemaName());
         tableMap.put("permission", genTable.getPermission());
+        tableMap.put("log", genTable.getLog());
         tableMap.put("isTree", genTable.getIsTree());
         tableMap.put("isImport", genTable.getIsImport());
         tableMap.put("isExport", genTable.getIsExport());
