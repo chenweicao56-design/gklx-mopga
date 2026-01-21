@@ -1,4 +1,4 @@
-<select id="functionName" parameterType="${packageName}.domain.${ClassName}"
+<select id="${functionName}" parameterType="${packageName}.domain.${ClassName}"
         resultMap="${ClassName}Result">
     SELECT
     #if($t.CollectionIsNotEmpty($selects))

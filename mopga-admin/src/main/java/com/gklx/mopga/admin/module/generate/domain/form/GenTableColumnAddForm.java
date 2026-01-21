@@ -116,6 +116,10 @@ public class GenTableColumnAddForm {
     @NotNull(message = "是否唯一 不能为空")
     private Boolean isUnique;
 
-    @Schema(description = "排序类型（字典：ORDER_TYPE）")
+    @Schema(description = "排序类型（字典：ORDER_TYPE）", requiredMode = Schema.RequiredMode.REQUIRED)
     private String orderType;
+
+    @Schema(description = "是否外键（1是）", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotNull(message = "是否外键（1是） 不能为空")
+    private Boolean isFk;
 }

@@ -120,4 +120,7 @@ public class GenTableColumnVo {
 
     @Schema(description = "大写驼峰")
     private String WordName;
+
+    @Schema(description = "是否外键（1是）")
+    private Boolean isFk;
 }

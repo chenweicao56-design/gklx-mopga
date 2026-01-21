@@ -3,6 +3,7 @@ package com.gklx.mopga.admin.module.generate.domain.entity;
 import com.baomidou.mybatisplus.annotation.*;
 
 import java.time.LocalDateTime;
+
 import lombok.Data;
 
 /**
@@ -192,4 +193,9 @@ public class GenTableColumnEntity {
      * 排序类型（字典：ORDER_TYPE）
      */
     private String orderType;
+
+    /**
+     * 是否外键（1是）
+     */
+    private Boolean isFk;
 }

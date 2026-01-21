@@ -37,7 +37,8 @@
         gen_table_column.is_table,
         gen_table_column.update_strategy,
         gen_table_column.is_unique,
-        gen_table_column.order_type
+        gen_table_column.order_type,
+        gen_table_column.is_fk
     </sql>
 
     <!-- 分页查询 -->

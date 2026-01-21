@@ -136,6 +136,7 @@ public class GenUtils {
         if (CollectionUtil.isNotEmpty(columns)) {
             List<GenTableColumnVo> queryColumns = new ArrayList<>();
             List<GenTableColumnVo> uniqueColumns = new ArrayList<>();
+            List<GenTableColumnVo> foreignKeyColumns = new ArrayList<>();
             for (GenTableColumnVo column : columns) {
                 column.setWordName(StrUtil.upperFirst(column.getFieldName()));
                 if (column.getIsPk()) {
@@ -152,10 +153,15 @@ public class GenUtils {
                 if (column.getIsUnique()) {
                     uniqueColumns.add(column);
                 }
+                if (column.getIsFk()) {
+                    foreignKeyColumns.add(column);
+                }
             }
             tableMap.put("queryColumns", queryColumns);
             tableMap.put("isUnique", !uniqueColumns.isEmpty());
             tableMap.put("uniqueColumns", uniqueColumns);
+            tableMap.put("isForeignKey", !foreignKeyColumns.isEmpty());
+            tableMap.put("foreignKeyColumns", foreignKeyColumns);
 
         }
         tableMap.put("columns", genTable.getColumns());

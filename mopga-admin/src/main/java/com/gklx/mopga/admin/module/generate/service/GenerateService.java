@@ -422,6 +422,7 @@ public class GenerateService {
         velocityContext.put("froms", froms);
         velocityContext.put("wheres", wheres);
         velocityContext.put("groupBys", groupBys);
+        velocityContext.put("functionName", form.getFunctionName());
         StringWriter sw = new StringWriter();
         Template tpl = Velocity.getTemplate("vm/join.vm", "UTF-8");
         tpl.merge(velocityContext, sw);
