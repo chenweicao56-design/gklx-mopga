@@ -248,7 +248,7 @@ public class GenerateService {
                     column.setColumnId(oldColumn.getColumnId());
                     column.setTableId(oldColumn.getTableId());
                     column.setDatabaseId(oldColumn.getDatabaseId());
-                    column.setFieldName(oldColumn.getColumnName());
+                    column.setFieldName(StrUtil.lowerFirst(StrUtil.toCamelCase(column.getColumnName())));
                     column.setFieldComment(column.getColumnComment());
                     GenUtils.buildIsBase(column, templateColumnMap);
                     GenUtils.buildFileType(column, templateMappingItemEntityMap, defaultMappingMap);

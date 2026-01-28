@@ -41,7 +41,8 @@
         gen_table.permission,
         gen_table.log,
         gen_table.table_type,
-        gen_table.delete_column_name
+        gen_table.delete_column_name,
+        gen_table.business_type
     </sql>
 
     <!-- 分页查询 -->

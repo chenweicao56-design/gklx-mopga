@@ -131,6 +131,9 @@ public class TableVo {
     @Schema(description = "删除字段名称")
     private String deleteColumnName;
 
+    @Schema(description = "业务类型")
+    private String businessType;
+
     @Schema(description = "字段列表")
     private List<GenTableColumnVo> columns;
 

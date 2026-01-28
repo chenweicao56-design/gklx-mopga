@@ -216,4 +216,9 @@ public class TableEntity {
      * 删除字段名称
      */
     private String deleteColumnName;
+
+    /**
+     * 业务类型
+     */
+    private String businessType;
 }
