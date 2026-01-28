@@ -226,4 +226,9 @@ public class DatabaseEntity {
      * 日志（0没有）
      */
     private Integer log;
+
+    /**
+     * 删除字段名称
+     */
+    private String deleteColumnName;
 }

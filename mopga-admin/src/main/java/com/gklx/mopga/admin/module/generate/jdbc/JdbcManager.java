@@ -41,7 +41,7 @@ public class JdbcManager {
     public Connection getConnection(String username, String password, String url, Integer timeout) throws Exception {
         // 构建缓存标识（使用url而非ip作为标识一部分，更准确）
         CacheIdentifier identifier = CacheIdentifier.builder()
-                .ip(extractIpFromUrl(url))  // 从URL提取IP作为标识，更合理
+                .url(url)  // 从URL提取IP作为标识，更合理
                 .username(username)
                 .password(password)
                 .build();

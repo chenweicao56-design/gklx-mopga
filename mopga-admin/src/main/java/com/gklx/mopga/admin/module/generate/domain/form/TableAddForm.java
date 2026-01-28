@@ -129,6 +129,9 @@ public class TableAddForm {
     private Integer log;
 
     @Schema(description = "表状态（dict:TABLE_TYPE）", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotNull(message = "表状态（dict:TABLE_TYPE） 不能为空")
+    @NotBlank(message = "表状态（dict:TABLE_TYPE） 不能为空")
     private String tableType;
+
+    @Schema(description = "删除字段名称")
+    private String deleteColumnName;
 }

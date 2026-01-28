@@ -211,4 +211,9 @@ public class TableEntity {
      * 表状态（dict:TABLE_TYPE）
      */
     private String tableType;
+
+    /**
+     * 删除字段名称
+     */
+    private String deleteColumnName;
 }

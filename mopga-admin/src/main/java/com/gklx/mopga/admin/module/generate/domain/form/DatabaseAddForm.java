@@ -141,4 +141,7 @@ public class DatabaseAddForm {
     @Schema(description = "日志（0没有）", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotNull(message = "日志（0没有） 不能为空")
     private Integer log;
+
+    @Schema(description = "删除字段名称")
+    private String deleteColumnName;
 }

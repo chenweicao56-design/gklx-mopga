@@ -137,6 +137,9 @@ public class DatabaseVo {
     @Schema(description = "日志（0没有）")
     private Integer log;
 
+    @Schema(description = "删除字段名称")
+    private String deleteColumnName;
+
     @Schema(description = "表")
     private List<TableVo> tables;
 }

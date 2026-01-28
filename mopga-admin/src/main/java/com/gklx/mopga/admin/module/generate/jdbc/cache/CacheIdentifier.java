@@ -14,7 +14,7 @@ import java.util.Objects;
 @Builder
 public class CacheIdentifier {
 
-    private String ip;
+    private String url;
 
     private String port;
 
@@ -25,7 +25,7 @@ public class CacheIdentifier {
     @Override
     public String toString() {
         return "CacheIdentifier {" +
-                "ip='" + ip + '\'' +
+                "ip='" + url + '\'' +
                 ", port='" + port + '\'' +
                 ", username+password=>hash='" + Objects.hash(username, password) + '\'' +
                 '}';

@@ -128,10 +128,12 @@ public class TableVo {
     @Schema(description = "表状态（dict:TABLE_TYPE）")
     private String tableType;
 
+    @Schema(description = "删除字段名称")
+    private String deleteColumnName;
+
     @Schema(description = "字段列表")
     private List<GenTableColumnVo> columns;
 
     @Schema(description = "子表")
     private List<TableVo> subTables;
-
 }
