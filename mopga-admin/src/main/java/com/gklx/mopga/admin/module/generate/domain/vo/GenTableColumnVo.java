@@ -34,6 +34,9 @@ public class GenTableColumnVo {
     @Schema(description = "删除状态")
     private Boolean deletedFlag;
 
+    @Schema(description = "排序")
+    private Integer sort;
+
     @Schema(description = "表id")
     private Long tableId;
 
@@ -60,9 +63,6 @@ public class GenTableColumnVo {
 
     @Schema(description = "字段类型")
     private String columnType;
-
-    @Schema(description = "排序")
-    private Integer sort;
 
     @Schema(description = "字段名称")
     private String fieldName;
@@ -118,9 +118,12 @@ public class GenTableColumnVo {
     @Schema(description = "排序类型（字典：ORDER_TYPE）")
     private String orderType;
 
-    @Schema(description = "大写驼峰")
-    private String WordName;
-
     @Schema(description = "是否外键（1是）")
     private Boolean isFk;
+
+    @Schema(description = "业务类型")
+    private String businessType;
+
+    @Schema(description = "大写驼峰")
+    private String WordName;
 }

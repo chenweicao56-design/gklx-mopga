@@ -198,4 +198,9 @@ public class GenTableColumnEntity {
      * 是否外键（1是）
      */
     private Boolean isFk;
+
+    /**
+     * 业务类型
+     */
+    private String businessType;
 }

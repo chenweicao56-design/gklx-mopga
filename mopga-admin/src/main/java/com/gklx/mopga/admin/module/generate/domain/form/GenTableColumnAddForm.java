@@ -3,6 +3,7 @@ package com.gklx.mopga.admin.module.generate.domain.form;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import lombok.Data;
 
 /**
@@ -122,4 +123,8 @@ public class GenTableColumnAddForm {
     @Schema(description = "是否外键（1是）", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotNull(message = "是否外键（1是） 不能为空")
     private Boolean isFk;
+
+    @Schema(description = "业务类型", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotBlank(message = "业务类型 不能为空")
+    private String businessType;
 }

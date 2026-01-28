@@ -10,6 +10,7 @@
         gen_table_column.update_user_id,
         gen_table_column.update_time,
         gen_table_column.deleted_flag,
+        gen_table_column.sort,
         gen_table_column.table_id,
         gen_table_column.database_id,
         gen_table_column.column_name,
@@ -19,7 +20,6 @@
         gen_table_column.is_null,
         gen_table_column.column_default,
         gen_table_column.column_type,
-        gen_table_column.sort,
         gen_table_column.field_name,
         gen_table_column.field_comment,
         gen_table_column.field_type,
@@ -38,7 +38,8 @@
         gen_table_column.update_strategy,
         gen_table_column.is_unique,
         gen_table_column.order_type,
-        gen_table_column.is_fk
+        gen_table_column.is_fk,
+        gen_table_column.business_type
     </sql>
 
     <!-- 分页查询 -->
