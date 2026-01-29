@@ -67,6 +67,13 @@ public class TemplateCodeItemController {
         return ResponseDTO.ok(templateCodeItemService.queryPage(queryForm));
     }
 
+    @Operation(summary = "详情 @author gklx")
+    @GetMapping("/templateCodeItem/getDetail/{id}")
+    @SaCheckPermission("template:query")
+    public ResponseDTO<TemplateCodeItemVo> getDetail(@PathVariable Long id) {
+        return templateCodeItemService.getDetail(id);
+    }
+
     @Operation(summary = "添加 @author gklx")
     @PostMapping("/templateCodeItem/add")
     @SaCheckPermission("template:add")

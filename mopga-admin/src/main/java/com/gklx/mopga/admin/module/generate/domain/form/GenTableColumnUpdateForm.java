@@ -129,8 +129,7 @@ public class GenTableColumnUpdateForm {
     @NotNull(message = "是否外键（1是） 不能为空")
     private Boolean isFk;
 
-    @Schema(description = "业务类型", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotBlank(message = "业务类型 不能为空")
+    @Schema(description = "业务类型")
     private String businessType;
 
 }

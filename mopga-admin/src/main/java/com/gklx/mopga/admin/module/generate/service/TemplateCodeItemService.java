@@ -45,6 +45,16 @@ public class TemplateCodeItemService {
         return SmartPageUtil.convert2PageResult(page, list);
     }
 
+
+    /**
+     * 详情
+     */
+    public ResponseDTO<TemplateCodeItemVo> getDetail(Long id) {
+        TemplateCodeItemEntity templateCodeItemEntity = templateCodeItemDao.selectById(id);
+        TemplateCodeItemVo templateCodeItemVo = SmartBeanUtil.copy(templateCodeItemEntity,TemplateCodeItemVo.class);
+        return ResponseDTO.ok(templateCodeItemVo);
+    }
+
     /**
      * 添加
      */

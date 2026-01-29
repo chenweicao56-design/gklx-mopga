@@ -135,7 +135,6 @@ public class TableAddForm {
     @Schema(description = "删除字段名称")
     private String deleteColumnName;
 
-    @Schema(description = "业务类型", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotBlank(message = "业务类型 不能为空")
+    @Schema(description = "业务类型")
     private String businessType;
 }
