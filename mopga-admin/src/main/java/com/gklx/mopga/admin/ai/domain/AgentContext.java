@@ -1,5 +1,6 @@
 package com.gklx.mopga.admin.ai.domain;
 
+import cn.hutool.json.JSONObject;
 import com.gklx.mopga.admin.ai.core.ChatHandler;
 import lombok.Data;
 
@@ -16,6 +17,8 @@ public class AgentContext {
     private String userId;
 
     private ChatHandler chatHandler;
+
+    private JSONObject data;
 
 
 }

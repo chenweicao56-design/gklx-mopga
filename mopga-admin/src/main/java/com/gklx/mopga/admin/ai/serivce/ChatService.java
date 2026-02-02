@@ -1,10 +1,11 @@
 package com.gklx.mopga.admin.ai.serivce;
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import com.gklx.mopga.admin.ai.agent.manager.ManagerAgentService;
-import com.gklx.mopga.admin.ai.domain.AgentContext;
-import com.gklx.mopga.admin.ai.core.ChatResponse;
 import com.gklx.mopga.admin.ai.core.ChatHandler;
+import com.gklx.mopga.admin.ai.core.ChatResponse;
+import com.gklx.mopga.admin.ai.domain.AgentContext;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -54,8 +55,16 @@ public class ChatService extends BaseChatService {
                 }
             };
             context.setChatHandler(chatHandler);
-            managerAgentService.run(context);
+            String agentAlias = context.getAgentAlias();
+            if (StrUtil.isNotEmpty(agentAlias)) {
+                BaseAgentService agentService = SpringUtil.getBean(
+                        agentAlias,
+                        BaseAgentService.class
+                );
+                agentService.run(context);
+            } else {
+                managerAgentService.run(context);
+            }
         });
-
     }
 }
