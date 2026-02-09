@@ -5,6 +5,10 @@ import com.gklx.mopga.admin.ai.agent.menu.MenuAgentService;
 import com.gklx.mopga.admin.ai.core.ChatResponse;
 import com.gklx.mopga.admin.ai.domain.AgentContext;
 import com.gklx.mopga.admin.ai.serivce.ChatService;
+import com.gklx.mopga.admin.util.PaddleOcrClient;
+import com.gklx.mopga.base.common.domain.ResponseDTO;
+import com.gklx.mopga.base.module.support.file.domain.vo.FileDownloadVO;
+import com.gklx.mopga.base.module.support.file.service.FileService;
 import dev.langchain4j.mcp.McpToolProvider;
 import dev.langchain4j.mcp.client.DefaultMcpClient;
 import dev.langchain4j.mcp.client.McpClient;
@@ -36,6 +40,10 @@ public class AiController {
     private ChatService chatService;
     @Resource
     private MenuAgentService menuAgentService;
+    @Resource
+    private FileService fileService;
+    @Resource
+    private PaddleOcrClient paddleOcrClient;
 
     @PostMapping("/chat")
     public Flux<ChatResponse> chat(@RequestBody AgentContext context) {
@@ -47,40 +55,10 @@ public class AiController {
 
     @GetMapping("/test")
     public Flux<String> test() {
-
-        List<Content> department = menuContentRetriever.retrieve(Query.from("代码预览"));
-
-//        AgentContext agentContext = new AgentContext();
-//        agentContext.setConversationId("1234567890");
-//        agentContext.setQuery("部门管理");
-//        agentContext.setAgentAlias(MenuAgentService.AGENT_ALIAS);
-//        menuAgentService.run(agentContext);
-        return Flux.just("");
-
-
-//        return Flux.create(sink -> {
-//            // 使用原子类计数，避免线程安全问题
-//            AtomicInteger counter = new AtomicInteger(1);
-//
-//            // 创建一个后台线程持续发送消息
-//            Thread thread = new Thread(() -> {
-//                while (!sink.isCancelled()) { // 检查订阅是否取消
-//                    try {
-//                        String message = "Hello " + counter.getAndIncrement();
-//                        sink.next(message);
-//                        Thread.sleep(1000); // 每秒发送一条
-//                    } catch (InterruptedException e) {
-//                        Thread.currentThread().interrupt();
-//                        sink.error(e);
-//                        break;
-//                    }
-//                }
-//            });
-//            thread.start();
-//
-//            // 当订阅取消时停止线程
-//            sink.onDispose(thread::interrupt);
-//        });
+        ResponseDTO<FileDownloadVO> downloadFile = fileService.getDownloadFile("", "");
+        String run = paddleOcrClient.run(downloadFile.getData());
+        System.out.println( run);
+        return Flux.just(run);
     }
 
     @GetMapping("/mcp")

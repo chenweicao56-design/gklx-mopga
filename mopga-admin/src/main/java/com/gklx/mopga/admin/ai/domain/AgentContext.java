@@ -4,6 +4,8 @@ import cn.hutool.json.JSONObject;
 import com.gklx.mopga.admin.ai.core.ChatHandler;
 import lombok.Data;
 
+import java.util.List;
+
 
 @Data
 public class AgentContext {
@@ -19,6 +21,8 @@ public class AgentContext {
     private ChatHandler chatHandler;
 
     private JSONObject data;
+
+    private List<String> files;
 
 
 }
