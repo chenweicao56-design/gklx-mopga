@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gklx.mopga.admin.module.generate.dao.PromptTemplateDao">
+
+    <!-- 查询结果列 -->
+    <sql id="base_columns">
+        t_prompt_template.id,
+        t_prompt_template.create_user_id,
+        t_prompt_template.create_time,
+        t_prompt_template.update_user_id,
+        t_prompt_template.update_time,
+        t_prompt_template.deleted_flag,
+        t_prompt_template.name,
+        t_prompt_template.description,
+        t_prompt_template.system_prompt,
+        t_prompt_template.user_prompt
+    </sql>
+
+    <!-- 分页查询 -->
+    <select id="queryPage" resultType="com.gklx.mopga.admin.module.generate.domain.vo.PromptTemplateVo">
+        SELECT
+        <include refid="base_columns"/>
+        FROM t_prompt_template
+        <where>
+            <if test="queryForm.name != null and queryForm.name != ''">
+                AND t_prompt_template.name like concat('%', #{queryColumn.fieldName}, '%')
+            </if>
+        </where>
+    </select>
+</mapper>

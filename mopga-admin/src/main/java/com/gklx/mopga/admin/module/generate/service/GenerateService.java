@@ -352,6 +352,9 @@ public class GenerateService {
 
     public String generateMybatis(SqlForm form) {
         Long databaseId = form.getDatabaseId();
+        DatabaseEntity database = databaseManager.getById(databaseId);
+        String packageName = database.getPackageName();
+        String moduleName = database.getModuleName();
         List<SelectForm> selects = form.getSelects();
         Map<String, GenTableColumnVo> columnMap = new HashMap<>();
         Map<String, TableVo> tableMap = new HashMap<>();
@@ -423,6 +426,7 @@ public class GenerateService {
         velocityContext.put("wheres", wheres);
         velocityContext.put("groupBys", groupBys);
         velocityContext.put("functionName", form.getFunctionName());
+        velocityContext.put("packageName", packageName+"."+moduleName);
         StringWriter sw = new StringWriter();
         Template tpl = Velocity.getTemplate("vm/join.vm", "UTF-8");
         tpl.merge(velocityContext, sw);

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gklx.mopga.admin.module.generate.dao.TemplateCommonDao">
+
+    <!-- 查询结果列 -->
+    <sql id="base_columns">
+        gen_template_common.id,
+        gen_template_common.create_user_id,
+        gen_template_common.create_time,
+        gen_template_common.update_user_id,
+        gen_template_common.update_time,
+        gen_template_common.deleted_flag,
+        gen_template_common.content,
+        gen_template_common.file_type,
+        gen_template_common.category,
+        gen_template_common.sort
+    </sql>
+
+    <!-- 分页查询 -->
+    <select id="queryPage" resultType="com.gklx.mopga.admin.module.generate.domain.vo.TemplateCommonVo">
+        SELECT
+        <include refid="base_columns"/>
+        FROM gen_template_common
+	    ORDER BY gen_template_common.sort
+    </select>
+</mapper>

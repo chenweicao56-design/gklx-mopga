@@ -1,5 +1,5 @@
-<select id="${functionName}" parameterType="${packageName}.domain.${ClassName}"
-        resultMap="${ClassName}Result">
+<select id="${functionName}" parameterType="${packageName}.domain.vo.${WordName}"
+        resultMap="${WordName}Result">
     SELECT
     #if($t.CollectionIsNotEmpty($selects))
         #foreach($select in $selects)
@@ -20,35 +20,35 @@
     #foreach($where in $wheres)
         #if($where.whereType == "EQ")
         <if test="$where.fieldName != null #if($where.fieldType == 'String' ) and $where.fieldName.trim() != ''#end">
-            and $where.tableAlias.$where.columnName = #{$fieldName}
+            and $where.tableAlias.$where.columnName = #{$where.fieldName}
         </if>
-        #elseif($whereType == "NE")
+        #elseif($where.whereType == "NE")
         <if test="$where.fieldName != null #if($where.fieldType == 'String' ) and $where.fieldName.trim() != ''#end">
-            and $where.tableAlias.$where.columnName != #{$fieldName}
+            and $where.tableAlias.$where.columnName != #{$where.fieldName}
         </if>
-        #elseif($whereType == "GT")
+        #elseif($where.whereType == "GT")
         <if test="$where.fieldName != null #if($where.fieldType == 'String' ) and $where.fieldName.trim() != ''#end">
-            and $where.tableAlias.$where.columnName > #{$fieldName}
+            and $where.tableAlias.$where.columnName > #{$where.fieldName}
         </if>
-        #elseif($whereType == "GTE")
+        #elseif($where.whereType == "GTE")
         <if test="$where.fieldName != null #if($where.fieldType == 'String' ) and $where.fieldName.trim() != ''#end">
-            and $where.tableAlias.$where.columnName >= #{$fieldName}
+            and $where.tableAlias.$where.columnName >= #{$where.fieldName}
         </if>
-        #elseif($whereType == "LT")
+        #elseif($where.whereType == "LT")
         <if test="$where.fieldName != null #if($where.fieldType == 'String' ) and $where.fieldName.trim() != ''#end">
-            and $where.tableAlias.$where.columnName < #{$fieldName}
+            and $where.tableAlias.$where.columnName < #{$where.fieldName}
         </if>
-        #elseif($whereType == "LTE")
+        #elseif($where.whereType == "LTE")
         <if test="$where.fieldName != null #if($where.fieldType == 'String' ) and $where.fieldName.trim() != ''#end">
-            and $where.tableAlias.$where.columnName <= #{$fieldName}
+            and $where.tableAlias.$where.columnName <= #{$where.fieldName}
         </if>
-        #elseif($whereType == "LIKE")
+        #elseif($where.whereType == "LIKE")
         <if test="$where.fieldName != null #if($where.fieldType == 'String' ) and $where.fieldName.trim() != ''#end">
-            and $where.tableAlias.$where.columnName like concat('%', #{$fieldName}, '%')
+            and $where.tableAlias.$where.columnName like concat('%', #{$where.fieldName}, '%')
         </if>
-        #elseif($whereType == "BETWEEN")
-        <if test="${fieldName}Start != null and ${fieldName}End != null">
-            and $where.tableAlias.$where.columnName between #{$fieldName}Start  and #{$fieldName}End
+        #elseif($where.whereType == "BETWEEN")
+        <if test="${where.fieldName}Start != null and ${where.fieldName}End != null">
+            and $where.tableAlias.$where.columnName between #{${where.fieldName}Start}  and #{${where.fieldName}End}
         </if>
         #end
     #end
