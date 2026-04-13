@@ -48,6 +48,7 @@ public class JdbcSpiLoader implements CommandLineRunner {
 //            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 //            Class.forName("oracle.jdbc.driver.OracleDriver");
             Class.forName("dm.jdbc.driver.DmDriver");
+            Class.forName("com.kingbase8.Driver");
         } catch (Exception e) {
             log.error("load jdbc error: {}", e.getMessage(), e);
         }

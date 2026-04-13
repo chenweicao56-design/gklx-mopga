@@ -1,0 +1,11 @@
+CREATE TABLE "${schemaName}"."${tableName}"
+(
+#foreach ($column in $columns)
+"${column.columnName}" $column.columnType#if($column.isIncrement) IDENTITY(1, 1)#end#if($column.isNull) NOT NULL#end#if($column.columnDefault)DEFAULT $column.columnDefault#end,
+#end
+CLUSTER PRIMARY KEY("$primaryKeyColumnName"));
+
+COMMENT ON TABLE "${schemaName}"."${tableName}" IS '${tableComment}';
+#foreach ($column in $columns)
+COMMENT ON COLUMN "${schemaName}"."${tableName}"."$column.columnName" IS '${column.columnComment}';
+#end

@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS `${tableName}` (
+#foreach ($column in $columns)
+`${column.columnName}` $column.columnType #if($column.isNull) NOT NULL #if($column.columnDefault) DEFAULT $column.columnDefault  #end   #else DEFAULT NULL #end #if($column.isIncrement) AUTO_INCREMENT #end COMMENT '${column.columnComment}' #if($foreach.hasNext),#end
+#end
+#if($!primaryKeyColumnName != "")
+,PRIMARY KEY (`$primaryKeyColumnName`)
+#end
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='${tableComment}';

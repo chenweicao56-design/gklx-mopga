@@ -102,6 +102,13 @@
             <artifactId>DmJdbcDriver18</artifactId>
             <version>8.1.2.192</version>
         </dependency>
+
+        <dependency>
+            <groupId>cn.com.kingbase</groupId>
+            <artifactId>kingbase8</artifactId>
+            <version>8.6.0</version>
+        </dependency>
+
         <dependency>
             <groupId>e-iceblue</groupId>
             <artifactId>spire.doc.free</artifactId>

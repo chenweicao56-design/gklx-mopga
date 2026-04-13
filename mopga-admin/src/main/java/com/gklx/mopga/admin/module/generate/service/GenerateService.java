@@ -1,8 +1,8 @@
 package com.gklx.mopga.admin.module.generate.service;
 
 import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.util.ObjUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -281,9 +281,9 @@ public class GenerateService {
         if (StrUtil.isNotEmpty(subTableName)) {
             List<String> subTableNames = StrUtil.split(subTableName, ",");
             List<TableVo> subTables = new ArrayList<>();
-            for (String item : subTableNames){
+            for (String item : subTableNames) {
                 TableVo subTable = tableService.getByName(table.getDatabaseId(), item);
-                if(ObjUtil.isNotNull(subTable)){
+                if (ObjUtil.isNotNull(subTable)) {
                     subTables.add(subTable);
                 }
             }
@@ -324,14 +324,12 @@ public class GenerateService {
     public String buildCreateTableSqlTemplate(TableVo table) {
         DatabaseEntity database = databaseManager.getById(table.getDatabaseId());
         TemplateCodeItemEntity templateCodeItemEntity = templateCodeItemService.getCreateTableTemplateByTemplateId(database.getTemplateId());
+
         VelocityContext velocityContext = new VelocityContext();
         velocityContext.put("tableName", table.getTableName());
         velocityContext.put("tableComment", table.getTableComment());
         velocityContext.put("schemaName", database.getSchemaName());
         List<GenTableColumnVo> columns = table.getColumns();
-
-        //补充
-
         if (CollectionUtil.isNotEmpty(columns)) {
             List<GenTableColumnEntity> queryColumns = new ArrayList<>();
             for (GenTableColumnVo column : columns) {
@@ -344,9 +342,17 @@ public class GenerateService {
         }
         velocityContext.put("columns", table.getColumns());
 
-        StringWriter writer = new StringWriter();
-        GenUtils.velocityEngine.evaluate(velocityContext, writer, templateCodeItemEntity.getFileName(), new StringReader(templateCodeItemEntity.getContent()));
-        return writer.toString();
+        if (ObjectUtil.isNotEmpty(templateCodeItemEntity)) {
+            StringWriter writer = new StringWriter();
+            GenUtils.velocityEngine.evaluate(velocityContext, writer, templateCodeItemEntity.getFileName(), new StringReader(templateCodeItemEntity.getContent()));
+            return writer.toString();
+        } else {
+            String databaseType = database.getDatabaseType();
+            StringWriter sw = new StringWriter();
+            Template tpl = Velocity.getTemplate(String.format("vm/create/%s.vm", databaseType), "UTF-8");
+            tpl.merge(velocityContext, sw);
+            return sw.toString();
+        }
     }
 
 
@@ -426,7 +432,7 @@ public class GenerateService {
         velocityContext.put("wheres", wheres);
         velocityContext.put("groupBys", groupBys);
         velocityContext.put("functionName", form.getFunctionName());
-        velocityContext.put("packageName", packageName+"."+moduleName);
+        velocityContext.put("packageName", packageName + "." + moduleName);
         StringWriter sw = new StringWriter();
         Template tpl = Velocity.getTemplate("vm/join.vm", "UTF-8");
         tpl.merge(velocityContext, sw);

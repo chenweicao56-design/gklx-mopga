@@ -273,7 +273,6 @@ public class GenUtils {
                 column.setFieldType(mappingDataEntity.getJavaFieldType());
                 column.setJsType(mappingDataEntity.getFrontFieldType());
                 column.setFrontComponent(mappingDataEntity.getFrontComponent());
-                return;
             }
         }
 
