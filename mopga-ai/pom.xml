@@ -34,6 +34,13 @@
             <scope>provided</scope>
         </dependency>
 
+
+        <dependency>
+            <groupId>io.agentscope</groupId>
+            <artifactId>agentscope</artifactId>
+            <version>1.0.11</version>
+        </dependency>
+
     </dependencies>
 
     <build>
