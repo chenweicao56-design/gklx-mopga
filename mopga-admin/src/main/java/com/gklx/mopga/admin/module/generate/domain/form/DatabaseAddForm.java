@@ -17,6 +17,10 @@ import lombok.Data;
 @Data
 public class DatabaseAddForm {
 
+    @Schema(description = "别名", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotBlank(message = "别名 不能为空")
+    private String aliasName;
+
     @Schema(description = "名称", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotBlank(message = "名称 不能为空")
     private String databaseName;
@@ -29,7 +33,8 @@ public class DatabaseAddForm {
     @NotBlank(message = "语言类型 不能为空")
     private String languageType;
 
-    @Schema(description = "状态")
+    @Schema(description = "状态", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotBlank(message = "状态 不能为空")
     private String databaseStatus;
 
     @Schema(description = "业务分类id")

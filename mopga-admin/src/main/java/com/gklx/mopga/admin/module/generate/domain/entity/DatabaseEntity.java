@@ -58,6 +58,11 @@ public class DatabaseEntity {
     private Boolean deletedFlag;
 
     /**
+     * 别名
+     */
+    private String aliasName;
+
+    /**
      * 名称
      */
     private String databaseName;

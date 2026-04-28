@@ -10,6 +10,7 @@
         gen_database.update_user_id,
         gen_database.update_time,
         gen_database.deleted_flag,
+        gen_database.alias_name,
         gen_database.database_name,
         gen_database.database_type,
         gen_database.language_type,

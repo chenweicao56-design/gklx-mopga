@@ -35,6 +35,9 @@ public class DatabaseVo {
     @Schema(description = "删除状态")
     private Boolean deletedFlag;
 
+    @Schema(description = "别名")
+    private String aliasName;
+
     @Schema(description = "名称")
     private String databaseName;
 

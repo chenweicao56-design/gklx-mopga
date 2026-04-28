@@ -21,6 +21,10 @@ public class DatabaseUpdateForm {
     @NotNull(message = "ID 不能为空")
     private Long id;
 
+    @Schema(description = "别名", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotBlank(message = "别名 不能为空")
+    private String aliasName;
+
     @Schema(description = "名称", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotBlank(message = "名称 不能为空")
     private String databaseName;
