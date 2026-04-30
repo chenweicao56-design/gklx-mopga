@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gklx.mopga.admin.module.generate.dao.TableColumnTermDao">
+
+    <!-- 查询结果列 -->
+    <sql id="base_columns">
+        ai_table_column_term.id,
+        ai_table_column_term.create_user_id,
+        ai_table_column_term.create_time,
+        ai_table_column_term.update_user_id,
+        ai_table_column_term.update_time,
+        ai_table_column_term.deleted_flag,
+        ai_table_column_term.column_id,
+        ai_table_column_term.table_term_id,
+        ai_table_column_term.column_comment_term,
+        ai_table_column_term.dicts,
+        ai_table_column_term.example,
+        ai_table_column_term.foreign_key,
+        ai_table_column_term.terms
+    </sql>
+
+    <!-- 分页查询 -->
+    <select id="queryPage" resultType="com.gklx.mopga.admin.module.generate.domain.vo.TableColumnTermVo">
+        SELECT
+        <include refid="base_columns"/>
+        FROM ai_table_column_term
+        <where>
+            <if test="queryForm.columnId != null">
+                AND ai_table_column_term.column_id = #{queryForm.columnId}
+            </if>
+            <if test="queryForm.tableTermId != null">
+                AND ai_table_column_term.table_term_id = #{queryForm.tableTermId}
+            </if>
+        </where>
+	    ORDER BY ai_table_column_term.update_time
+    </select>
+</mapper>

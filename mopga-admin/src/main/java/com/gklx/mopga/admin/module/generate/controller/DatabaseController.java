@@ -4,6 +4,7 @@ import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.gklx.mopga.admin.module.generate.domain.entity.MappingDataEntity;
 import com.gklx.mopga.admin.module.generate.domain.form.DatabaseAddForm;
 import com.gklx.mopga.admin.module.generate.domain.form.DatabaseQueryForm;
+import com.gklx.mopga.admin.module.generate.domain.form.DatabaseTermAddForm;
 import com.gklx.mopga.admin.module.generate.domain.form.DatabaseUpdateForm;
 import com.gklx.mopga.admin.module.generate.domain.vo.DatabaseVo;
 import com.gklx.mopga.admin.module.generate.service.DatabaseService;
@@ -81,5 +82,12 @@ public class DatabaseController {
     public ResponseDTO<List<MappingDataEntity>> getColumnTypes(@PathVariable Long databaseId) {
         return ResponseDTO.ok(databaseService.getColumnTypes(databaseId));
     }
+
+    @Operation(summary = "添加 @author gklx")
+    @PostMapping("/databaseTerm/init")
+    public ResponseDTO<String> init(@RequestBody @Valid DatabaseTermAddForm addForm) {
+        return databaseService.initText2sql(addForm.getDatabaseId());
+    }
+
 
 }

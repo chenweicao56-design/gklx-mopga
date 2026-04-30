@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gklx.mopga.admin.module.generate.dao.TableTermDao">
+
+    <!-- 查询结果列 -->
+    <sql id="base_columns">
+        ai_table_term.id,
+        ai_table_term.create_user_id,
+        ai_table_term.create_time,
+        ai_table_term.update_user_id,
+        ai_table_term.update_time,
+        ai_table_term.deleted_flag,
+        ai_table_term.table_id,
+        ai_table_term.table_comment_term,
+        ai_table_term.scenes
+    </sql>
+
+    <!-- 分页查询 -->
+    <select id="queryPage" resultType="com.gklx.mopga.admin.module.generate.domain.vo.TableTermVo">
+        SELECT
+        <include refid="base_columns"/>
+        FROM ai_table_term
+        <where>
+            <if test="queryForm.tableId != null">
+                AND ai_table_term.table_id = #{queryForm.tableId}
+            </if>
+        </where>
+	    ORDER BY ai_table_term.update_time
+    </select>
+</mapper>

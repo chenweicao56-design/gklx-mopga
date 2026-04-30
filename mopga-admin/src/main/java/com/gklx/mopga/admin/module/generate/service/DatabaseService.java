@@ -1,23 +1,31 @@
 package com.gklx.mopga.admin.module.generate.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.gklx.mopga.admin.module.generate.controller.MappingDataController;
 import com.gklx.mopga.admin.module.generate.dao.DatabaseDao;
 import com.gklx.mopga.admin.module.generate.domain.entity.DatabaseEntity;
+import com.gklx.mopga.admin.module.generate.domain.entity.DatabaseTermEntity;
 import com.gklx.mopga.admin.module.generate.domain.entity.MappingDataEntity;
 import com.gklx.mopga.admin.module.generate.domain.entity.TemplateMappingItemEntity;
 import com.gklx.mopga.admin.module.generate.domain.form.DatabaseAddForm;
 import com.gklx.mopga.admin.module.generate.domain.form.DatabaseQueryForm;
+import com.gklx.mopga.admin.module.generate.domain.form.DatabaseTermAddForm;
 import com.gklx.mopga.admin.module.generate.domain.form.DatabaseUpdateForm;
 import com.gklx.mopga.admin.module.generate.domain.vo.DatabaseVo;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
+import com.gklx.mopga.admin.module.generate.manager.DatabaseManager;
+import com.gklx.mopga.admin.module.generate.manager.DatabaseTermManager;
 import com.gklx.mopga.base.common.util.SmartBeanUtil;
 import com.gklx.mopga.base.common.util.SmartPageUtil;
 import com.gklx.mopga.base.common.domain.ResponseDTO;
 import com.gklx.mopga.base.common.domain.PageResult;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import jakarta.validation.constraints.NotNull;
 import org.apache.commons.collections4.CollectionUtils;
 
 import jakarta.annotation.Resource;
@@ -40,6 +48,9 @@ public class DatabaseService {
     private TemplateMappingItemService templateMappingItemService;
     @Resource
     private MappingDataService mappingDataService;
+    @Resource
+    private DatabaseTermService databaseTermService;
+
 
     /**
      * 分页查询
@@ -124,5 +135,12 @@ public class DatabaseService {
         }
         return mappingDataEntities;
 
+    }
+
+
+    public ResponseDTO<String> initText2sql(Long databaseId) {
+        DatabaseEntity database = databaseDao.selectById(databaseId);
+
+        return ResponseDTO.ok();
     }
 }
