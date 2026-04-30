@@ -23,6 +23,10 @@ public class TableTermUpdateForm {
     @NotNull(message = "表主键 不能为空")
     private Long tableId;
 
+    @Schema(description = "数据源id", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotNull(message = "数据源id 不能为空")
+    private Long databaseId;
+
     @Schema(description = "表注释")
     private String tableCommentTerm;
 

@@ -37,6 +37,9 @@ public class TableTermVo {
     @Schema(description = "表主键")
     private Long tableId;
 
+    @Schema(description = "数据源id")
+    private Long databaseId;
+
     @Schema(description = "表注释")
     private String tableCommentTerm;
 

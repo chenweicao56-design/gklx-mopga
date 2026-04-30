@@ -5,6 +5,7 @@ import cn.hutool.json.JSONObject;
 import com.gklx.mopga.admin.module.generate.domain.entity.TableEntity;
 import com.gklx.mopga.admin.module.generate.domain.form.TableQueryForm;
 import com.gklx.mopga.admin.module.generate.domain.form.sql.SqlForm;
+import com.gklx.mopga.admin.module.generate.domain.form.text2sql.Text2sqlQueryForm;
 import com.gklx.mopga.admin.module.generate.domain.vo.TableVo;
 import com.gklx.mopga.admin.module.generate.service.GenerateService;
 import com.gklx.mopga.base.common.domain.PageResult;
@@ -78,6 +79,11 @@ public class GenerateController {
     @PostMapping("/gen/mybatis/preview")
     public ResponseDTO<String> generateMybatis(@RequestBody SqlForm form) {
         return ResponseDTO.ok(generateService.generateMybatis(form));
+    }
+
+    @PostMapping("/gen/text2sql")
+    public ResponseDTO<String> text2sql(@RequestBody Text2sqlQueryForm form) {
+        return ResponseDTO.ok(generateService.text2sql(form));
     }
 
 

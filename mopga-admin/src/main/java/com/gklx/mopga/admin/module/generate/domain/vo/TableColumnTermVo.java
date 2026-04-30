@@ -37,6 +37,9 @@ public class TableColumnTermVo {
     @Schema(description = "字段主键")
     private Long columnId;
 
+    @Schema(description = "数据源id")
+    private Long databaseId;
+
     @Schema(description = "表术语主键")
     private Long tableTermId;
 

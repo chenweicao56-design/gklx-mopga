@@ -23,6 +23,10 @@ public class TableColumnTermUpdateForm {
     @NotNull(message = "字段主键 不能为空")
     private Long columnId;
 
+    @Schema(description = "数据源id", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotNull(message = "数据源id 不能为空")
+    private Long databaseId;
+
     @Schema(description = "表术语主键", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotNull(message = "表术语主键 不能为空")
     private Long tableTermId;

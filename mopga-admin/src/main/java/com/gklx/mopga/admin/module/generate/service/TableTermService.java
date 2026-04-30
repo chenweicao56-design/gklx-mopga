@@ -1,9 +1,6 @@
 package com.gklx.mopga.admin.module.generate.service;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.gklx.mopga.admin.module.generate.dao.TableTermDao;
-import com.gklx.mopga.admin.module.generate.domain.entity.DatabaseTermEntity;
 import com.gklx.mopga.admin.module.generate.domain.entity.TableTermEntity;
 import com.gklx.mopga.admin.module.generate.domain.form.TableTermAddForm;
 import com.gklx.mopga.admin.module.generate.domain.form.TableTermQueryForm;
@@ -92,5 +89,4 @@ public class TableTermService {
         tableTermDao.deleteById(id);
         return ResponseDTO.ok();
     }
-
 }

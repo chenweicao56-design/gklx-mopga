@@ -11,6 +11,7 @@
         ai_table_term.update_time,
         ai_table_term.deleted_flag,
         ai_table_term.table_id,
+        ai_table_term.database_id,
         ai_table_term.table_comment_term,
         ai_table_term.scenes
     </sql>

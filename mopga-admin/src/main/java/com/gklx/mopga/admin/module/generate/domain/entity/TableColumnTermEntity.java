@@ -63,6 +63,11 @@ public class TableColumnTermEntity {
     private Long columnId;
 
     /**
+     * 数据源id
+     */
+    private Long databaseId;
+
+    /**
      * 表术语主键
      */
     private Long tableTermId;

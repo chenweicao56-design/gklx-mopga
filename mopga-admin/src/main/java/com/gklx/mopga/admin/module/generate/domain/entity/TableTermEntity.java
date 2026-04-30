@@ -63,6 +63,11 @@ public class TableTermEntity {
     private Long tableId;
 
     /**
+     * 数据源id
+     */
+    private Long databaseId;
+
+    /**
      * 表注释
      */
     private String tableCommentTerm;

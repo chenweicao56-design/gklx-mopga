@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gklx.mopga.admin.module.generate.domain.entity.*;
 import com.gklx.mopga.admin.module.generate.domain.form.TableQueryForm;
 import com.gklx.mopga.admin.module.generate.domain.form.sql.*;
+import com.gklx.mopga.admin.module.generate.domain.form.text2sql.Text2sqlQueryForm;
 import com.gklx.mopga.admin.module.generate.domain.vo.GenTableColumnVo;
 import com.gklx.mopga.admin.module.generate.domain.vo.TableVo;
 import com.gklx.mopga.admin.module.generate.domain.vo.TemplateVo;
@@ -438,5 +439,13 @@ public class GenerateService {
         tpl.merge(velocityContext, sw);
         return sw.toString();
 
+    }
+
+    public String text2sql(Text2sqlQueryForm form) {
+        Long databaseId = form.getDatabaseId();
+        DatabaseEntity databaseEntity = databaseManager.getById(databaseId);
+
+
+        return null;
     }
 }
