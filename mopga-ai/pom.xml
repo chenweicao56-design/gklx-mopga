@@ -34,11 +34,23 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>com.networknt</groupId>
+            <artifactId>json-schema-validator</artifactId>
+            <version>2.0.0</version>
+            <scope>compile</scope>
+        </dependency>
 
         <dependency>
             <groupId>io.agentscope</groupId>
             <artifactId>agentscope</artifactId>
             <version>1.0.11</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>json-schema-validator</artifactId>
+                    <groupId>com.networknt</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
     </dependencies>

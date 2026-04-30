@@ -1,10 +1,12 @@
 package com.gklx.ai.core.agent;
 
+import io.agentscope.core.ReActAgent;
 import io.agentscope.core.agent.AgentBase;
 import io.agentscope.core.agent.accumulator.ReasoningContext;
 import io.agentscope.core.interruption.InterruptContext;
 import io.agentscope.core.message.Msg;
 import io.agentscope.core.model.Model;
+import io.agentscope.core.tool.Toolkit;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
@@ -14,10 +16,12 @@ import java.util.List;
 public class CusAgent extends AgentBase {
 
     private final Model model;
+    private Toolkit toolkit = new Toolkit();
 
     public CusAgent(CusAgent.Builder builder) {
         super(builder.name, builder.description);
         this.model = builder.model;
+        this.toolkit = builder.toolkit;
     }
 
     @Override
@@ -25,7 +29,7 @@ public class CusAgent extends AgentBase {
         ReasoningContext context = new ReasoningContext(getName());
 
         return checkInterruptedAsync()
-                .thenMany(model.stream(msgs, null, null)
+                .thenMany(model.stream(msgs, toolkit.getToolSchemas(), null)
                         .concatMap(chunk -> checkInterruptedAsync().thenReturn(chunk))
                         .doOnNext(context::processChunk)
                 )
@@ -54,6 +58,7 @@ public class CusAgent extends AgentBase {
         private Model model;
         private String name;
         private String description;
+        private Toolkit toolkit = new Toolkit();
 
         private Builder() {
         }
@@ -71,6 +76,15 @@ public class CusAgent extends AgentBase {
         public CusAgent.Builder description(String description) {
             this.description = description;
             return this;
+        }
+
+        public CusAgent.Builder toolkit(Toolkit toolkit) {
+            this.toolkit = toolkit;
+            return this;
+        }
+
+        public CusAgent build() {
+            return new CusAgent(this);
         }
     }
 }

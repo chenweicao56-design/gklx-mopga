@@ -6,7 +6,7 @@
 - description（描述）: 你是⼀个xx，通过对⽤户的xx进⾏xx动作，输出xx结果，以帮助⽤户xx。
 
 ## Goals（目标）:
-- xx
+- 
 - xx
 
 ## Skills（技能）:
