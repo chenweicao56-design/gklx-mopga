@@ -19,6 +19,7 @@ public class DatabaseTermManager extends ServiceImpl<DatabaseTermDao, DatabaseTe
 
     public DatabaseTermEntity getByDatabaseId(Long databaseId) {
         LambdaQueryWrapper<DatabaseTermEntity> lqw = Wrappers.lambdaQuery();
+        lqw.eq(DatabaseTermEntity::getDatabaseId, databaseId);
         return getOne(lqw);
     }
 }

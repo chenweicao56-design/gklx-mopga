@@ -1,19 +1,25 @@
 package com.gklx.mopga.admin.module.generate.controller;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import com.gklx.mopga.admin.module.generate.domain.entity.DatabaseTermEntity;
 import com.gklx.mopga.admin.module.generate.domain.form.DatabaseTermAddForm;
 import com.gklx.mopga.admin.module.generate.domain.form.DatabaseTermQueryForm;
 import com.gklx.mopga.admin.module.generate.domain.form.DatabaseTermUpdateForm;
 import com.gklx.mopga.admin.module.generate.domain.vo.DatabaseTermVo;
+import com.gklx.mopga.admin.module.generate.manager.DatabaseTermManager;
 import com.gklx.mopga.admin.module.generate.service.DatabaseTermService;
 import com.gklx.mopga.base.common.domain.PageResult;
 import com.gklx.mopga.base.common.domain.ResponseDTO;
 import com.gklx.mopga.base.common.domain.ValidateList;
+import com.gklx.mopga.base.common.util.SmartBeanUtil;
+import com.mysql.cj.conf.PropertyDefinitions;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Objects;
 
 /**
  * 数据源术语表 Controller
@@ -29,6 +35,8 @@ public class DatabaseTermController {
 
     @Resource
     private DatabaseTermService databaseTermService;
+    @Resource
+    private DatabaseTermManager databaseTermManager;
 
     @Operation(summary = "分页查询 @author gklx")
     @PostMapping("/databaseTerm/queryPage")
@@ -38,24 +46,20 @@ public class DatabaseTermController {
     }
 
     @Operation(summary = "详情 @author gklx")
-    @GetMapping("/databaseTerm/getDetail/{id}")
-    @SaCheckPermission("databaseTerm:query")
-    public ResponseDTO<DatabaseTermVo> getDetail(@PathVariable Long id) {
-        return databaseTermService.getDetail(id);
+    @GetMapping("/databaseTerm/getByDatabaseId/{id}")
+    public ResponseDTO<DatabaseTermEntity> getDetail(@PathVariable Long id) {
+        return ResponseDTO.ok(databaseTermManager.getByDatabaseId(id));
     }
 
     @Operation(summary = "添加 @author gklx")
-    @PostMapping("/databaseTerm/add")
-    @SaCheckPermission("databaseTerm:add")
-    public ResponseDTO<String> add(@RequestBody @Valid DatabaseTermAddForm addForm) {
-        return databaseTermService.add(addForm);
-    }
-
-    @Operation(summary = "更新 @author gklx")
-    @PostMapping("/databaseTerm/update")
-    @SaCheckPermission("databaseTerm:update")
-    public ResponseDTO<String> update(@RequestBody @Valid DatabaseTermUpdateForm updateForm) {
-        return databaseTermService.update(updateForm);
+    @PostMapping("/databaseTerm/addOrUpdate")
+    public ResponseDTO<String> addOrUpdate(@RequestBody @Valid DatabaseTermUpdateForm updateForm) {
+        Long id = updateForm.getId();
+        if (Objects.isNull(id)) {
+            return databaseTermService.add(SmartBeanUtil.copy(updateForm, DatabaseTermAddForm.class));
+        } else {
+            return databaseTermService.update(updateForm);
+        }
     }
 
     @Operation(summary = "批量删除 @author gklx")
@@ -71,8 +75,6 @@ public class DatabaseTermController {
     public ResponseDTO<String> batchDelete(@PathVariable Long id) {
         return databaseTermService.delete(id);
     }
-
-
 
 
 }

@@ -11,7 +11,10 @@ import com.gklx.mopga.admin.module.generate.domain.entity.*;
 import com.gklx.mopga.admin.module.generate.domain.form.TableQueryForm;
 import com.gklx.mopga.admin.module.generate.domain.form.sql.*;
 import com.gklx.mopga.admin.module.generate.domain.form.text2sql.Text2sqlQueryForm;
+import com.gklx.mopga.admin.module.generate.domain.vo.DatabaseTermVo;
 import com.gklx.mopga.admin.module.generate.domain.vo.GenTableColumnVo;
+import com.gklx.mopga.admin.module.generate.domain.vo.TableColumnTermVo;
+import com.gklx.mopga.admin.module.generate.domain.vo.TableTermVo;
 import com.gklx.mopga.admin.module.generate.domain.vo.TableVo;
 import com.gklx.mopga.admin.module.generate.domain.vo.TemplateVo;
 import com.gklx.mopga.admin.module.generate.jdbc.IBaseCollector;
@@ -19,6 +22,7 @@ import com.gklx.mopga.admin.module.generate.jdbc.JdbcManager;
 import com.gklx.mopga.admin.module.generate.manager.*;
 import com.gklx.mopga.admin.module.generate.util.GenUtils;
 import com.gklx.mopga.admin.module.generate.util.VelocityInitializer;
+import com.gklx.mopga.base.common.util.SmartBeanUtil;
 import com.gklx.mopga.base.common.domain.PageResult;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -74,6 +78,12 @@ public class GenerateService {
     private MappingDataManager mappingDataManager;
     @Autowired
     private GenTableColumnManager genTableColumnManager;
+    @Resource
+    private DatabaseTermManager databaseTermManager;
+    @Resource
+    private TableTermManager tableTermManager;
+    @Resource
+    private TableColumnTermManager tableColumnTermManager;
 
     public PageResult<TableEntity> dbList(Long databaseId, TableQueryForm form) {
         DatabaseEntity database = databaseManager.getById(databaseId);
@@ -441,11 +451,183 @@ public class GenerateService {
 
     }
 
-    public String text2sql(Text2sqlQueryForm form) {
+
+    /**
+     * 生成 M-Schema 格式字符串
+     *
+     * @param form 查询表单
+     * @return M-Schema 字符串
+     */
+    public String generateSchema(Text2sqlQueryForm form) {
+        DatabaseTermVo databaseTermVo = buildDatabaseTerm(form);
+        StringBuilder sb = new StringBuilder();
+
+        if (CollectionUtils.isEmpty(databaseTermVo.getTableTerms())) {
+            return sb.toString();
+        }
+
+        // 遍历表
+        for (TableTermVo tableTerm : databaseTermVo.getTableTerms()) {
+            // 表标题：优先term注释，其次表注释
+            String tableComment = StrUtil.isNotBlank(tableTerm.getTableCommentTerm())
+                    ? tableTerm.getTableCommentTerm()
+                    : tableTerm.getTableComment();
+            sb.append(String.format("## 表：%s -- %s\n", tableTerm.getTableName(), tableComment));
+
+            // 遍历列
+            if (tableTerm.getColumns() != null) {
+                for (TableColumnTermVo columnTerm : tableTerm.getColumns()) {
+                    // 构建列基础信息
+                    StringBuilder colInfo = new StringBuilder();
+                    colInfo.append(String.format(" - **%s** %s", columnTerm.getColumnName(), columnTerm.getColumnType()));
+
+                    // 添加约束
+                    if (Boolean.TRUE.equals(columnTerm.getIsPk())) {
+                        colInfo.append(" PRIMARY KEY");
+                    }
+                    if (Boolean.TRUE.equals(columnTerm.getIsIncrement())) {
+                        colInfo.append(" AUTO_INCREMENT");
+                    }
+                    if (!Boolean.TRUE.equals(columnTerm.getIsNull())) {
+                        colInfo.append(" NOT NULL");
+                    }
+                    if (StrUtil.isNotBlank(columnTerm.getColumnDefault())) {
+                        colInfo.append(String.format(" DEFAULT %s", columnTerm.getColumnDefault()));
+                    }
+
+                    // 注释：优先term注释，其次字段注释
+                    colInfo.append(String.format(" -- %s", StrUtil.isEmpty(columnTerm.getColumnCommentTerm()) ? columnTerm.getColumnComment() : columnTerm.getColumnCommentTerm()));
+                    sb.append(colInfo);
+
+                    // 添加外键（如果有）
+                    if (StrUtil.isNotBlank(columnTerm.getForeignKey())) {
+                        sb.append(String.format("\n   - FOREIGN KEY (%s) %s", columnTerm.getColumnName(), columnTerm.getForeignKey()));
+                    }
+
+                    // 添加字典值（如果有）
+                    if (StrUtil.isNotBlank(columnTerm.getDicts())) {
+                        sb.append(String.format("\n   - @dict: %s", columnTerm.getDicts()));
+                    }
+
+                    // 添加示例值（如果有）
+                    if (StrUtil.isNotBlank(columnTerm.getExample())) {
+                        sb.append(String.format("\n   - samples: %s", columnTerm.getExample()));
+                    }
+
+                    // 添加术语（如果有）
+                    if (StrUtil.isNotBlank(columnTerm.getTerms())) {
+                        sb.append(String.format("\n   - terms: %s", columnTerm.getTerms()));
+                    }
+
+                    sb.append("\n");
+                }
+            }
+            sb.append("\n");
+        }
+
+        return sb.toString();
+    }
+
+    /**
+     * 获取数据库术语信息
+     *
+     * @param form 查询表单（databaseId必填，tableIds可选）
+     * @return 数据库术语VO（含表、列术语）
+     */
+    private DatabaseTermVo buildDatabaseTerm(Text2sqlQueryForm form) {
         Long databaseId = form.getDatabaseId();
+        List<Long> tableIds = form.getTableIds();
+
+        // 查询数据库基础信息和术语
         DatabaseEntity databaseEntity = databaseManager.getById(databaseId);
+        DatabaseTermEntity databaseTermEntity = databaseTermManager.getByDatabaseId(databaseId);
 
+        // 构建数据库术语VO
+        DatabaseTermVo databaseTermVo = new DatabaseTermVo();
+        databaseTermVo.setDatabaseId(databaseEntity.getId());
+        databaseTermVo.setDatabaseName(databaseEntity.getDatabaseName());
+        databaseTermVo.setAliasName(databaseEntity.getAliasName());
+        databaseTermVo.setDatabaseType(databaseEntity.getDatabaseType());
+        if (ObjUtil.isNotNull(databaseTermEntity)) {
+            databaseTermVo.setTerms(databaseTermEntity.getTerms());
+            databaseTermVo.setDatabaseCommentTerm(databaseTermEntity.getDatabaseCommentTerm());
+        }
 
-        return null;
+        // 查询表列表（tableIds为空则查全部）
+        List<TableEntity> tableEntities = tableManager.listByDatabaseId(databaseId, tableIds);
+
+        if (CollectionUtils.isEmpty(tableEntities)) {
+            databaseTermVo.setTableTerms(new ArrayList<>());
+            return databaseTermVo;
+        }
+
+        // 批量查询所有列
+        List<Long> tableIdList = tableEntities.stream().map(TableEntity::getTableId).toList();
+        List<GenTableColumnEntity> allColumns = genTableColumnManager.listByTableIds(tableIdList);
+        Map<Long, List<GenTableColumnEntity>> columnByTableMap = allColumns.stream()
+                .collect(Collectors.groupingBy(GenTableColumnEntity::getTableId));
+        Map<Long, GenTableColumnEntity> columnEntityMap = allColumns.stream()
+                .collect(Collectors.toMap(GenTableColumnEntity::getColumnId, e -> e));
+
+        // 查询表术语和列术语
+        List<TableTermEntity> tableTermEntities = tableTermManager.listByDatabaseId(databaseId, tableIds);
+        Map<Long, TableTermEntity> tableTermEntityMap = tableTermEntities.stream()
+                .collect(Collectors.toMap(TableTermEntity::getTableId, e -> e));
+
+        List<Long> tableTermIds = tableTermEntities.stream().map(TableTermEntity::getId).toList();
+        List<TableColumnTermEntity> columnTermEntities = tableColumnTermManager.listByTableTermIds(tableTermIds);
+        Map<Long, List<TableColumnTermEntity>> columnTermListMap = columnTermEntities.stream()
+                .collect(Collectors.groupingBy(TableColumnTermEntity::getTableTermId));
+
+        // 组装表术语VO列表（以table和tablecolumn为主，term表补充信息）
+        List<TableTermVo> tableTermVos = new ArrayList<>();
+        for (TableEntity tableEntity : tableEntities) {
+            TableTermVo tableTermVo = new TableTermVo();
+            tableTermVo.setTableId(tableEntity.getTableId());
+            tableTermVo.setDatabaseId(databaseId);
+            tableTermVo.setTableName(tableEntity.getTableName());
+            tableTermVo.setTableComment(tableEntity.getTableComment());
+            tableTermVo.setSort(tableEntity.getSort());
+
+            // 从term表补充术语信息
+            TableTermEntity tableTermEntity = tableTermEntityMap.get(tableEntity.getTableId());
+            if (ObjUtil.isNotNull(tableTermEntity)) {
+                tableTermVo.setTableCommentTerm(tableTermEntity.getTableCommentTerm());
+                tableTermVo.setScenes(tableTermEntity.getScenes());
+            }
+
+            // 以tablecolumn表为主构建列信息
+            List<GenTableColumnEntity> tableColumns = columnByTableMap.get(tableEntity.getTableId());
+            if (CollectionUtils.isNotEmpty(tableColumns)) {
+                List<TableColumnTermVo> columnTermVos = new ArrayList<>();
+                for (GenTableColumnEntity columnEntity : tableColumns) {
+                    TableColumnTermVo columnTermVo = SmartBeanUtil.copy(columnEntity, TableColumnTermVo.class);
+
+                    // 从term表补充术语信息
+                    if (ObjUtil.isNotNull(tableTermEntity)) {
+                        TableColumnTermEntity termColumn = columnTermListMap.get(tableTermEntity.getId())
+                                .stream()
+                                .filter(t -> t.getColumnId().equals(columnEntity.getColumnId()))
+                                .findFirst()
+                                .orElse(null);
+                        if (ObjUtil.isNotNull(termColumn)) {
+                            columnTermVo.setColumnCommentTerm(termColumn.getColumnCommentTerm());
+                            columnTermVo.setDicts(termColumn.getDicts());
+                            columnTermVo.setExample(termColumn.getExample());
+                            columnTermVo.setForeignKey(termColumn.getForeignKey());
+                            columnTermVo.setTerms(termColumn.getTerms());
+                        }
+                    }
+                    columnTermVos.add(columnTermVo);
+                }
+                tableTermVo.setColumns(columnTermVos);
+            } else {
+                tableTermVo.setColumns(new ArrayList<>());
+            }
+            tableTermVos.add(tableTermVo);
+        }
+
+        databaseTermVo.setTableTerms(tableTermVos);
+        return databaseTermVo;
     }
 }

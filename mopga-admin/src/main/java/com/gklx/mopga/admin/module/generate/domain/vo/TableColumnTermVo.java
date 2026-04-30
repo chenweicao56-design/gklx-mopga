@@ -16,32 +16,29 @@ import java.time.LocalDateTime;
 @Data
 public class TableColumnTermVo {
 
-    @Schema(description = "主键")
-    private Long id;
-
-    @Schema(description = "创建人")
-    private Long createUserId;
-
-    @Schema(description = "创建时间")
-    private LocalDateTime createTime;
-
-    @Schema(description = "更新人")
-    private Long updateUserId;
-
-    @Schema(description = "更新时间")
-    private LocalDateTime updateTime;
-
-    @Schema(description = "删除状态")
-    private Boolean deletedFlag;
-
     @Schema(description = "字段主键")
     private Long columnId;
 
-    @Schema(description = "数据源id")
-    private Long databaseId;
+    @Schema(description = "字段名称")
+    private String columnName;
 
-    @Schema(description = "表术语主键")
-    private Long tableTermId;
+    @Schema(description = "字段注释")
+    private String columnComment;
+
+    @Schema(description = "是否主键（1是）")
+    private Boolean isPk;
+
+    @Schema(description = "是否自增（1是）")
+    private Boolean isIncrement;
+
+    @Schema(description = "是否为空（1是）")
+    private Boolean isNull;
+
+    @Schema(description = "默认值")
+    private String columnDefault;
+
+    @Schema(description = "字段类型")
+    private String columnType;
 
     @Schema(description = "表注释")
     private String columnCommentTerm;

@@ -3,7 +3,7 @@ package com.gklx.mopga.admin.module.generate.domain.vo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * $表术语表 列表VO
@@ -16,33 +16,27 @@ import java.time.LocalDateTime;
 @Data
 public class TableTermVo {
 
-    @Schema(description = "主键")
-    private Long id;
-
-    @Schema(description = "创建人")
-    private Long createUserId;
-
-    @Schema(description = "创建时间")
-    private LocalDateTime createTime;
-
-    @Schema(description = "更新人")
-    private Long updateUserId;
-
-    @Schema(description = "更新时间")
-    private LocalDateTime updateTime;
-
-    @Schema(description = "删除状态")
-    private Boolean deletedFlag;
-
     @Schema(description = "表主键")
     private Long tableId;
 
     @Schema(description = "数据源id")
     private Long databaseId;
 
+    @Schema(description = "表名称")
+    private String tableName;
+
+    @Schema(description = "表注释")
+    private String tableComment;
+
     @Schema(description = "表注释")
     private String tableCommentTerm;
 
     @Schema(description = "场景")
     private String scenes;
+
+    @Schema(description = "排序（越大越靠前）")
+    private Integer sort;
+
+    @Schema(description = "字段")
+    private List<TableColumnTermVo> columns;
 }

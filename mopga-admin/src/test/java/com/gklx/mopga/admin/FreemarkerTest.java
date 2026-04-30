@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.Map;
 
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest
 public class FreemarkerTest {
 
     @Test
