@@ -2,12 +2,13 @@ package com.gklx.mopga.admin.module.generate.manager;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.gklx.mopga.admin.module.generate.domain.entity.TableColumnTermEntity;
-import com.gklx.mopga.admin.module.generate.dao.TableColumnTermDao;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.gklx.mopga.admin.module.generate.dao.TableColumnTermDao;
+import com.gklx.mopga.admin.module.generate.domain.entity.TableColumnTermEntity;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,12 +21,12 @@ import java.util.List;
 @Service
 public class TableColumnTermManager extends ServiceImpl<TableColumnTermDao, TableColumnTermEntity> {
 
-    public List<TableColumnTermEntity> listByTableTermIds(List<Long> tableTermIds) {
-        if (CollectionUtils.isEmpty(tableTermIds)) {
-            return new java.util.ArrayList<>();
+    public List<TableColumnTermEntity> listByTableIds(List<Long> tableIds) {
+        if (CollectionUtils.isEmpty(tableIds)) {
+            return new ArrayList<>();
         }
         LambdaQueryWrapper<TableColumnTermEntity> lqw = Wrappers.lambdaQuery();
-        lqw.in(TableColumnTermEntity::getTableTermId, tableTermIds);
+        lqw.in(TableColumnTermEntity::getTableId, tableIds);
         return list(lqw);
     }
 
@@ -33,5 +34,17 @@ public class TableColumnTermManager extends ServiceImpl<TableColumnTermDao, Tabl
         LambdaQueryWrapper<TableColumnTermEntity> lqw = Wrappers.lambdaQuery();
         lqw.eq(TableColumnTermEntity::getColumnId, columnId);
         return getOne(lqw);
+    }
+
+    public void deleteByTableIds(List<Long> ids) {
+        LambdaQueryWrapper<TableColumnTermEntity> lqw = Wrappers.lambdaQuery();
+        lqw.in(TableColumnTermEntity::getTableId, ids);
+        remove(lqw);
+    }
+
+    public void deleteByColumnIds(List<Long> ids) {
+        LambdaQueryWrapper<TableColumnTermEntity> lqw = Wrappers.lambdaQuery();
+        lqw.in(TableColumnTermEntity::getColumnId, ids);
+        remove(lqw);
     }
 }

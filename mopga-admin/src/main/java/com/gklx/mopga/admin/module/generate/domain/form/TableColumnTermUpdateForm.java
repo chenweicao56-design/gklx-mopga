@@ -26,8 +26,8 @@ public class TableColumnTermUpdateForm {
     @NotNull(message = "数据源id 不能为空")
     private Long databaseId;
 
-    @Schema(description = "表术语主键")
-    private Long tableTermId;
+    @Schema(description = "表id", requiredMode = Schema.RequiredMode.REQUIRED)
+    private Long tableId;
 
     @Schema(description = "表注释")
     private String columnCommentTerm;
@@ -43,9 +43,4 @@ public class TableColumnTermUpdateForm {
 
     @Schema(description = "术语")
     private String terms;
-
-    @Schema(description = "表id", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotNull(message = "表id 不能为空")
-    private Long tableId;
-
 }

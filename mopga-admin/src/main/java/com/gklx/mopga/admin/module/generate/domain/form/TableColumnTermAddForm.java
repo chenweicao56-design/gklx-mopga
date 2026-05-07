@@ -23,9 +23,9 @@ public class TableColumnTermAddForm {
     @NotNull(message = "数据源id 不能为空")
     private Long databaseId;
 
-    @Schema(description = "表术语主键", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotNull(message = "表术语主键 不能为空")
-    private Long tableTermId;
+    @Schema(description = "表主键", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotNull(message = "表主键 不能为空")
+    private Long tableId;
 
     @Schema(description = "表注释")
     private String columnCommentTerm;
@@ -42,7 +42,4 @@ public class TableColumnTermAddForm {
     @Schema(description = "术语")
     private String terms;
 
-    @Schema(description = "表id", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotNull(message = "表id 不能为空")
-    private Long tableId;
 }

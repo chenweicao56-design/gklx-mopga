@@ -85,6 +85,7 @@ public class GenerateService {
     @Resource
     private TableColumnTermManager tableColumnTermManager;
 
+
     public PageResult<TableEntity> dbList(Long databaseId, TableQueryForm form) {
         DatabaseEntity database = databaseManager.getById(databaseId);
         IBaseCollector collector = applicationContext.getBean(database.getDatabaseType(), IBaseCollector.class);
@@ -217,7 +218,7 @@ public class GenerateService {
         IBaseCollector collector = applicationContext.getBean(database.getDatabaseType(), IBaseCollector.class);
         List<GenTableColumnEntity> columns = collector.selectDbTableColumnsByName(database, table.getTableName());
 
-        List<GenTableColumnVo> oldColumns = genTableColumnService.getByTableId(tableId);
+        List<GenTableColumnVo> oldColumns = genTableColumnManager.listByTableId(tableId);
         Map<String, GenTableColumnVo> collect = oldColumns.stream().collect(Collectors.toMap(GenTableColumnVo::getColumnName, e -> e));
         List<GenTableColumnEntity> columnList = new ArrayList<>();
         for (int i = 0; i < columns.size(); i++) {
@@ -574,10 +575,9 @@ public class GenerateService {
         Map<Long, TableTermEntity> tableTermEntityMap = tableTermEntities.stream()
                 .collect(Collectors.toMap(TableTermEntity::getTableId, e -> e));
 
-        List<Long> tableTermIds = tableTermEntities.stream().map(TableTermEntity::getId).toList();
-        List<TableColumnTermEntity> columnTermEntities = tableColumnTermManager.listByTableTermIds(tableTermIds);
+        List<TableColumnTermEntity> columnTermEntities = tableColumnTermManager.listByTableIds(tableIdList);
         Map<Long, List<TableColumnTermEntity>> columnTermListMap = columnTermEntities.stream()
-                .collect(Collectors.groupingBy(TableColumnTermEntity::getTableTermId));
+                .collect(Collectors.groupingBy(TableColumnTermEntity::getTableId));
 
         // 组装表术语VO列表（以table和tablecolumn为主，term表补充信息）
         List<TableTermVo> tableTermVos = new ArrayList<>();
@@ -605,7 +605,7 @@ public class GenerateService {
 
                     // 从term表补充术语信息
                     if (ObjUtil.isNotNull(tableTermEntity)) {
-                        TableColumnTermEntity termColumn = columnTermListMap.get(tableTermEntity.getId())
+                        TableColumnTermEntity termColumn = columnTermListMap.get(tableTermEntity.getTableId())
                                 .stream()
                                 .filter(t -> t.getColumnId().equals(columnEntity.getColumnId()))
                                 .findFirst()
@@ -629,5 +629,31 @@ public class GenerateService {
 
         databaseTermVo.setTableTerms(tableTermVos);
         return databaseTermVo;
+    }
+
+    public Boolean initSchema(Text2sqlQueryForm form) {
+        List<TableEntity> tableEntities = tableManager.listByDatabaseId(form.getDatabaseId(), form.getTableIds());
+        if (CollectionUtils.isNotEmpty(tableEntities)) {
+            tableEntities.forEach(tableEntity -> {
+                TableTermEntity tableTerm = tableTermManager.getByTableId(tableEntity.getTableId());
+                if(ObjUtil.isNotNull(tableTerm)){
+                    tableTerm = new  TableTermEntity();
+                    tableTermManager.save(tableTerm);
+                }
+                List<GenTableColumnEntity> genTableColumnEntities = tableColumnManager.listByTableIds(Collections.singletonList(tableEntity.getTableId()));
+                if (CollectionUtils.isNotEmpty(genTableColumnEntities)) {
+                    genTableColumnEntities.forEach(genTableColumnEntity -> {
+                        TableColumnTermEntity tableColumnTermEntity = tableColumnTermManager.getByColumnId(genTableColumnEntity.getColumnId());
+                        if (ObjUtil.isNotNull(tableColumnTermEntity)) {
+                            tableColumnTermEntity = new TableColumnTermEntity();
+                            tableColumnTermManager.save(tableColumnTermEntity);
+                        }
+                    });
+                }
+
+
+            });
+        }
+        return true;
     }
 }

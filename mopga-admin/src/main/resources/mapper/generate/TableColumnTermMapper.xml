@@ -12,7 +12,7 @@
         ai_table_column_term.deleted_flag,
         ai_table_column_term.column_id,
         ai_table_column_term.database_id,
-        ai_table_column_term.table_term_id,
+        ai_table_column_term.table_id,
         ai_table_column_term.column_comment_term,
         ai_table_column_term.dicts,
         ai_table_column_term.example,
@@ -29,8 +29,8 @@
             <if test="queryForm.columnId != null">
                 AND ai_table_column_term.column_id = #{queryForm.columnId}
             </if>
-            <if test="queryForm.tableTermId != null">
-                AND ai_table_column_term.table_term_id = #{queryForm.tableTermId}
+            <if test="queryForm.tableId != null">
+                AND ai_table_column_term.table_id = #{queryForm.tableId}
             </if>
         </where>
 	    ORDER BY ai_table_column_term.update_time

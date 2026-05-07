@@ -21,5 +21,5 @@ public class TableColumnTermQueryForm extends PageParam {
     private Long columnId;
 
     @Schema(description = "表术语主键")
-    private Long tableTermId;
+    private Long tableId;
 }

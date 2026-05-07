@@ -34,4 +34,5 @@ public class TableTermManager extends ServiceImpl<TableTermDao, TableTermEntity>
         lqw.eq(TableTermEntity::getTableId, tableId);
         return getOne(lqw);
     }
+
 }

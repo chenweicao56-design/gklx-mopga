@@ -61,11 +61,6 @@ public class TableColumnTermService {
      */
     public ResponseDTO<String> add(TableColumnTermAddForm addForm) {
         TableColumnTermEntity tableColumnTermEntity = SmartBeanUtil.copy(addForm, TableColumnTermEntity.class);
-        TableTermEntity tableTerm = tableTermManager.getByTableId(addForm.getTableId());
-        if(Objects.isNull(tableTerm) ) {
-            throw new IllegalArgumentException("表术语不存在");
-        }
-        tableColumnTermEntity.setTableTermId(tableTerm.getId());
         tableColumnTermDao.insert(tableColumnTermEntity);
         return ResponseDTO.ok();
     }

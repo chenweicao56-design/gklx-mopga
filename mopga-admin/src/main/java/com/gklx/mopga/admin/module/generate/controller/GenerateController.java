@@ -12,6 +12,7 @@ import com.gklx.mopga.admin.module.generate.service.GenerateService;
 import com.gklx.mopga.base.common.domain.PageResult;
 import com.gklx.mopga.base.common.domain.ResponseDTO;
 import com.gklx.mopga.base.common.domain.ValidateList;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
@@ -36,12 +37,14 @@ public class GenerateController {
     private GenerateService generateService;
 
     @GetMapping("/gen/db/table/list/{databaseId}")
+    @Operation(summary = "获取数据库表列表")
     public ResponseDTO<PageResult<TableEntity>> dbList(@PathVariable("databaseId") Long databaseId, TableQueryForm form) {
         return ResponseDTO.ok(generateService.dbList(databaseId, form));
     }
 
 
     @GetMapping("/gen/sync/table/{databaseId}")
+    @Operation(summary = "同步数据库表")
     public ResponseDTO<Boolean> syncTable(@PathVariable("databaseId") Long databaseId,
                                           @RequestParam(value = "containColumn") Boolean containColumn,
                                           @RequestParam(value = "tableNames", required = false) String tableNames) {
@@ -49,17 +52,20 @@ public class GenerateController {
     }
 
     @GetMapping("/gen/preview/{tableId}")
+    @Operation(summary = "预览生成代码")
     public ResponseDTO<List<JSONObject>> preview(@PathVariable("tableId") Long tableId) {
         return ResponseDTO.ok(generateService.preview(tableId));
     }
 
     @PostMapping("/gen/create/table")
+    @Operation(summary = "生成建表语句")
     public ResponseDTO<String> createTable(@RequestParam(value = "isSync") Boolean isSync,
                                            @RequestBody TableVo table) {
         return ResponseDTO.ok(generateService.createTable(table, isSync));
     }
 
     @PostMapping("/gen/create/table/preview")
+    @Operation(summary = "预览生成建表语句")
     public ResponseDTO<String> createTablePreview(@RequestBody TableVo table) {
         return ResponseDTO.ok(generateService.buildCreateTableSqlTemplate(table));
     }
@@ -78,13 +84,20 @@ public class GenerateController {
     }
 
     @PostMapping("/gen/mybatis/preview")
+    @Operation(summary = "生成mybatis")
     public ResponseDTO<String> generateMybatis(@RequestBody SqlForm form) {
         return ResponseDTO.ok(generateService.generateMybatis(form));
     }
 
     @PostMapping("/gen/generateSchema")
+    @Operation(summary = "生成schema")
     public ResponseDTO<String> text2sql(@RequestBody Text2sqlQueryForm form) {
         return ResponseDTO.ok(generateService.generateSchema(form));
+    }
+    @PostMapping("/gen/schema/init")
+    @Operation(summary = "初始化schema")
+    public ResponseDTO<Boolean> initSchema(@RequestBody Text2sqlQueryForm form) {
+        return ResponseDTO.ok(generateService.initSchema(form));
     }
 
 

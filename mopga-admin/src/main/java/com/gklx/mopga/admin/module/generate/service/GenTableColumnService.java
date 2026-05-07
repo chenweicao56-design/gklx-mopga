@@ -10,6 +10,7 @@ import com.gklx.mopga.admin.module.generate.domain.form.GenTableColumnQueryForm;
 import com.gklx.mopga.admin.module.generate.domain.form.GenTableColumnUpdateForm;
 import com.gklx.mopga.admin.module.generate.domain.vo.GenTableColumnVo;
 import com.gklx.mopga.admin.module.generate.manager.GenTableColumnManager;
+import com.gklx.mopga.admin.module.generate.manager.TableColumnTermManager;
 import com.gklx.mopga.base.common.domain.PageResult;
 import com.gklx.mopga.base.common.domain.ResponseDTO;
 import com.gklx.mopga.base.common.util.SmartBeanUtil;
@@ -35,6 +36,8 @@ public class GenTableColumnService {
     private GenTableColumnDao genTableColumnDao;
     @Resource
     private GenTableColumnManager genTableColumnManager;
+    @Resource
+    private TableColumnTermManager tableColumnTermManager;
 
     /**
      * 分页查询
@@ -56,7 +59,6 @@ public class GenTableColumnService {
 
     /**
      * 更新
-     *
      */
     public ResponseDTO<String> update(GenTableColumnUpdateForm updateForm) {
         GenTableColumnEntity genTableColumnEntity = SmartBeanUtil.copy(updateForm, GenTableColumnEntity.class);
@@ -68,9 +70,10 @@ public class GenTableColumnService {
      * 批量删除
      */
     public ResponseDTO<String> batchDelete(List<Long> idList) {
-        if (CollectionUtils.isEmpty(idList)){
+        if (CollectionUtils.isEmpty(idList)) {
             return ResponseDTO.ok();
         }
+        tableColumnTermManager.deleteByColumnIds(idList);
         genTableColumnDao.deleteByIds(idList);
         return ResponseDTO.ok();
     }
@@ -79,46 +82,19 @@ public class GenTableColumnService {
      * 单个删除
      */
     public ResponseDTO<String> delete(Long columnId) {
-        if (null == columnId){
+        if (null == columnId) {
             return ResponseDTO.ok();
         }
+        tableColumnTermManager.deleteByColumnIds(List.of(columnId));
         genTableColumnDao.deleteById(columnId);
         return ResponseDTO.ok();
     }
 
-    public ResponseDTO<String> batchDeleteByTableIds(List<Long> idList) {
-        if (CollectionUtils.isEmpty(idList)){
-            return ResponseDTO.ok();
-        }
-        LambdaQueryWrapper<GenTableColumnEntity> lqw = Wrappers.lambdaQuery();
-        lqw.in(GenTableColumnEntity::getTableId, idList);
-        genTableColumnDao.delete(lqw);
-        return ResponseDTO.ok();
-    }
 
-    public List<GenTableColumnEntity> listByTableId(Long tableId) {
-        LambdaQueryWrapper<GenTableColumnEntity> lambdaQuery = Wrappers.lambdaQuery();
-        lambdaQuery.eq(GenTableColumnEntity::getTableId, tableId);
-        lambdaQuery.orderByAsc(GenTableColumnEntity::getSort);
-        return genTableColumnManager.list(lambdaQuery);
-    }
 
-    public GenTableColumnEntity getByName(Long tableId, String columnName) {
-        LambdaQueryWrapper<GenTableColumnEntity> lambdaQuery = Wrappers.lambdaQuery();
-        lambdaQuery.eq(GenTableColumnEntity::getColumnName, columnName);
-        lambdaQuery.eq(GenTableColumnEntity::getTableId, tableId);
-        return genTableColumnManager.getOne(lambdaQuery);
-    }
 
-    public List<GenTableColumnVo> getByDatabaseId(Long databaseId) {
-        LambdaQueryWrapper<GenTableColumnEntity> lambdaQuery = Wrappers.lambdaQuery();
-        lambdaQuery.eq(GenTableColumnEntity::getDatabaseId, databaseId);
-       return SmartBeanUtil.copyList(genTableColumnManager.list(lambdaQuery), GenTableColumnVo.class);
-    }
 
-    public List<GenTableColumnVo> getByTableId(Long tableId) {
-        LambdaQueryWrapper<GenTableColumnEntity> lambdaQuery = Wrappers.lambdaQuery();
-        lambdaQuery.eq(GenTableColumnEntity::getTableId, tableId);
-       return SmartBeanUtil.copyList(genTableColumnManager.list(lambdaQuery), GenTableColumnVo.class);
-    }
+
+
+
 }

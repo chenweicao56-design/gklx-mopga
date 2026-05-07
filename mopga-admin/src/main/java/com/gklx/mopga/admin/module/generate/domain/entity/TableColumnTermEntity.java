@@ -64,9 +64,9 @@ public class TableColumnTermEntity {
     private Long databaseId;
 
     /**
-     * 表术语主键
+     * 表主键
      */
-    private Long tableTermId;
+    private Long tableId;
 
     /**
      * 表注释
