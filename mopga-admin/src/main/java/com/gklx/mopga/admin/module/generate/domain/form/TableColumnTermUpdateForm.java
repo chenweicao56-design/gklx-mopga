@@ -15,8 +15,7 @@ import lombok.Data;
 @Data
 public class TableColumnTermUpdateForm {
 
-    @Schema(description = "主键", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotNull(message = "主键 不能为空")
+    @Schema(description = "主键")
     private Long id;
 
     @Schema(description = "字段主键", requiredMode = Schema.RequiredMode.REQUIRED)
@@ -27,8 +26,7 @@ public class TableColumnTermUpdateForm {
     @NotNull(message = "数据源id 不能为空")
     private Long databaseId;
 
-    @Schema(description = "表术语主键", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotNull(message = "表术语主键 不能为空")
+    @Schema(description = "表术语主键")
     private Long tableTermId;
 
     @Schema(description = "表注释")
@@ -45,5 +43,9 @@ public class TableColumnTermUpdateForm {
 
     @Schema(description = "术语")
     private String terms;
+
+    @Schema(description = "表id", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotNull(message = "表id 不能为空")
+    private Long tableId;
 
 }

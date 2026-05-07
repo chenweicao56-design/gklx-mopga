@@ -28,4 +28,10 @@ public class TableColumnTermManager extends ServiceImpl<TableColumnTermDao, Tabl
         lqw.in(TableColumnTermEntity::getTableTermId, tableTermIds);
         return list(lqw);
     }
+
+    public TableColumnTermEntity getByColumnId(Long columnId) {
+        LambdaQueryWrapper<TableColumnTermEntity> lqw = Wrappers.lambdaQuery();
+        lqw.eq(TableColumnTermEntity::getColumnId, columnId);
+        return getOne(lqw);
+    }
 }

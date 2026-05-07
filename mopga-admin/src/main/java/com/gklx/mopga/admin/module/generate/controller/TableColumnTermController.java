@@ -5,14 +5,18 @@ import com.gklx.mopga.admin.module.generate.domain.form.TableColumnTermAddForm;
 import com.gklx.mopga.admin.module.generate.domain.form.TableColumnTermQueryForm;
 import com.gklx.mopga.admin.module.generate.domain.form.TableColumnTermUpdateForm;
 import com.gklx.mopga.admin.module.generate.domain.vo.TableColumnTermVo;
+import com.gklx.mopga.admin.module.generate.domain.entity.TableColumnTermEntity;
+import com.gklx.mopga.admin.module.generate.manager.TableColumnTermManager;
 import com.gklx.mopga.admin.module.generate.service.TableColumnTermService;
 import com.gklx.mopga.base.common.domain.PageResult;
+import com.gklx.mopga.base.common.util.SmartBeanUtil;
 import com.gklx.mopga.base.common.domain.ResponseDTO;
 import com.gklx.mopga.base.common.domain.ValidateList;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
+import java.util.Objects;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -29,6 +33,8 @@ public class TableColumnTermController {
 
     @Resource
     private TableColumnTermService tableColumnTermService;
+    @Resource
+    private TableColumnTermManager tableColumnTermManager;
 
     @Operation(summary = "分页查询 @author gklx")
     @PostMapping("/tableColumnTerm/queryPage")
@@ -70,6 +76,23 @@ public class TableColumnTermController {
     @SaCheckPermission("tableColumnTerm:delete")
     public ResponseDTO<String> batchDelete(@PathVariable Long id) {
         return tableColumnTermService.delete(id);
+    }
+
+    @Operation(summary = "详情 @author gklx")
+    @GetMapping("/tableColumnTerm/getByColumnId/{id}")
+    public ResponseDTO<TableColumnTermEntity> getByColumnId(@PathVariable Long id) {
+        return ResponseDTO.ok(tableColumnTermManager.getByColumnId(id));
+    }
+
+    @Operation(summary = "添加 @author gklx")
+    @PostMapping("/tableColumnTerm/addOrUpdate")
+    public ResponseDTO<String> addOrUpdate(@RequestBody @Valid TableColumnTermUpdateForm updateForm) {
+        Long id = updateForm.getId();
+        if (Objects.isNull(id)) {
+            return tableColumnTermService.add(SmartBeanUtil.copy(updateForm, TableColumnTermAddForm.class));
+        } else {
+            return tableColumnTermService.update(updateForm);
+        }
     }
 
 }

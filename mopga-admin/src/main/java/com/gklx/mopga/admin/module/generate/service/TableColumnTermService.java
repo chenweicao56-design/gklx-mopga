@@ -2,11 +2,16 @@ package com.gklx.mopga.admin.module.generate.service;
 
 import com.gklx.mopga.admin.module.generate.dao.TableColumnTermDao;
 import com.gklx.mopga.admin.module.generate.domain.entity.TableColumnTermEntity;
+import com.gklx.mopga.admin.module.generate.domain.entity.TableTermEntity;
 import com.gklx.mopga.admin.module.generate.domain.form.TableColumnTermAddForm;
 import com.gklx.mopga.admin.module.generate.domain.form.TableColumnTermQueryForm;
 import com.gklx.mopga.admin.module.generate.domain.form.TableColumnTermUpdateForm;
 import com.gklx.mopga.admin.module.generate.domain.vo.TableColumnTermVo;
+
 import java.util.List;
+import java.util.Objects;
+
+import com.gklx.mopga.admin.module.generate.manager.TableTermManager;
 import com.gklx.mopga.base.common.util.SmartBeanUtil;
 import com.gklx.mopga.base.common.util.SmartPageUtil;
 import com.gklx.mopga.base.common.domain.ResponseDTO;
@@ -30,6 +35,8 @@ public class TableColumnTermService {
 
     @Resource
     private TableColumnTermDao tableColumnTermDao;
+    @Resource
+    private TableTermManager tableTermManager;
 
     /**
      * 分页查询
@@ -40,13 +47,13 @@ public class TableColumnTermService {
         return SmartPageUtil.convert2PageResult(page, list);
     }
 
-     /**
+    /**
      * 详情
      */
     public ResponseDTO<TableColumnTermVo> getDetail(Long id) {
         TableColumnTermEntity tableColumnTermEntity = tableColumnTermDao.selectById(id);
-	    TableColumnTermVo tableColumnTermVo = SmartBeanUtil.copy(tableColumnTermEntity,TableColumnTermVo.class);
-	    return ResponseDTO.ok(tableColumnTermVo);
+        TableColumnTermVo tableColumnTermVo = SmartBeanUtil.copy(tableColumnTermEntity, TableColumnTermVo.class);
+        return ResponseDTO.ok(tableColumnTermVo);
     }
 
     /**
@@ -54,13 +61,17 @@ public class TableColumnTermService {
      */
     public ResponseDTO<String> add(TableColumnTermAddForm addForm) {
         TableColumnTermEntity tableColumnTermEntity = SmartBeanUtil.copy(addForm, TableColumnTermEntity.class);
+        TableTermEntity tableTerm = tableTermManager.getByTableId(addForm.getTableId());
+        if(Objects.isNull(tableTerm) ) {
+            throw new IllegalArgumentException("表术语不存在");
+        }
+        tableColumnTermEntity.setTableTermId(tableTerm.getId());
         tableColumnTermDao.insert(tableColumnTermEntity);
         return ResponseDTO.ok();
     }
 
     /**
      * 更新
-     *
      */
     public ResponseDTO<String> update(TableColumnTermUpdateForm updateForm) {
         TableColumnTermEntity tableColumnTermEntity = SmartBeanUtil.copy(updateForm, TableColumnTermEntity.class);
@@ -72,7 +83,7 @@ public class TableColumnTermService {
      * 批量删除
      */
     public ResponseDTO<String> batchDelete(List<Long> idList) {
-        if (CollectionUtils.isEmpty(idList)){
+        if (CollectionUtils.isEmpty(idList)) {
             return ResponseDTO.ok();
         }
         tableColumnTermDao.deleteByIds(idList);
@@ -83,7 +94,7 @@ public class TableColumnTermService {
      * 单个删除
      */
     public ResponseDTO<String> delete(Long id) {
-        if (null == id){
+        if (null == id) {
             return ResponseDTO.ok();
         }
         tableColumnTermDao.deleteById(id);

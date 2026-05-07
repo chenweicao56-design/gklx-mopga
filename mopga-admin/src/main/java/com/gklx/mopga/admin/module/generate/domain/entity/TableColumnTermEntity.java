@@ -1,10 +1,6 @@
 package com.gklx.mopga.admin.module.generate.domain.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 
 import java.time.LocalDateTime;
 
@@ -75,25 +71,30 @@ public class TableColumnTermEntity {
     /**
      * 表注释
      */
+    @TableField(updateStrategy = FieldStrategy.ALWAYS)
     private String columnCommentTerm;
 
     /**
      * 字典值
      */
+    @TableField(updateStrategy = FieldStrategy.ALWAYS)
     private String dicts;
 
     /**
      * 样例值
      */
+    @TableField(updateStrategy = FieldStrategy.ALWAYS)
     private String example;
 
     /**
      * 外键
      */
+    @TableField(updateStrategy = FieldStrategy.ALWAYS)
     private String foreignKey;
 
     /**
      * 术语
      */
+    @TableField(updateStrategy = FieldStrategy.ALWAYS)
     private String terms;
 }

@@ -15,8 +15,7 @@ import lombok.Data;
 @Data
 public class TableTermUpdateForm {
 
-    @Schema(description = "主键", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotNull(message = "主键 不能为空")
+    @Schema(description = "主键")
     private Long id;
 
     @Schema(description = "表主键", requiredMode = Schema.RequiredMode.REQUIRED)
@@ -32,5 +31,4 @@ public class TableTermUpdateForm {
 
     @Schema(description = "场景")
     private String scenes;
-
 }

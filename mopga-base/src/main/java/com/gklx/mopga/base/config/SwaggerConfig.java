@@ -1,5 +1,6 @@
 package com.gklx.mopga.base.config;
 
+import com.gklx.mopga.base.common.util.SmartStringUtil;
 import com.google.common.collect.Lists;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -92,6 +93,7 @@ public class SwaggerConfig {
                     // 为所有接口添加鉴权
                     pathItem.readOperations().forEach(operation -> {
                         operation.addSecurityItem(new SecurityRequirement().addList(HttpHeaders.AUTHORIZATION));
+                        operation.setOperationId(SmartStringUtil.uuid());
                     });
                 });
             }

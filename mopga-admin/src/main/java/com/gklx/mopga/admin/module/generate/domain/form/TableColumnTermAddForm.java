@@ -41,4 +41,8 @@ public class TableColumnTermAddForm {
 
     @Schema(description = "术语")
     private String terms;
+
+    @Schema(description = "表id", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotNull(message = "表id 不能为空")
+    private Long tableId;
 }

@@ -1,14 +1,9 @@
 package com.gklx.mopga.admin.module.generate.domain.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
+import lombok.Data;
 
 import java.time.LocalDateTime;
-
-import lombok.Data;
 
 /**
  * 表术语表 实体类
@@ -70,10 +65,12 @@ public class TableTermEntity {
     /**
      * 表注释
      */
+    @TableField(updateStrategy = FieldStrategy.ALWAYS)
     private String tableCommentTerm;
 
     /**
      * 场景
      */
+    @TableField(updateStrategy = FieldStrategy.ALWAYS)
     private String scenes;
 }

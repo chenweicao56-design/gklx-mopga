@@ -28,4 +28,10 @@ public class TableTermManager extends ServiceImpl<TableTermDao, TableTermEntity>
         }
         return list(lqw);
     }
+
+    public TableTermEntity getByTableId(Long tableId) {
+        LambdaQueryWrapper<TableTermEntity> lqw = Wrappers.lambdaQuery();
+        lqw.eq(TableTermEntity::getTableId, tableId);
+        return getOne(lqw);
+    }
 }
