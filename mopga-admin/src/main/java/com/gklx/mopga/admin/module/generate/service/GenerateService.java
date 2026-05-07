@@ -62,8 +62,6 @@ public class GenerateService {
     @Resource
     private TableService tableService;
     @Resource
-    private GenTableColumnService genTableColumnService;
-    @Resource
     private ApplicationContext applicationContext;
     @Resource
     private TemplateService templateService;
@@ -71,9 +69,6 @@ public class GenerateService {
     private TemplateManager templateManager;
     @Resource
     private TemplateCodeItemService templateCodeItemService;
-    @Resource
-    private TemplateColumnService templateColumnService;
-
     @Resource
     private MappingDataManager mappingDataManager;
     @Autowired
@@ -161,6 +156,7 @@ public class GenerateService {
                 } else {
                     table.setSort((int) (i + 1 + size * (current - 1)));
                     table.setDatabaseId(databaseId);
+                    table.setDeleteColumnName(database.getDeleteColumnName());
                     table.setIsPhysicallyDeleted(database.getIsPhysicallyDeleted());
                     table.setBackendAuthor(database.getBackendAuthor());
                     table.setBackendDate(ObjUtil.isNotNull(database.getBackendDate()) ? database.getBackendDate() : LocalDateTime.now());
@@ -236,14 +232,10 @@ public class GenerateService {
                     log.error("未找到字段类型：{}:{}", table.getTableName(), column.getFieldName());
                 }
                 column.setIsRequired(column.getIsNull());
-                column.setIsInsert(!column.getIsBase());
+                column.setIsInsert(!column.getIsBase()&&!column.getIsPk());
                 column.setIsUpdate(column.getIsPk() || !column.getIsBase());
                 column.setIsWhere(false);
-                if (column.getIsPk() || column.getIsBase()) {
-                    column.setIsTable(false);
-                } else {
-                    column.setIsTable(true);
-                }
+                column.setIsTable(false);
                 column.setWhereType(null);
                 column.setExtendedData(database.getColumnExtendedData());
                 columnList.add(column);
