@@ -8,8 +8,8 @@ import lombok.Data;
  * 代码模板项表 更新表单
  *
  * @Author gklx
- * @Date 2025-09-18 17:05:30
- * @Copyright gklx
+ * @Date 2026-05-12 09:52:37
+ * @Copyright 1.0
  */
 
 @Data
@@ -39,4 +39,7 @@ public class TemplateCodeItemAddForm {
 
     @Schema(description = "排序")
     private Integer sort;
+
+    @Schema(description = "公共模板id")
+    private Long commonTemplateId;
 }

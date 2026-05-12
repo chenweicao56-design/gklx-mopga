@@ -8,9 +8,9 @@ import java.time.LocalDateTime;
 /**
  * $代码模板项表 列表VO
  *
- * @Author ${.backendAuthor}
- * @Date 2025-09-18 17:18:23
- * @Copyright gklx
+ * @Author gklx
+ * @Date 2026-05-12 09:52:37
+ * @Copyright 1.0
  */
 
 @Data
@@ -53,4 +53,6 @@ public class TemplateCodeItemVo {
     @Schema(description = "排序")
     private Integer sort;
 
+    @Schema(description = "公共模板id")
+    private Long commonTemplateId;
 }

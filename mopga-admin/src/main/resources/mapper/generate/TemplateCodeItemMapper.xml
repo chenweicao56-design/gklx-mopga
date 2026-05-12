@@ -15,7 +15,8 @@
         gen_template_code_item.file_type,
         gen_template_code_item.file_path,
         gen_template_code_item.content,
-        gen_template_code_item.sort
+        gen_template_code_item.sort,
+        gen_template_code_item.common_template_id
     </sql>
 
     <!-- 分页查询 -->
