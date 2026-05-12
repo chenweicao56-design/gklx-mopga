@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
  * $公共模板 列表VO
  *
  * @Author gklx
- * @Date 2025-09-06 18:37:05
+ * @Date 2026-05-12 09:44:02
  * @Copyright 1.0
  */
 
@@ -33,6 +33,9 @@ public class TemplateCommonVo {
 
     @Schema(description = "删除状态")
     private Boolean deletedFlag;
+
+    @Schema(description = "模板名称")
+    private String templateName;
 
     @Schema(description = "模板内容")
     private String content;

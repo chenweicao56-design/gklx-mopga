@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
  * 公共模板 Controller
  *
  * @Author gklx
- * @Date 2025-09-06 18:37:05
+ * @Date 2026-05-12 09:44:02
  * @Copyright 1.0
  */
 
@@ -35,13 +35,6 @@ public class TemplateCommonController {
     @SaCheckPermission("templateCommon:query")
     public ResponseDTO<PageResult<TemplateCommonVo>> queryPage(@RequestBody @Valid TemplateCommonQueryForm queryForm) {
         return ResponseDTO.ok(templateCommonService.queryPage(queryForm));
-    }
-
-    @Operation(summary = "详情 @author gklx")
-    @GetMapping("/templateCommon/getDetail/{id}")
-    @SaCheckPermission("templateCommon:query")
-    public ResponseDTO<TemplateCommonVo> getDetail(@PathVariable Long id) {
-        return templateCommonService.getDetail(id);
     }
 
     @Operation(summary = "添加 @author gklx")

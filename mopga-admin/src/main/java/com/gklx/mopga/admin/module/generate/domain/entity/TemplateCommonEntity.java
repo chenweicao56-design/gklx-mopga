@@ -14,7 +14,7 @@ import lombok.Data;
  * 公共模板 实体类
  *
  * @Author gklx
- * @Date 2025-09-06 18:37:05
+ * @Date 2026-05-12 09:44:02
  * @Copyright 1.0
  */
 
@@ -56,6 +56,11 @@ public class TemplateCommonEntity {
      * 删除状态
      */
     private Boolean deletedFlag;
+
+    /**
+     * 模板名称
+     */
+    private String templateName;
 
     /**
      * 模板内容

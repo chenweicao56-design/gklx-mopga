@@ -10,6 +10,7 @@
         gen_template_common.update_user_id,
         gen_template_common.update_time,
         gen_template_common.deleted_flag,
+        gen_template_common.template_name,
         gen_template_common.content,
         gen_template_common.file_type,
         gen_template_common.category,
