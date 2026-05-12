@@ -91,4 +91,9 @@ public class TemplateCodeItemEntity {
      * 公共模板id
      */
     private Long commonTemplateId;
+
+    /**
+     * 是否同步（1是）
+     */
+    private Boolean isSync;
 }

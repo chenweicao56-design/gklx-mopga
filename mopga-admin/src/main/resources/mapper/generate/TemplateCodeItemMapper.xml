@@ -16,7 +16,8 @@
         gen_template_code_item.file_path,
         gen_template_code_item.content,
         gen_template_code_item.sort,
-        gen_template_code_item.common_template_id
+        gen_template_code_item.common_template_id,
+        gen_template_code_item.is_sync
     </sql>
 
     <!-- 分页查询 -->
@@ -32,7 +33,4 @@
         </where>
         ORDER BY gen_template_code_item.sort
     </select>
-
-
-
 </mapper>

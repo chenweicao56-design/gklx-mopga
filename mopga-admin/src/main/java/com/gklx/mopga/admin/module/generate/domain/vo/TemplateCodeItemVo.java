@@ -16,7 +16,6 @@ import java.time.LocalDateTime;
 @Data
 public class TemplateCodeItemVo {
 
-
     @Schema(description = "ID")
     private Long id;
 
@@ -55,4 +54,7 @@ public class TemplateCodeItemVo {
 
     @Schema(description = "公共模板id")
     private Long commonTemplateId;
+
+    @Schema(description = "是否同步（1是）")
+    private Boolean isSync;
 }

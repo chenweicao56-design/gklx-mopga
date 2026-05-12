@@ -2,6 +2,7 @@ package com.gklx.mopga.admin.module.generate.domain.form;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 /**
@@ -14,9 +15,6 @@ import lombok.Data;
 
 @Data
 public class TemplateCodeItemAddForm {
-
-    @Schema(description = "ID")
-    private Long id;
 
     @Schema(description = "模板id")
     private Long templateId;
@@ -42,4 +40,8 @@ public class TemplateCodeItemAddForm {
 
     @Schema(description = "公共模板id")
     private Long commonTemplateId;
+
+    @Schema(description = "是否同步（1是）", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotNull(message = "是否同步（1是） 不能为空")
+    private Boolean isSync;
 }

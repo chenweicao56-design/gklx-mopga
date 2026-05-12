@@ -45,4 +45,8 @@ public class TemplateCodeItemUpdateForm {
     @Schema(description = "公共模板id")
     private Long commonTemplateId;
 
+    @Schema(description = "是否同步（1是）", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotNull(message = "是否同步（1是） 不能为空")
+    private Boolean isSync;
+
 }

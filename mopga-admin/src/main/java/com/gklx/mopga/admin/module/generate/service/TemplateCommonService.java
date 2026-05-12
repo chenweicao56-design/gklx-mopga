@@ -7,6 +7,8 @@ import com.gklx.mopga.admin.module.generate.domain.form.TemplateCommonQueryForm;
 import com.gklx.mopga.admin.module.generate.domain.form.TemplateCommonUpdateForm;
 import com.gklx.mopga.admin.module.generate.domain.vo.TemplateCommonVo;
 import java.util.List;
+
+import com.gklx.mopga.admin.module.generate.manager.TemplateCodeItemManager;
 import com.gklx.mopga.base.common.util.SmartBeanUtil;
 import com.gklx.mopga.base.common.util.SmartPageUtil;
 import com.gklx.mopga.base.common.domain.ResponseDTO;
@@ -30,6 +32,8 @@ public class TemplateCommonService {
 
     @Resource
     private TemplateCommonDao templateCommonDao;
+    @Resource
+    private TemplateCodeItemManager templateCodeItemManager;
 
     /**
      * 分页查询
@@ -65,6 +69,7 @@ public class TemplateCommonService {
     public ResponseDTO<String> update(TemplateCommonUpdateForm updateForm) {
         TemplateCommonEntity templateCommonEntity = SmartBeanUtil.copy(updateForm, TemplateCommonEntity.class);
         templateCommonDao.updateById(templateCommonEntity);
+        templateCodeItemManager.sync(updateForm);
         return ResponseDTO.ok();
     }
 
