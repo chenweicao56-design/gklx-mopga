@@ -10,7 +10,7 @@ import java.util.List;
  * $表 列表VO
  *
  * @Author gklx
- * @Date 2025-09-06 18:37:05
+ * @Date 2026-05-12 09:16:33
  * @Copyright 1.0
  */
 
@@ -124,6 +124,9 @@ public class TableVo {
 
     @Schema(description = "日志（0没有）")
     private Integer log;
+
+    @Schema(description = "文档（0没有）")
+    private Integer doc;
 
     @Schema(description = "表状态（dict:TABLE_TYPE）")
     private String tableType;

@@ -10,7 +10,7 @@ import lombok.Data;
  * 表 更新表单
  *
  * @Author gklx
- * @Date 2025-09-06 18:37:05
+ * @Date 2026-05-12 09:16:33
  * @Copyright 1.0
  */
 
@@ -127,6 +127,10 @@ public class TableAddForm {
     @Schema(description = "日志（0没有）", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotNull(message = "日志（0没有） 不能为空")
     private Integer log;
+
+    @Schema(description = "文档（0没有）", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotNull(message = "文档（0没有） 不能为空")
+    private Integer doc;
 
     @Schema(description = "表状态（dict:TABLE_TYPE）", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotBlank(message = "表状态（dict:TABLE_TYPE） 不能为空")

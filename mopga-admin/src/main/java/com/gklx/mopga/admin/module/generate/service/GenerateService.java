@@ -351,6 +351,7 @@ public class GenerateService {
             GenUtils.velocityEngine.evaluate(velocityContext, writer, templateCodeItemEntity.getFileName(), new StringReader(templateCodeItemEntity.getContent()));
             return writer.toString();
         } else {
+            VelocityInitializer.initVelocity();
             String databaseType = database.getDatabaseType();
             StringWriter sw = new StringWriter();
             Template tpl = Velocity.getTemplate(String.format("vm/create/%s.vm", databaseType), "UTF-8");

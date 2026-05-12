@@ -14,7 +14,7 @@ import lombok.Data;
  * 表 实体类
  *
  * @Author gklx
- * @Date 2025-09-06 18:37:05
+ * @Date 2026-05-12 09:16:33
  * @Copyright 1.0
  */
 
@@ -206,6 +206,11 @@ public class TableEntity {
      * 日志（0没有）
      */
     private Integer log;
+
+    /**
+     * 文档（0没有）
+     */
+    private Integer doc;
 
     /**
      * 表状态（dict:TABLE_TYPE）
