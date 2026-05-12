@@ -14,7 +14,7 @@ import lombok.Data;
  * 数据源表 实体类
  *
  * @Author gklx
- * @Date 2025-09-06 18:37:05
+ * @Date 2026-05-07 10:58:06
  * @Copyright 1.0
  */
 
@@ -236,4 +236,9 @@ public class DatabaseEntity {
      * 删除字段名称
      */
     private String deleteColumnName;
+
+    /**
+     * 文档（0没有）
+     */
+    private Integer doc;
 }

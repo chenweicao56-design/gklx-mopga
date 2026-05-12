@@ -9,15 +9,17 @@ import lombok.EqualsAndHashCode;
  * 数据源表 分页查询表单
  *
  * @Author gklx
- * @Date 2025-09-06 18:37:05
+ * @Date 2026-05-07 10:58:06
  * @Copyright 1.0
  */
 
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class DatabaseQueryForm extends PageParam {
-    
+
+    @Schema(description = "别名")
+    private String aliasName;
+
     @Schema(description = "名称")
     private String databaseName;
-    
 }

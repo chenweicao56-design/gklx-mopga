@@ -10,7 +10,7 @@ import java.util.List;
  * $数据源表 列表VO
  *
  * @Author gklx
- * @Date 2025-09-06 18:37:05
+ * @Date 2026-05-07 10:58:06
  * @Copyright 1.0
  */
 
@@ -142,6 +142,9 @@ public class DatabaseVo {
 
     @Schema(description = "删除字段名称")
     private String deleteColumnName;
+
+    @Schema(description = "文档（0没有）")
+    private Integer doc;
 
     @Schema(description = "表")
     private List<TableVo> tables;

@@ -45,7 +45,8 @@
         gen_database.schema_name,
         gen_database.permission,
         gen_database.log,
-        gen_database.delete_column_name
+        gen_database.delete_column_name,
+        gen_database.doc
     </sql>
 
     <!-- 分页查询 -->
