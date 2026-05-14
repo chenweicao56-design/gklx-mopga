@@ -2,11 +2,9 @@ package com.gklx.mopga.admin.ai.serivce;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
-import com.gklx.mopga.admin.ai.agent.manager.ManagerAgent;
 import com.gklx.mopga.admin.ai.core.ChatHandler;
 import com.gklx.mopga.admin.ai.core.ChatResponse;
 import com.gklx.mopga.admin.ai.domain.AgentContext;
-import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -19,8 +17,6 @@ import reactor.core.publisher.Flux;
 @Slf4j
 @Service
 public class ChatService extends BaseChatService {
-    @Resource
-    private ManagerAgent managerAgentService;
 
     public Flux<ChatResponse> chat(AgentContext context) {
 
@@ -63,7 +59,6 @@ public class ChatService extends BaseChatService {
                 );
                 agentService.run(context);
             } else {
-                managerAgentService.run(context);
             }
         });
     }

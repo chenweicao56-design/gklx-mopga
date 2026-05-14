@@ -1,6 +1,7 @@
 package com.gklx.mopga.admin.ai.agent.code;
 
 import com.gklx.ai.util.FreemarkerUtil;
+import com.gklx.mopga.admin.ai.agent.hook.LogHook;
 import io.agentscope.core.ReActAgent;
 import io.agentscope.core.memory.InMemoryMemory;
 import io.agentscope.core.model.OpenAIChatModel;
@@ -30,7 +31,6 @@ public class AgentFactory {
     @Resource
     private OpenAIChatModel openAIChatModel;
 
-
     public ReActAgent getAgent(String session) {
         ReActAgent reActAgent = agents.get(session);
         try {
@@ -55,6 +55,7 @@ public class AgentFactory {
                         .toolkit(toolkit)
                         .model(openAIChatModel)
                         .memory(new InMemoryMemory())
+                        .hook(new LogHook())
                         .build();
                 agents.put(session, reActAgent);
             }
@@ -63,7 +64,6 @@ public class AgentFactory {
         }
         return reActAgent;
     }
-
 
     private static AgentSkill loadSkillCreatorSkill() {
         Path resourcesDir = resolvePath("mopga-admin/src/main/resources/skills");
@@ -74,6 +74,5 @@ public class AgentFactory {
     private static Path resolvePath(String relativePath) {
         return Paths.get(relativePath).toAbsolutePath().normalize();
     }
-
 
 }

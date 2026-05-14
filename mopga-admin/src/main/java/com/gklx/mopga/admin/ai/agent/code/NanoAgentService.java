@@ -29,7 +29,6 @@ public class NanoAgentService extends BaseAgentService {
         try {
             ChatHandler handler = agentContext.getChatHandler();
             ReActAgent agent = agentFactory.getAgent(agentContext.getConversationId());
-
             Msg userMsg = Msg.builder()
                     .textContent(agentContext.getQuery())
                     .build();
@@ -40,7 +39,6 @@ public class NanoAgentService extends BaseAgentService {
                             .includeReasoningResult(false)
                             .build();
             Flux<Event> stream = agent.stream(userMsg, streamOptions);
-
             stream.subscribe(event -> {
                 Msg msg = event.getMessage();
                 for (ContentBlock block : msg.getContent()) {
@@ -50,11 +48,10 @@ public class NanoAgentService extends BaseAgentService {
                     }
                 }
             }, handler::onError, () -> {
-                handler.onComplete(com.gklx.mopga.admin.ai.core.ChatResponse.builder().agentAlias(AGENT_ALIAS).build());
+                handler.onComplete(ChatResponse.builder().agentAlias(AGENT_ALIAS).build());
             });
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
     }
 }

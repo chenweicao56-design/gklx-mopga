@@ -14,7 +14,6 @@ import com.gklx.mopga.admin.util.PaddleOcrClient;
 import com.gklx.mopga.base.common.domain.ResponseDTO;
 import com.gklx.mopga.base.module.support.file.domain.vo.FileDownloadVO;
 import com.gklx.mopga.base.module.support.file.service.FileService;
-import com.google.gson.Gson;
 import io.agentscope.core.message.ContentBlock;
 import io.agentscope.core.message.Msg;
 import io.agentscope.core.message.MsgRole;
