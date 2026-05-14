@@ -61,7 +61,7 @@ public class AiController {
         return Flux.just(run);
     }
 
-    @GetMapping("/mcp")
+    @GetMapping("/mcp2")
     public Flux<ServerSentEvent<String>> mcp(String message) {
         Map<String, String> env = new HashMap<>();
         env.put("MYSQL_HOST", "180.76.50.217");

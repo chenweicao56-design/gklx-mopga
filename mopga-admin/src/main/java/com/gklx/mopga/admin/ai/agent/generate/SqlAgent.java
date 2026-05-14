@@ -1,4 +1,4 @@
-package com.gklx.mopga.admin.ai.agent.manager;
+package com.gklx.mopga.admin.ai.agent.generate;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.map.MapUtil;
@@ -14,6 +14,7 @@ import com.gklx.mopga.admin.util.PaddleOcrClient;
 import com.gklx.mopga.base.common.domain.ResponseDTO;
 import com.gklx.mopga.base.module.support.file.domain.vo.FileDownloadVO;
 import com.gklx.mopga.base.module.support.file.service.FileService;
+import com.google.gson.Gson;
 import io.agentscope.core.message.ContentBlock;
 import io.agentscope.core.message.Msg;
 import io.agentscope.core.message.MsgRole;
@@ -30,8 +31,8 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
-@Service("managerAgentService")
-public class ManagerAgent extends BaseAgentService {
+@Service("sqlGenerateAgentService")
+public class SqlAgent extends BaseAgentService {
 
     @Resource
     private FileService fileService;
@@ -102,6 +103,7 @@ public class ManagerAgent extends BaseAgentService {
             }, handler::onError, () -> {
                 handler.onComplete(com.gklx.mopga.admin.ai.core.ChatResponse.builder().agentAlias(AGENT_ALIAS).build());
             });
+
 
         } catch (Exception e) {
             throw new RuntimeException(e);

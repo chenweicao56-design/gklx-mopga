@@ -42,6 +42,17 @@
         </dependency>
 
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-freemarker</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.ai</groupId>
+            <artifactId>spring-ai-starter-mcp-server-webmvc</artifactId>
+            <version>1.0.0-M7</version>
+        </dependency>
+
+        <dependency>
             <groupId>io.agentscope</groupId>
             <artifactId>agentscope</artifactId>
             <version>1.0.11</version>

@@ -2,7 +2,7 @@ package com.gklx.mopga.admin.ai.serivce;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
-import com.gklx.mopga.admin.ai.agent.manager.ManagerAgentService;
+import com.gklx.mopga.admin.ai.agent.manager.ManagerAgent;
 import com.gklx.mopga.admin.ai.core.ChatHandler;
 import com.gklx.mopga.admin.ai.core.ChatResponse;
 import com.gklx.mopga.admin.ai.domain.AgentContext;
@@ -20,7 +20,7 @@ import reactor.core.publisher.Flux;
 @Service
 public class ChatService extends BaseChatService {
     @Resource
-    private ManagerAgentService managerAgentService;
+    private ManagerAgent managerAgentService;
 
     public Flux<ChatResponse> chat(AgentContext context) {
 

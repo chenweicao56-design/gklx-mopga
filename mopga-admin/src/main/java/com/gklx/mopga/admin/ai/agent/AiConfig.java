@@ -11,8 +11,8 @@ public class AiConfig {
     @Bean
     public OpenAIChatModel openAIChatModel() {
         return OpenAIChatModel.builder()
-                .apiKey("sk-87c6cc6fb84440aca57f17305a6d69de")
-                .modelName("deepseek-chat")
+                .apiKey("sk-6c187d7368924e54a7d4cf76fe1430f0")
+                .modelName("deepseek-v4-flash")
                 .baseUrl("https://api.deepseek.com")
                 .build();
     }

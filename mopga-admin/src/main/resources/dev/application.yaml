@@ -23,6 +23,13 @@ spring:
   profiles:
     active: '@profiles.active@'
   ai:
+    mcp:
+      server:
+        protocol: STREAMABLE
+        name: gen-mcp-server
+        version: 1.0.0
+        streamable-http:
+          mcp-endpoint: /mcp
     deepseek:
       api-key: sk-ae13e92d22164178bf5a27d84e1be35c
       chat:
@@ -42,12 +49,12 @@ langchain4j:
     dashscope:
       chat-model:
         base-url:  https://api.deepseek.com
-        model-name: deepseek-chat
-        api-key: sk-ae13e92d22164178bf5a27d84e1be35c
+        model-name: deepseek-v4-flash
+        api-key: sk-6c187d7368924e54a7d4cf76fe1430f0
       streaming-chat-model:
         base-url:  https://api.deepseek.com
-        model-name: deepseek-chat
-        api-key: sk-ae13e92d22164178bf5a27d84e1be35c
+        model-name: deepseek-v4-flash
+        api-key: sk-6c187d7368924e54a7d4cf76fe1430f0
       embedding-model:
         base-url:  https://api.deepseek.com
         model-name: text-embedding-v4

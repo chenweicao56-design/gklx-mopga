@@ -118,22 +118,22 @@
 
 以下是正式的信息：
 <Info>
-<db-engine> {{dbEngine}} </db-engine>
+<db-engine>  ${dbEngine} </db-engine>
 
 <current-table-structure>
-{{currentTableStructure}}
+ ${currentTableStructure}
 </current-table-structure>
 
 <common-column-type>
-{{commonColumnType}}
+ ${commonColumnType}
 </common-column-type>
 
 <common-column-type>
-{{commonColumnType}}
+ ${commonColumnType}
 </common-column-type>
 
 <design-drawing>
-{{designDrawing}}
+ ${designDrawing}
 </design-drawing>
 
 </Info>
