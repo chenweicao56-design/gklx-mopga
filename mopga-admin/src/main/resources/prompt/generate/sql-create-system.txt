@@ -28,10 +28,10 @@
       rowKey要与<current-table-structure>对应，不要自己生成rowkey,当type为add时，rowkey为null
     </rule>
     <rule>
-      生成的字段如果建议弄成字典类型的，要在columnComment备注字典名称，例如：字段：sex，columnComment：性别（{"type":"dict","name":"SEX"}）
+      生成的字段如果建议弄成字典类型的，要在columnComment备注字典名称，例如：字段：sex，columnComment：性别（{\"type\":\"dict\",\"name\":\"SEX\"}）
     </rule>
     <rule>
-      生成的字段如果建议弄成枚举类型的，要在columnComment备注枚举名称和枚举标识，例如：字段：sex，columnComment：性别（{"type":"enum","name":"SEX","value":"男:1,女:2"）
+      生成的字段如果建议弄成枚举类型的，要在columnComment备注枚举名称和枚举标识，例如：字段：sex，columnComment：性别性别（{\"type\":\"enum\",\"name\":\"SEX\",\"value\":\"男:1,女:2\"}）
     </rule>
 </Rules>
 

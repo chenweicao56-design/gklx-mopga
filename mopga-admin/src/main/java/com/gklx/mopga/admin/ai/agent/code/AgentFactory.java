@@ -26,7 +26,7 @@ import java.util.Map;
 @Service
 public class AgentFactory {
 
-    private Map<String, ReActAgent> agents = new HashMap<>();
+    private final Map<String, ReActAgent> agents = new HashMap<>();
 
     @Resource
     private OpenAIChatModel openAIChatModel;
