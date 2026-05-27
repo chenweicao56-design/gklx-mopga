@@ -1,11 +1,14 @@
+#
+#POST http://127.0.0.1:1024/chat
+#Content-Type: application/json
+#
+#{
+#  "conversationId": 1778646962819,
+#  "query": "你好",
+#  "agentAlias": "codeAgentService",
+#  "data": {},
+#  "files": []
+#}
 
-POST http://127.0.0.1:1024/chat
-Content-Type: application/json
 
-{
-  "conversationId": 1778646962819,
-  "query": "你好",
-  "agentAlias": "codeAgentService",
-  "data": {},
-  "files": []
-}
+GET http://127.0.0.1:1024/test

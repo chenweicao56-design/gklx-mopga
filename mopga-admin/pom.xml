@@ -16,6 +16,12 @@
     <description>mopga-admin project</description>
 
     <dependencies>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>com.gklx</groupId>
             <artifactId>mopga-base</artifactId>

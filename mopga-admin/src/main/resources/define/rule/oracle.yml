@@ -1,25 +1,38 @@
-databaseType: kingbase
+databaseType: oracle
 quotRule: |
-  - 必须对模式名、表名、字段名、别名外层加双引号（"）。。
+  - 必须对数据库名、表名、字段名、别名外层加双引号（"）。
     - 点号（.）不能包含在引号内，必须写成 "schema"."table"
     - 即使标识符不含特殊字符或非关键字，也需强制加双引号
     - 达梦默认将未加引号的标识符转为大写
 limitRule: |
-  - 当需要限制行数时，必须使用达梦兼容的语法
-    - 标准写法：LIMIT [count]
-    - 分页写法：LIMIT [offset], [count] 或 LIMIT [count] OFFSET [start]
-    - 兼容Oracle写法：WHERE ROWNUM <= 100（需达梦7+版本）
+  - 当需要限制行数时，Oracle版本语法适配
+    - 如果db-engine版本号小于12，必须使用ROWNUM语法
+    - 如果db-engine版本号大于等于12，推荐使用FETCH FIRST语法
+    - Oracle数据库 FETCH FIRST 语法规范：
+        - SELECT ... FROM table WHERE conditions FETCH FIRST N ROWS ONLY
+    - Oracle数据库ROWNUM语法规范：
+        - 简单查询：SELECT ... FROM table WHERE conditions AND ROWNUM <= N
+        - 语法禁区
+          - 禁止多个WHERE子句
+          - 禁止ROWNUM在GROUP BY内层（影响分组结果）
+          - 禁止括号不完整
+        - GROUP BY查询的ROWNUM强制规范（必须严格遵守）
+          - 所有包含GROUP BY或聚合函数的查询必须使用外层查询结构
+          - ROWNUM必须放在最外层查询的WHERE子句中
+          - 如果SQL包含GROUP BY、COUNT、SUM等聚合函数：必须使用：SELECT ... FROM (内层完整查询) WHERE ROWNUM <= N，否则（简单查询）：可以使用：SELECT ... FROM table WHERE conditions AND ROWNUM <= N
+          - SELECT ... GROUP BY ... WHERE ROWNUM <= N  -- 错误：ROWNUM在内层影响分组结果
+          - SELECT ... FROM (SELECT ... GROUP BY ...) WHERE ROWNUM <= N  -- 正确：ROWNUM在外层
 otherRule: |
   - 必须为每个表生成别名（不加AS）
   - 禁止使用星号(*)，必须明确字段名
   - 中文/特殊字符字段需保留原名并添加英文别名
   - 函数字段必须加别名
-  - 百分比字段使用TO_CHAR(x*100,'990.99') || '%'
-  - 避免与达梦关键字冲突（如LEVEL/ORDER/PARTITION等）
+  - 百分比字段保留两位小数并以%结尾
+  - 避免与 Oracle 关键字冲突（如 DATE/LEVEL/ORDER 等）
 basicExample: |
   <basic-examples>
       <intro>
-        📌 以下示例严格遵循<Rules>中的 达梦（DM） 规范，展示符合要求的 SQL 写法与典型错误案例。
+        📌 以下示例严格遵循<Rules>中的 Oracle 规范，展示符合要求的 SQL 写法与典型错误案例。
         ⚠️ 注意：示例中的表名、字段名均为演示虚构，实际使用时需替换为用户提供的真实标识符。
         🔍 重点观察：
           1. 双引号包裹所有数据库对象的规范用法
@@ -29,48 +42,103 @@ basicExample: |
       <example>
         <input>查询 TEST.ORDERS 表的前100条订单（含中文字段和百分比）</input>
         <output-bad>
-          SELECT * FROM TEST.ORDERS LIMIT 100  -- 错误：未加引号、使用星号
-          SELECT "订单ID", "金额" FROM "TEST"."ORDERS" "t1" WHERE ROWNUM <= 100  -- 错误：混用ROWNUM和LIMIT
+          SELECT * FROM TEST.ORDERS WHERE ROWNUM <= 100  -- 错误：未加引号、使用星号
+          SELECT "订单ID", "金额" FROM "TEST"."ORDERS" "t1" WHERE ROWNUM <= 100  -- 错误：缺少英文别名
           SELECT COUNT("订单ID") FROM "TEST"."ORDERS" "t1"  -- 错误：函数未加别名
         </output-bad>
-        <output-good>
+        <output-good version="12c-below">
           SELECT 
             "t1"."订单ID" AS "order_id",
             "t1"."金额" AS "amount",
             COUNT("t1"."订单ID") AS "total_orders",
             TO_CHAR("t1"."折扣率" * 100, '990.99') || '%' AS "discount_percent"
           FROM "TEST"."ORDERS" "t1"
-          LIMIT 100
+          WHERE ROWNUM <= 100
         </output-good>
       </example>
     
       <example>
-        <input>统计用户表 PUBLIC.USERS（含关键字字段LEVEL）的活跃占比</input>
+        <input>统计用户表 PUBLIC.USERS（含关键字字段DATE）的活跃占比</input>
         <output-bad>
-          SELECT LEVEL, status FROM PUBLIC.USERS  -- 错误：未处理关键字
-          SELECT "LEVEL", ROUND(active_ratio*100) FROM "PUBLIC"."USERS"  -- 错误：百分比格式错误
+          SELECT DATE, status FROM PUBLIC.USERS  -- 错误：未处理关键字和引号
+          SELECT "DATE", ROUND(active_ratio) FROM "PUBLIC"."USERS"  -- 错误：百分比格式错误
         </output-bad>
-        <output-good>
+        <output-good version="12c-below">
           SELECT 
-            "u"."LEVEL" AS "user_level",
+            "u"."DATE" AS "create_date",
             TO_CHAR("u"."active_ratio" * 100, '990.99') || '%' AS "active_percent"
           FROM "PUBLIC"."USERS" "u"
           WHERE "u"."status" = 1
-          LIMIT 0, 1000  -- 达梦兼容写法
+          AND ROWNUM <= 1000
+        </output-good>
+        <output-good version="12c+">
+          SELECT 
+            "u"."DATE" AS "create_date",
+            TO_CHAR("u"."active_ratio" * 100, '990.99') || '%' AS "active_percent"
+          FROM "PUBLIC"."USERS" "u"
+          WHERE "u"."status" = 1
+          FETCH FIRST 1000 ROWS ONLY
+        </output-good>
+      </example>
+    
+      <example>
+        <input>统计用户表 PUBLIC.USERS 各部门人数</input>
+        <output-bad>
+          SELECT 
+            "u"."DEPARTMENT" AS "department_name",
+            count(*) AS "user_count"
+          FROM "PUBLIC"."USERS" "u"
+          WHERE "u"."status" = 1
+          AND ROWNUM <= 100             -- 严重错误：影响分组结果！
+          GROUP BY "u"."DEPARTMENT"
+          ORDER BY "department_name"
+        </output-bad>
+        <output-bad>
+          SELECT "department_name", "user_count" FROM
+          SELECT 
+            "u"."DEPARTMENT" AS "department_name",
+            count(*) AS "user_count"
+          FROM "PUBLIC"."USERS" "u"
+          WHERE "u"."status" = 1
+          GROUP BY "u"."DEPARTMENT"
+          ORDER BY "department_name"
+          WHERE ROWNUM <= 100     -- 错误：语法错误，同级内只能有一个WHERE
+        </output-bad>
+        <output-good version="12c-below">
+          SELECT "department_name", "user_count" FROM (
+            SELECT 
+              "u"."DEPARTMENT" AS "department_name",
+              count(*) AS "user_count"
+            FROM "PUBLIC"."USERS" "u"
+            WHERE "u"."status" = 1
+            GROUP BY "u"."DEPARTMENT"
+            ORDER BY "department_name"
+          ) 
+          WHERE ROWNUM <= 100     -- 正确，在外层限制数量（确保最终结果可控）
+        </output-good>
+        <output-good version="12c+">
+          SELECT 
+            "u"."DEPARTMENT" AS "department_name",
+            count(*) AS "user_count"
+          FROM "PUBLIC"."USERS" "u"
+          WHERE "u"."status" = 1
+          GROUP BY "u"."DEPARTMENT"
+          ORDER BY "department_name"
+          FETCH FIRST 100 ROWS ONLY
         </output-good>
       </example>
     </basic-examples>
 exampleAnswerList:
   - |
-    {"success":true,"sql":"SELECT \"country\" AS \"country_name\", \"continent\" AS \"continent_name\", \"year\" AS \"year\", \"gdp\" AS \"gdp_usd\" FROM \"Sample_Database\".\"sample_country_gdp\" ORDER BY \"country\", \"year\"","tables":["sample_country_gdp"],"chart-type":"line","fieldMapping":{"country_name":"国家","continent_name":"大陆","year":"年","gdp_usd":"GDP美元"}}
+    {"success":true,"sql":"SELECT \"country\" AS \"country_name\", \"continent\" AS \"continent_name\", \"year\" AS \"year\", \"gdp\" AS \"gdp\" FROM \"Sample_Database\".\"sample_country_gdp\" ORDER BY \"country\", \"year\"","tables":["sample_country_gdp"],"chart-type":"line","fieldMapping":{"country_name":"国家","continent_name":"大陆","year":"年","gdp_usd":"GDP美元"}}
   - |
-    {"success":true,"sql":"SELECT \"country\" AS \"country_name\", \"gdp\" AS \"gdp_usd\" FROM \"Sample_Database\".\"sample_country_gdp\" WHERE \"year\" = '2024' ORDER BY \"gdp\" DESC","tables":["sample_country_gdp"],"chart-type":"pie","fieldMapping":{"country_name":"国家","gdp_usd":"GDP美元"}}
+    {"success":true,"sql":"SELECT \"country\" AS \"country_name\", \"gdp\" AS \"gdp\" FROM \"Sample_Database\".\"sample_country_gdp\" WHERE \"year\" = '2024' ORDER BY \"gdp\" DESC","tables":["sample_country_gdp"],"chart-type":"pie","fieldMapping":{"country_name":"国家","gdp_usd":"GDP美元"}}
   - |
-    {"success":true,"sql":"SELECT \"country\" AS \"country_name\", \"gdp\" AS \"gdp_usd\" FROM \"Sample_Database\".\"sample_country_gdp\" WHERE \"year\" = '2025' AND \"country\" = '中国'","tables":["sample_country_gdp"],"chart-type":"table","fieldMapping":{"country_name":"国家","gdp_usd":"GDP美元"}}
+    {"success":true,"sql":"SELECT \"country\" AS \"country_name\", \"gdp\" AS \"gdp\" FROM \"Sample_Database\".\"sample_country_gdp\" WHERE \"year\" = '2025' AND \"country\" = '中国'","tables":["sample_country_gdp"],"chart-type":"table","fieldMapping":{"country_name":"国家","gdp_usd":"GDP美元"}}
 exampleAnswerListWithLimit:
   - |
-    {"success":true,"sql":"SELECT \"country\" AS \"country_name\", \"continent\" AS \"continent_name\", \"year\" AS \"year\", \"gdp\" AS \"gdp_usd\" FROM \"Sample_Database\".\"sample_country_gdp\" ORDER BY \"country\", \"year\" LIMIT 1000","tables":["sample_country_gdp"],"chart-type":"line","fieldMapping":{"country_name":"国家","continent_name":"大陆","year":"年","gdp_usd":"GDP美元"}}
+    {"success":true,"sql":"SELECT \"country\" AS \"country_name\", \"continent\" AS \"continent_name\", \"year\" AS \"year\", \"gdp\" AS \"gdp\" FROM \"Sample_Database\".\"sample_country_gdp\" WHERE ROWNUM <= 1000 ORDER BY \"country\", \"year\"","tables":["sample_country_gdp"],"chart-type":"line","fieldMapping":{"country_name":"国家","continent_name":"大陆","year":"年","gdp_usd":"GDP美元"}}
   - |
-    {"success":true,"sql":"SELECT \"country\" AS \"country_name\", \"gdp\" AS \"gdp_usd\" FROM \"Sample_Database\".\"sample_country_gdp\" WHERE \"year\" = '2024' ORDER BY \"gdp\" DESC LIMIT 1000","tables":["sample_country_gdp"],"chart-type":"pie","fieldMapping":{"country_name":"国家","gdp_usd":"GDP美元"} }
+    {"success":true,"sql":"SELECT \"country\" AS \"country_name\", \"gdp\" AS \"gdp\" FROM \"Sample_Database\".\"sample_country_gdp\" WHERE \"year\" = '2024' AND ROWNUM <= 1000 ORDER BY \"gdp\" DESC","tables":["sample_country_gdp"],"chart-type":"pie","fieldMapping":{"country_name":"国家","gdp_usd":"GDP美元"} }
   - |
-    {"success":true,"sql":"SELECT \"country\" AS \"country_name\", \"gdp\" AS \"gdp_usd\" FROM \"Sample_Database\".\"sample_country_gdp\" WHERE \"year\" = '2025' AND \"country\" = '中国' LIMIT 1000","tables":["sample_country_gdp"],"chart-type":"table","fieldMapping":{"country_name":"国家","gdp_usd":"GDP美元"} }
+    {"success":true,"sql":"SELECT \"country\" AS \"country_name\", \"gdp\" AS \"gdp\" FROM \"Sample_Database\".\"sample_country_gdp\" WHERE \"year\" = '2025' AND \"country\" = '中国' AND ROWNUM <= 1000","tables":["sample_country_gdp"],"chart-type":"table","fieldMapping":{"country_name":"国家","gdp_usd":"GDP美元"} }

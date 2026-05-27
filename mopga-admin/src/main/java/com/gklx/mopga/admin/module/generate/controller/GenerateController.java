@@ -64,6 +64,14 @@ public class GenerateController {
         return ResponseDTO.ok(generateService.createTable(table, isSync));
     }
 
+    @PostMapping("/gen/change/table")
+    @Operation(summary = "操作数据库中的表")
+    public ResponseDTO<String> addTableColumn(@RequestParam(value = "isSync") Boolean isSync,
+                                              @RequestParam(value = "type") String type,
+                                              @RequestBody TableVo table) {
+        return ResponseDTO.ok(generateService.changeTable(table, isSync, type));
+    }
+
     @PostMapping("/gen/create/table/preview")
     @Operation(summary = "预览生成建表语句")
     public ResponseDTO<String> createTablePreview(@RequestBody TableVo table) {
@@ -94,6 +102,7 @@ public class GenerateController {
     public ResponseDTO<String> text2sql(@RequestBody Text2sqlQueryForm form) {
         return ResponseDTO.ok(generateService.generateSchema(form));
     }
+
     @PostMapping("/gen/schema/init")
     @Operation(summary = "初始化schema")
     public ResponseDTO<Boolean> initSchema(@RequestBody Text2sqlQueryForm form) {

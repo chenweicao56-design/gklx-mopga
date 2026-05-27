@@ -155,4 +155,10 @@ public class TemplateCodeItemService {
         lambdaQuery.eq(TemplateCodeItemEntity::getFileName, "create.sql");
         return templateCodeItemManager.getOne(lambdaQuery);
     }
+    public TemplateCodeItemEntity getByFileName(String fileName, Long templateId) {
+        LambdaQueryWrapper<TemplateCodeItemEntity> lambdaQuery = Wrappers.lambdaQuery();
+        lambdaQuery.eq(TemplateCodeItemEntity::getTemplateId, templateId);
+        lambdaQuery.eq(TemplateCodeItemEntity::getFileName, fileName);
+        return templateCodeItemManager.getOne(lambdaQuery);
+    }
 }

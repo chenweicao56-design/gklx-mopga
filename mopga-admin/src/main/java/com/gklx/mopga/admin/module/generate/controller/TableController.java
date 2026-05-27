@@ -43,7 +43,7 @@ public class TableController {
     @GetMapping("/table/getDetail/{tableId}")
     @SaCheckPermission("database:query")
     public ResponseDTO<TableVo> getDetail(@PathVariable Long tableId) {
-        return tableService.getDetail(tableId);
+        return ResponseDTO.ok(tableService.getById(tableId));
     }
 
     @Operation(summary = "添加 @author gklx")

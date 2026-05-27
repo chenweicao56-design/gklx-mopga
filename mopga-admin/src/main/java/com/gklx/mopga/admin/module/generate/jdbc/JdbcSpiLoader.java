@@ -1,5 +1,6 @@
 package com.gklx.mopga.admin.module.generate.jdbc;
 
+import com.gklx.mopga.admin.ai.core.DbRule;
 import com.gklx.mopga.admin.module.generate.jdbc.pojo.SqlDefines;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -32,12 +33,14 @@ import java.util.concurrent.ConcurrentHashMap;
 public class JdbcSpiLoader implements CommandLineRunner {
 
     public static final Map<String, SqlDefines> SqlDefines = new ConcurrentHashMap<>();
+    public static final Map<String, DbRule> RuleDefines = new ConcurrentHashMap<>();
 
 
     @Override
     public void run(String... args) throws Exception {
         loadJdbcDriver();
         loadSql();
+        load();
     }
 
     private void loadJdbcDriver() {
@@ -110,6 +113,70 @@ public class JdbcSpiLoader implements CommandLineRunner {
                     try {
                         SqlDefines sqlDefines = yaml.loadAs(stream, SqlDefines.class);
                         SqlDefines.put(sqlDefines.getDatabaseType(), sqlDefines);
+                        stream.close();
+                    } catch (Exception e) {
+                        log.error(e.getMessage(), e);
+                    }
+                });
+            }
+        }
+    }
+
+
+    private void load() throws IOException {
+        boolean loadFromFile = true;
+        final List<InputStream> inputStreams = new LinkedList<>();
+        Yaml yaml = new Yaml();
+        String classpath = this.getClass().getClassLoader().getResource("").getPath();
+        String defineAppPath = classpath + File.separator + "define" + File.separator + "define/rule";
+        File directory = new File(defineAppPath);
+
+        if (!directory.exists() || directory.listFiles() == null) {
+            classpath = Objects.requireNonNull(this.getClass().getResource(File.separator)).getPath();
+            defineAppPath = classpath
+                    + File.separator
+                    + "define"
+                    + File.separator
+                    + "define/rule";
+            directory = new File(defineAppPath);
+            if (!directory.exists() || directory.listFiles() == null) {
+                // load define app yml in jar
+                log.info("load define rule yml in internal jar");
+                loadFromFile = false;
+                try {
+                    ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+                    Resource[] resources = resolver.getResources("classpath:define/rule/*.yml");
+                    for (Resource resource : resources) {
+                        inputStreams.add(resource.getInputStream());
+                    }
+                } catch (Exception e) {
+                    log.error("define rule yml not exist");
+                    throw e;
+                }
+            }
+        }
+
+        if (loadFromFile) {
+            log.info("load define path {}", defineAppPath);
+            for (File appFile : Objects.requireNonNull(directory.listFiles())) {
+                if (appFile.exists()) {
+                    try (FileInputStream fileInputStream = new FileInputStream(appFile)) {
+                        DbRule dbRule = yaml.loadAs(fileInputStream, DbRule.class);
+                        RuleDefines.put(dbRule.getDatabaseType(), dbRule);
+                    } catch (IOException e) {
+                        log.error(e.getMessage(), e);
+                        throw new IOException(e);
+                    }
+                }
+            }
+        } else {
+            if (inputStreams.isEmpty()) {
+                throw new IllegalArgumentException("define app directory not exist");
+            } else {
+                inputStreams.forEach(stream -> {
+                    try {
+                        DbRule dbRule = yaml.loadAs(stream, DbRule.class);
+                        RuleDefines.put(dbRule.getDatabaseType(), dbRule);
                         stream.close();
                     } catch (Exception e) {
                         log.error(e.getMessage(), e);

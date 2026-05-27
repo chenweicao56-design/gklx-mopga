@@ -149,6 +149,9 @@ public class GenerateService {
                     table.setIsBatchDelete(tableVO.getIsBatchDelete());
                     table.setEditComponent(tableVO.getEditComponent());
                     table.setFormCountLine(tableVO.getFormCountLine());
+                    table.setPermission(tableVO.getPermission());
+                    table.setLog(tableVO.getLog());
+                    table.setDoc(tableVO.getDoc());
                     tableManager.updateById(table);
                     if (containColumn) {
                         syncTableColumn(table.getTableId());
@@ -186,6 +189,9 @@ public class GenerateService {
                     table.setIsBatchDelete(database.getIsBatchDelete());
                     table.setEditComponent(database.getEditComponent());
                     table.setFormCountLine(database.getFormCountLine());
+                    table.setPermission(database.getPermission());
+                    table.setLog(database.getLog());
+                    table.setDoc(database.getDoc());
                     tableManager.save(table);
                     if (containColumn) {
                         syncTableColumn(table.getTableId());
@@ -314,7 +320,7 @@ public class GenerateService {
     public String createTable(TableVo table, boolean isSync) {
         DatabaseEntity database = databaseManager.getById(table.getDatabaseId());
         IBaseCollector collector = applicationContext.getBean(database.getDatabaseType(), IBaseCollector.class);
-        String createTableSql = buildCreateTableSqlTemplate(table);
+        String createTableSql = buildSql(database,table,"create");
         if (collector instanceof JdbcManager manager) {
 //            manager.executeUpdate(database, createTableSql);
             manager.executeBatch(database, Arrays.stream(createTableSql.trim().split(";")).toList());
@@ -324,6 +330,55 @@ public class GenerateService {
         }
         return createTableSql;
     }
+
+    public String changeTable(TableVo table, boolean isSync,String type) {
+        DatabaseEntity database = databaseManager.getById(table.getDatabaseId());
+        IBaseCollector collector = applicationContext.getBean(database.getDatabaseType(), IBaseCollector.class);
+        String sql = buildSql(database,table,type);
+        if (collector instanceof JdbcManager manager) {
+//            manager.executeUpdate(database, createTableSql);
+            manager.executeBatch(database, Arrays.stream(sql.trim().split(";")).toList());
+        }
+        if (isSync) {
+            syncTable(table.getDatabaseId(), true, table.getTableName());
+        }
+        return sql;
+    }
+
+    public String buildSql(DatabaseEntity database,TableVo table,String type){
+        VelocityContext velocityContext = new VelocityContext();
+        velocityContext.put("tableName", table.getTableName());
+        velocityContext.put("tableComment", table.getTableComment());
+        velocityContext.put("schemaName", database.getSchemaName());
+        List<GenTableColumnVo> columns = table.getColumns();
+        if (CollectionUtil.isNotEmpty(columns)) {
+            List<GenTableColumnEntity> queryColumns = new ArrayList<>();
+            for (GenTableColumnVo column : columns) {
+                if (column.getIsPk()) {
+                    velocityContext.put("primaryKeyColumnName", column.getColumnName());
+                    velocityContext.put("primaryKeyFieldType", column.getFieldType());
+                }
+            }
+            velocityContext.put("queryColumns", queryColumns);
+        }
+        velocityContext.put("columns", table.getColumns());
+
+        TemplateCodeItemEntity templateCodeItemEntity = templateCodeItemService.getByFileName(type+".sql", database.getTemplateId());
+        if (ObjectUtil.isNotEmpty(templateCodeItemEntity)) {
+            StringWriter writer = new StringWriter();
+            GenUtils.velocityEngine.evaluate(velocityContext, writer, templateCodeItemEntity.getFileName(), new StringReader(templateCodeItemEntity.getContent()));
+            return writer.toString();
+        } else {
+            VelocityInitializer.initVelocity();
+            String databaseType = database.getDatabaseType();
+            StringWriter sw = new StringWriter();
+            Template tpl = Velocity.getTemplate(String.format("vm/"+type+"/%s.vm", databaseType), "UTF-8");
+            tpl.merge(velocityContext, sw);
+            return sw.toString();
+        }
+
+    }
+
 
     public String buildCreateTableSqlTemplate(TableVo table) {
         DatabaseEntity database = databaseManager.getById(table.getDatabaseId());

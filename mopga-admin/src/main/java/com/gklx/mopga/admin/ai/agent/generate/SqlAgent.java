@@ -77,7 +77,7 @@ public class SqlAgent extends BaseAgentService {
             GenerateOptions options = GenerateOptions.builder()
                     .stream(true)  // 启用流式输出
                     .build();
-            String systemPrompt = FreemarkerUtil.render("generate/sql-create-system.txt", systemParams);
+            String systemPrompt = FreemarkerUtil.render("generate/sql-create-system.md", systemParams);
 
             List<Msg> messages = List.of(
                     Msg.builder()
