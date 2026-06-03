@@ -19,6 +19,7 @@ import io.agentscope.core.message.Msg;
 import io.agentscope.core.message.MsgRole;
 import io.agentscope.core.message.TextBlock;
 import io.agentscope.core.model.ChatResponse;
+import io.agentscope.core.model.DashScopeChatModel;
 import io.agentscope.core.model.GenerateOptions;
 import io.agentscope.core.model.OpenAIChatModel;
 import jakarta.annotation.Resource;
@@ -39,7 +40,7 @@ public class SqlAgent extends BaseAgentService {
     private DatabaseService databaseService;
 
     @Resource
-    private OpenAIChatModel openAIChatModel;
+    private DashScopeChatModel dashScopeChatModel;
 
     @Resource
     private PaddleOcrClient paddleOcrClient;
@@ -77,7 +78,7 @@ public class SqlAgent extends BaseAgentService {
             GenerateOptions options = GenerateOptions.builder()
                     .stream(true)  // 启用流式输出
                     .build();
-            String systemPrompt = FreemarkerUtil.render("generate/sql-create-system.md", systemParams);
+            String systemPrompt = FreemarkerUtil.render("generate/sql-create-system.txt", systemParams);
 
             List<Msg> messages = List.of(
                     Msg.builder()
@@ -88,7 +89,7 @@ public class SqlAgent extends BaseAgentService {
                             .textContent(agentContext.getQuery())
                             .build()
             );
-            Flux<ChatResponse> stream = openAIChatModel.stream(messages, List.of(), options);
+            Flux<ChatResponse> stream = dashScopeChatModel.stream(messages, List.of(), options);
 
             stream.subscribe(chunk -> {
                 List<ContentBlock> content = chunk.getContent();
