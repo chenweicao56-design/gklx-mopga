@@ -4,6 +4,9 @@ import cn.hutool.json.JSONObject;
 import com.gklx.mopga.admin.ai.core.ChatHandler;
 import com.gklx.mopga.admin.ai.core.ChatResponse;
 import io.agentscope.core.agent.Event;
+import io.agentscope.core.event.AgentEvent;
+import io.agentscope.core.event.AgentEventType;
+import io.agentscope.core.event.TextBlockDeltaEvent;
 import io.agentscope.core.message.ContentBlock;
 import io.agentscope.core.message.Msg;
 import io.agentscope.core.message.TextBlock;
@@ -37,14 +40,13 @@ public class AgentContext {
                 .build();
     }
 
-    public void subscribe(Flux<Event> stream) {
+    public void subscribe(Flux<AgentEvent> stream) {
         stream.subscribe(event -> {
-            Msg msg = event.getMessage();
-            for (ContentBlock block : msg.getContent()) {
-                if (block instanceof ThinkingBlock) {
-                } else if (block instanceof TextBlock) {
-                    this.chatHandler.onAnswer(ChatResponse.builder().content(((TextBlock) block).getText()).agentAlias(this.agentAlias).build());
-                }
+            System.out.println(event.getType());
+
+            if (event.getType() == AgentEventType.TEXT_BLOCK_DELTA) {
+                this.chatHandler.onAnswer(ChatResponse.builder().content(((TextBlockDeltaEvent) event).getDelta()).agentAlias(this.agentAlias).build());
+
             }
         }, this.chatHandler::onError, () -> {
             this.chatHandler.onComplete(ChatResponse.builder().agentAlias(this.agentAlias).build());

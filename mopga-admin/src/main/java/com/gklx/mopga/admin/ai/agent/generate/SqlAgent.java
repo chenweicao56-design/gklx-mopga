@@ -21,7 +21,6 @@ import io.agentscope.core.message.TextBlock;
 import io.agentscope.core.model.ChatResponse;
 import io.agentscope.core.model.DashScopeChatModel;
 import io.agentscope.core.model.GenerateOptions;
-import io.agentscope.core.model.OpenAIChatModel;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -89,6 +88,7 @@ public class SqlAgent extends BaseAgentService {
                             .textContent(agentContext.getQuery())
                             .build()
             );
+
             Flux<ChatResponse> stream = dashScopeChatModel.stream(messages, List.of(), options);
 
             stream.subscribe(chunk -> {

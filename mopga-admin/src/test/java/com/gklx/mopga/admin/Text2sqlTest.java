@@ -1,52 +1,66 @@
 package com.gklx.mopga.admin;
 
 
-import cn.hutool.core.map.MapUtil;
-import com.gklx.ai.util.FreemarkerUtil;
-import com.gklx.mopga.admin.ai.core.DbRule;
-import com.gklx.mopga.admin.module.generate.domain.form.text2sql.Text2sqlQueryForm;
-import com.gklx.mopga.admin.module.generate.jdbc.JdbcSpiLoader;
-import com.gklx.mopga.admin.module.generate.service.GenerateService;
-import freemarker.template.TemplateException;
-import io.agentscope.core.tool.Toolkit;
+import com.gklx.mopga.admin.ai.agent.hook.FullObservabilityMiddleware;
+import com.gklx.mopga.admin.ai.serivce.BaseAgentService;
+import io.agentscope.core.ReActAgent;
+import io.agentscope.core.event.AgentEventType;
+import io.agentscope.core.event.TextBlockDeltaEvent;
+import io.agentscope.core.message.UserMessage;
+import io.agentscope.core.model.OpenAIChatModel;
+import io.agentscope.core.session.InMemorySession;
+import io.agentscope.core.session.Session;
+import io.agentscope.core.session.redis.RedisSession;
+import io.agentscope.core.skill.SkillFilter;
+import io.agentscope.core.skill.repository.mysql.MysqlSkillRepository;
+import io.agentscope.core.state.SimpleSessionKey;
+import io.lettuce.core.RedisClient;
+import io.lettuce.core.RedisURI;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.Resource;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.io.IOException;
-import java.util.Map;
+import java.time.Duration;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 public class Text2sqlTest {
 
-    @Autowired
-    private GenerateService generateService;
+    @Resource(name = "CodeGenerateAgent")
+    private BaseAgentService codeGenerateAgent;
+
+    @Resource
+    private OpenAIChatModel openAIChatModel;
+
+    @Resource
+    Session redisSession;
+    @Resource
+    MysqlSkillRepository mysqlSkillRepository;
+
 
 
     @Test
     void contextLoads() throws Exception {
-//        Text2sqlQueryForm form = new Text2sqlQueryForm();
-//        form.setDatabaseId(1l);
-//        String s = generateService.generateSchema(form);
-//        System.out.println(s);
-        DbRule dbRule = JdbcSpiLoader.RuleDefines.get("3306");
-
-        Toolkit toolkit = new Toolkit();
-        Map<String, Object> systemParams = MapUtil.<String, Object>builder()
-                .put("engine","3306")
-                .put("schema","")
-                .put("quotRule",dbRule.getQuotRule())
-                .put("limitRule", dbRule.getLimitRule())
-                .put("otherRule",dbRule.getOtherRule() )
-                .put("basicExample",dbRule.getBasicExample())
-                .put("exampleAnswer1",dbRule.getExampleAnswerListWithLimit().get(0))
-                .put("exampleAnswer2",dbRule.getExampleAnswerListWithLimit().get(0))
-                .put("exampleAnswer3",dbRule.getExampleAnswerListWithLimit().get(0))
-                .build();
-        String systemPrompt = FreemarkerUtil.render("generate/sql-create-system.md", systemParams);
-        System.out.println(systemPrompt);
+        SkillFilter skillFilter = SkillFilter.all();
+        try (ReActAgent agent = ReActAgent.builder()
+                .sysPrompt("你叫tom")
+                .model(openAIChatModel)
+                .session(redisSession)
+                .middleware(new FullObservabilityMiddleware())
+                .sessionKey(SimpleSessionKey.of("11123"))
+                .skillRepository(mysqlSkillRepository)
+                .skillFilter(skillFilter)
+                .build()) {
+            agent.streamEvents(new UserMessage("当前时间"))
+                    .doOnNext(event -> {
+                        if (event.getType() == AgentEventType.TEXT_BLOCK_DELTA) {
+                            System.out.print(((TextBlockDeltaEvent) event).getDelta());
+                        }
+                    })
+                    .blockLast();
+        }
     }
 }
