@@ -11,8 +11,10 @@ import io.agentscope.core.model.OpenAIChatModel;
 import io.agentscope.core.session.InMemorySession;
 import io.agentscope.core.session.Session;
 import io.agentscope.core.session.redis.RedisSession;
+import io.agentscope.core.skill.AgentSkill;
 import io.agentscope.core.skill.SkillFilter;
 import io.agentscope.core.skill.repository.mysql.MysqlSkillRepository;
+import io.agentscope.core.state.AgentState;
 import io.agentscope.core.state.SimpleSessionKey;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisURI;
@@ -54,6 +56,9 @@ public class Text2sqlTest {
                 .skillRepository(mysqlSkillRepository)
                 .skillFilter(skillFilter)
                 .build()) {
+
+            AgentState agentState = agent.getAgentState();
+
             agent.streamEvents(new UserMessage("当前时间"))
                     .doOnNext(event -> {
                         if (event.getType() == AgentEventType.TEXT_BLOCK_DELTA) {
