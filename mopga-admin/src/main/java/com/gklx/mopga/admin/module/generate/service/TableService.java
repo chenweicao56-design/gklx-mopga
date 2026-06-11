@@ -133,7 +133,7 @@ public class TableService {
         TableVo TableVo = SmartBeanUtil.copy(tableEntity, TableVo.class);
         if (ObjUtil.isNotNull(TableVo)) {
             List<GenTableColumnVo> columns = genTableColumnManager.listByTableId(tableEntity.getTableId());
-            if (CollectionUtils.isEmpty(columns)) {
+            if (CollectionUtils.isNotEmpty(columns)) {
                 TableVo.setColumns(columns);
             } else {
                 TableVo.setColumns(new ArrayList<>());

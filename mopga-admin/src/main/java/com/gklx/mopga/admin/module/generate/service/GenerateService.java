@@ -331,6 +331,9 @@ public class GenerateService {
         return createTableSql;
     }
 
+
+
+
     public String changeTable(TableVo table, boolean isSync,String type) {
         DatabaseEntity database = databaseManager.getById(table.getDatabaseId());
         IBaseCollector collector = applicationContext.getBean(database.getDatabaseType(), IBaseCollector.class);
