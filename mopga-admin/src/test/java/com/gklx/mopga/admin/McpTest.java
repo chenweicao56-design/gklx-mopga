@@ -58,6 +58,10 @@ public class McpTest {
 
         RequestEmployee requestEmployee = loginManager.getRequestEmployee(1L);
         SmartRequestUtil.setRequestUser(requestEmployee);
-        generateMcp.generateCodeByCreateTableSql(2L, "user_info", createTableSql);
+        String s = generateMcp.executeTableSql(2L, "user_info", "CREATE", createTableSql);
+        System.out.println(s);
+        String s1 = generateMcp.syncTableAndGenerateCode(2L, "user_info");
+        System.out.println(s1);
+
     }
 }

@@ -1,6 +1,6 @@
 ---
 name: MySql数据库开发规范
-description: 提供 MySQL 建表规范检查和建议。当用户需要创建或审查 MySQL 表结构时调用。
+description: 在生成文档、生成代码、调用mcp接口等，如果涉及到数据库操作，比如建表，必须要参考该规范。
 ---
 
 # MySQL 建表规范
