@@ -1,14 +1,18 @@
 package com.gklx.mopga.admin.ai.mcp;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import com.gklx.mopga.admin.module.generate.domain.entity.DatabaseEntity;
+import com.gklx.mopga.admin.module.generate.domain.entity.TableEntity;
+import com.gklx.mopga.admin.module.generate.domain.form.TableUpdateMcpForm;
 import com.gklx.mopga.admin.module.generate.domain.vo.TableVo;
 import com.gklx.mopga.admin.module.generate.jdbc.IBaseCollector;
 import com.gklx.mopga.admin.module.generate.jdbc.JdbcManager;
 import com.gklx.mopga.admin.module.generate.manager.DatabaseManager;
+import com.gklx.mopga.admin.module.generate.manager.TableManager;
 import com.gklx.mopga.admin.module.generate.service.GenerateService;
 import com.gklx.mopga.admin.module.generate.service.TableService;
 import com.gklx.mopga.admin.module.system.login.domain.RequestEmployee;
@@ -18,6 +22,7 @@ import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springaicommunity.mcp.annotation.McpTool;
 import org.springaicommunity.mcp.annotation.McpToolParam;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
@@ -47,8 +52,10 @@ public class GenerateMcp {
 
     @Resource
     LoginManager loginManager;
+    @Autowired
+    private TableManager tableManager;
 
-    @McpTool(description = "通过SQL创建表或更新表")
+    @McpTool(description = "数据库建表/更新表")
     public String executeTableSql(
             @McpToolParam(description = "数据库主键") Long databaseId,
             @McpToolParam(description = "表名") String tableName,
@@ -75,8 +82,9 @@ public class GenerateMcp {
 
             manager.executeBatch(database, sqlList);
             log.info("SQL执行成功");
+            mcpLogin();
+            generateService.syncTable(databaseId, true, tableName);
         }
-
         return String.format("表 %s %s 成功", tableName, sqlType);
     }
 
@@ -105,14 +113,12 @@ public class GenerateMcp {
     /**
      * 同步表结构到数据库并生成代码
      */
-    @McpTool(description = "同步表结构并生成代码到本地")
+    @McpTool(description = "生成代码到本地")
     public String syncTableAndGenerateCode(
             @McpToolParam(description = "数据库主键") Long databaseId,
             @McpToolParam(description = "表名") String tableName) {
         log.info("开始同步表结构并生成代码: databaseId={}, tableName={}", databaseId, tableName);
-        RequestEmployee requestEmployee = loginManager.getRequestEmployee(1L);
-        SmartRequestUtil.setRequestUser(requestEmployee);
-        // 同步表结构
+        mcpLogin();
         generateService.syncTable(databaseId, true, tableName);
         log.info("表结构同步成功");
 
@@ -178,4 +184,28 @@ public class GenerateMcp {
         }
         return String.format("代码同步成功，共生成%d个文件", successCount);
     }
+
+    private void mcpLogin() {
+        RequestEmployee requestEmployee = loginManager.getRequestEmployee(1L);
+        SmartRequestUtil.setRequestUser(requestEmployee);
+    }
+
+    @McpTool(description = "更新表设置")
+    public String updateTable(
+            @McpToolParam(description = "数据库主键") Long databaseId,
+            @McpToolParam(description = "表名") String tableName,
+            @McpToolParam(description = "表设置") TableUpdateMcpForm table) {
+
+        tableManager.updateById(BeanUtil.copyProperties(table, TableEntity.class));
+        return "更新成功";
+    }
+
+    @McpTool(description = "获取表配置信息")
+    public TableVo getTableInfo(
+            @McpToolParam(description = "数据库主键") Long databaseId,
+            @McpToolParam(description = "表名") String tableName) {
+
+        return tableService.getByName(databaseId, tableName);
+    }
+
 }
