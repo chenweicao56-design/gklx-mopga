@@ -7,6 +7,7 @@ import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import com.gklx.mopga.admin.module.generate.domain.entity.DatabaseEntity;
 import com.gklx.mopga.admin.module.generate.domain.entity.TableEntity;
+import com.gklx.mopga.admin.module.generate.domain.form.TableColumnUpdateMcpForm;
 import com.gklx.mopga.admin.module.generate.domain.form.TableUpdateMcpForm;
 import com.gklx.mopga.admin.module.generate.domain.vo.TableVo;
 import com.gklx.mopga.admin.module.generate.jdbc.IBaseCollector;
@@ -190,21 +191,21 @@ public class GenerateMcp {
         SmartRequestUtil.setRequestUser(requestEmployee);
     }
 
-    @McpTool(description = "更新表设置")
+    @McpTool(description = "更新表配置信息")
     public String updateTable(
             @McpToolParam(description = "数据库主键") Long databaseId,
             @McpToolParam(description = "表名") String tableName,
-            @McpToolParam(description = "表设置") TableUpdateMcpForm table) {
-
+            @McpToolParam(description = "表设置") TableUpdateMcpForm table,
+            @McpToolParam(description = "表字段设置") List<TableColumnUpdateMcpForm> columns) {
         tableManager.updateById(BeanUtil.copyProperties(table, TableEntity.class));
         return "更新成功";
     }
+
 
     @McpTool(description = "获取表配置信息")
     public TableVo getTableInfo(
             @McpToolParam(description = "数据库主键") Long databaseId,
             @McpToolParam(description = "表名") String tableName) {
-
         return tableService.getByName(databaseId, tableName);
     }
 

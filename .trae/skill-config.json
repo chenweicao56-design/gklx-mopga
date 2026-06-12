@@ -1,6 +1,5 @@
 {
   "disabledSkills": [
-    "base-code-generator",
     "mcp-code-generator"
   ]
 }

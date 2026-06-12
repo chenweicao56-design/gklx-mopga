@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gklx.mopga.admin.module.generate.dao.TDocumentTagDao">
+
+    <!-- 查询结果列 -->
+    <sql id="base_columns">
+        t_document_tag.id,
+        t_document_tag.tag_name,
+        t_document_tag.is_system,
+        t_document_tag.create_by,
+        t_document_tag.create_time
+    </sql>
+
+    <!-- 分页查询 -->
+    <select id="queryPage" resultType="com.gklx.mopga.admin.module.generate.domain.vo.TDocumentTagVo">
+        SELECT
+        <include refid="base_columns"/>
+        FROM t_document_tag
+	    ORDER BY t_document_tag.update_time
+    </select>
+</mapper>

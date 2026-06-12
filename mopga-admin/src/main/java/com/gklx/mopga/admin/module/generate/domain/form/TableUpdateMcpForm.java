@@ -21,22 +21,22 @@ public class TableUpdateMcpForm {
     @Schema(description = "ID")
     private Long tableId;
 
-    @Schema(description = "是否分页（1是）")
+    @Schema(description = "是否需要分页接口")
     private Boolean isPage;
 
-    @Schema(description = "是否详情（1是）")
+    @Schema(description = "是否需要详情接口")
     private Boolean isDetail;
 
-    @Schema(description = "是否增加（1是）")
+    @Schema(description = "是否需要增加接口")
     private Boolean isAdd;
 
-    @Schema(description = "是否修改（1是）")
+    @Schema(description = "是否修改需要更新接口")
     private Boolean isUpdate;
 
-    @Schema(description = "是否删除（1是）")
+    @Schema(description = "是否需要删除接口")
     private Boolean isDelete;
 
-    @Schema(description = "是否批量删除（1是）")
+    @Schema(description = "是否需要批量删除接口")
     private Boolean isBatchDelete;
 
 }
