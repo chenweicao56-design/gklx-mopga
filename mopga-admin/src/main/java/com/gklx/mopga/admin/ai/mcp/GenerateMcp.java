@@ -5,9 +5,14 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gklx.mopga.admin.module.generate.domain.entity.DatabaseEntity;
+import com.gklx.mopga.admin.module.generate.domain.entity.GenTableColumnEntity;
 import com.gklx.mopga.admin.module.generate.domain.entity.TableEntity;
 import com.gklx.mopga.admin.module.generate.domain.form.TableColumnUpdateMcpForm;
+import com.gklx.mopga.admin.module.generate.domain.form.TableQueryForm;
 import com.gklx.mopga.admin.module.generate.domain.form.TableUpdateMcpForm;
 import com.gklx.mopga.admin.module.generate.domain.vo.TableVo;
 import com.gklx.mopga.admin.module.generate.jdbc.IBaseCollector;
@@ -56,6 +61,54 @@ public class GenerateMcp {
     @Autowired
     private TableManager tableManager;
 
+    @McpTool(description = "查询数据库所有的表名")
+    public String queryDbTables(
+            @McpToolParam(description = "数据库主键") Long databaseId) {
+        DatabaseEntity database = databaseManager.getById(databaseId);
+        IBaseCollector collector = applicationContext.getBean(database.getDatabaseType(), IBaseCollector.class);
+        IPage<TableEntity> page = new Page<>();
+        page.setCurrent(1);
+        page.setSize(2000);
+        TableQueryForm form = new TableQueryForm();
+        IPage<TableEntity> tableEntityIPage = collector.selectDbTableList(page, database, form);
+        long total = tableEntityIPage.getTotal();
+        StringBuilder sb = new StringBuilder(String.format("数据库共 %d 个表：\n", total));
+
+        if (total > 0) {
+            List<TableEntity> records = tableEntityIPage.getRecords();
+            for (TableEntity record : records) {
+                sb.append(String.format("- %s(%s)\n", record.getTableName(), record.getTableComment()));
+            }
+        }
+        return sb.toString();
+    }
+
+    @McpTool(description = "根据表名查询表的详细信息")
+    public String queryDbTableColumn(
+            @McpToolParam(description = "数据库主键") Long databaseId,
+            @McpToolParam(description = "表名", required = true) String tableName) {
+        DatabaseEntity database = databaseManager.getById(databaseId);
+        IBaseCollector collector = applicationContext.getBean(database.getDatabaseType(), IBaseCollector.class);
+        List<GenTableColumnEntity> genTableColumnEntities = collector.selectDbTableColumnsByName(database, tableName);
+
+        if (CollectionUtil.isEmpty(genTableColumnEntities)) {
+            return String.format("%s不存在", tableName);
+        } else {
+            StringBuilder sb = new StringBuilder("| 列名 | 类型 | 说明 | 主键 | 自增 | 可空 | 默认值 |\n|------|------|------|------|------|------|--------|");
+            for (GenTableColumnEntity genTableColumnEntity : genTableColumnEntities) {
+                sb.append(String.format("| %s | %s | %s | %s | %s | %s | %s |\n", genTableColumnEntity.getColumnName(),
+                        genTableColumnEntity.getColumnType(),
+                        genTableColumnEntity.getColumnComment(),
+                        genTableColumnEntity.getIsPk() ? "✓" : "✗",
+                        genTableColumnEntity.getIsIncrement() ? "✓" : "✗",
+                        genTableColumnEntity.getIsNull() ? "✓" : "✗",
+                        genTableColumnEntity.getColumnDefault()));
+            }
+            return sb.toString();
+        }
+    }
+
+
     @McpTool(description = "数据库建表/更新表")
     public String executeTableSql(
             @McpToolParam(description = "数据库主键") Long databaseId,
@@ -83,11 +136,10 @@ public class GenerateMcp {
 
             manager.executeBatch(database, sqlList);
             log.info("SQL执行成功");
-            mcpLogin();
-            generateService.syncTable(databaseId, true, tableName);
         }
         return String.format("表 %s %s 成功", tableName, sqlType);
     }
+
 
     private void validateSqlStatement(String sql, String databaseType) {
         String normalizedSql = sql.trim().toUpperCase();

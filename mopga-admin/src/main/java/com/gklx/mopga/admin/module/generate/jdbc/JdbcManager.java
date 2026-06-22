@@ -82,8 +82,8 @@ public class JdbcManager {
         props.put("maxActive", "20");
         props.put("minIdle", "5");
         props.put("maxWait", timeout.toString());
-//        props.put("testOnBorrow", "true");
-//        props.put("validationQuery", "SELECT 1");
+        props.put("testOnBorrow", "true");
+        props.put("validationQuery", "SELECT 1");
 
         DruidDataSource dataSource = (DruidDataSource) DruidDataSourceFactory.createDataSource(props);
         dataSource.setBreakAfterAcquireFailure(true);
@@ -210,8 +210,10 @@ public class JdbcManager {
         } catch (Exception e) {
             if (connection != null) {
                 try {
-                    connection.rollback();
-                    log.warn("批量执行失败，已回滚事务");
+                    if (!connection.isClosed() && !connection.getAutoCommit()) {
+                        connection.rollback();
+                        log.warn("批量执行失败，已回滚事务");
+                    }
                 } catch (SQLException ex) {
                     log.error("事务回滚失败", ex);
                 }
