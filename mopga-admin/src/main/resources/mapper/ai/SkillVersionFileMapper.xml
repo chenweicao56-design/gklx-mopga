@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gklx.mopga.admin.module.ai.dao.SkillVersionFileDao">
+
+    <!-- 查询结果列 -->
+    <sql id="base_columns">
+        skill_version_file.id,
+        skill_version_file.version_id,
+        skill_version_file.file_path,
+        skill_version_file.file_name,
+        skill_version_file.file_type,
+        skill_version_file.content,
+        skill_version_file.content_size,
+        skill_version_file.is_entry,
+        skill_version_file.create_time,
+        skill_version_file.deleted_flag
+    </sql>
+
+    <!-- 分页查询 -->
+    <select id="queryPage" resultType="com.gklx.mopga.admin.module.ai.domain.vo.SkillVersionFileVo">
+        SELECT
+        <include refid="base_columns"/>
+        FROM skill_version_file
+	    ORDER BY skill_version_file.update_time
+    </select>
+</mapper>

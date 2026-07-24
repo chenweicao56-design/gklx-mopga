@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gklx.mopga.admin.module.ai.mapper.SkillMapper">
+
+    <!-- 查询结果列 -->
+    <sql id="base_columns">
+        skill.id,
+        skill.name,
+        skill.description,
+        skill.category,
+        skill.tags,
+        skill.status,
+        skill.current_version,
+        skill.create_user_id,
+        skill.create_time,
+        skill.update_user_id,
+        skill.update_time,
+        skill.deleted_flag
+    </sql>
+
+    <!-- 分页查询 -->
+    <select id="query" resultType="com.gklx.mopga.admin.module.ai.domain.vo.SkillVo">
+        SELECT
+        <include refid="base_columns"/>
+        FROM skill
+        <where>
+            <if test="queryForm.name != null and queryForm.name != ''">
+                AND skill.name like concat('%', #{queryColumn.fieldName}, '%')
+            </if>
+            <if test="queryForm.category != null">
+                AND skill.category = #{queryForm.category}
+            </if>
+            <if test="queryForm.tags != null">
+                AND skill.tags = #{queryForm.tags}
+            </if>
+                AND skill.deleted_flag = 0        
+        </where>
+	    ORDER BY skill.update_time
+    </select>
+  //===以上自动生成，请不要随便修改===
+</mapper>
