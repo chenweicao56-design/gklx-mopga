@@ -1,22 +1,28 @@
 package com.gklx.mopga.admin.ai.controller;
 
 import cn.hutool.core.map.MapUtil;
-import com.gklx.ai.util.FreemarkerUtil;
 import com.gklx.mopga.admin.ai.core.ChatResponse;
 import com.gklx.mopga.admin.ai.core.DbRule;
 import com.gklx.mopga.admin.ai.domain.AgentContext;
 import com.gklx.mopga.admin.ai.serivce.ChatService;
 import com.gklx.mopga.admin.module.generate.jdbc.JdbcSpiLoader;
+import com.gklx.mopga.admin.util.FreemarkerUtil;
 import com.gklx.mopga.admin.util.PaddleOcrClient;
+import com.gklx.mopga.base.common.annoation.NoNeedLogin;
 import com.gklx.mopga.base.common.domain.ResponseDTO;
 import com.gklx.mopga.base.module.support.file.domain.vo.FileDownloadVO;
 import com.gklx.mopga.base.module.support.file.service.FileService;
+import io.agentscope.core.event.AgentEvent;
+import io.agentscope.core.event.AgentEventType;
+import io.agentscope.core.event.TextBlockDeltaEvent;
+import io.agentscope.core.message.UserMessage;
+import io.agentscope.core.model.DashScopeChatModel;
+import io.agentscope.core.model.OpenAIChatModel;
+import io.agentscope.harness.agent.HarnessAgent;
 import jakarta.annotation.Resource;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
+import redis.clients.jedis.JedisPooled;
 
 import java.util.Map;
 
@@ -41,15 +47,15 @@ public class AiController {
     public Flux<String> test() throws Exception {
         DbRule dbRule = JdbcSpiLoader.RuleDefines.get("3306");
         Map<String, Object> systemParams = MapUtil.<String, Object>builder()
-                .put("engine","3306")
-                .put("schema","")
-                .put("quotRule",dbRule.getQuotRule())
+                .put("engine", "3306")
+                .put("schema", "")
+                .put("quotRule", dbRule.getQuotRule())
                 .put("limitRule", dbRule.getLimitRule())
-                .put("otherRule",dbRule.getOtherRule() )
-                .put("basicExample",dbRule.getBasicExample())
-                .put("exampleAnswer1",dbRule.getExampleAnswerListWithLimit().get(0))
-                .put("exampleAnswer2",dbRule.getExampleAnswerListWithLimit().get(0))
-                .put("exampleAnswer3",dbRule.getExampleAnswerListWithLimit().get(0))
+                .put("otherRule", dbRule.getOtherRule())
+                .put("basicExample", dbRule.getBasicExample())
+                .put("exampleAnswer1", dbRule.getExampleAnswerListWithLimit().get(0))
+                .put("exampleAnswer2", dbRule.getExampleAnswerListWithLimit().get(0))
+                .put("exampleAnswer3", dbRule.getExampleAnswerListWithLimit().get(0))
                 .build();
         String systemPrompt = FreemarkerUtil.render("sql/system.md", systemParams);
         System.out.println(systemPrompt);
@@ -58,6 +64,36 @@ public class AiController {
         String run = paddleOcrClient.run(downloadFile.getData());
         System.out.println(run);
         return Flux.just(run);
+    }
+
+    @Resource
+    private DashScopeChatModel dashScopeChatModel;
+
+    @GetMapping("/test2")
+    @NoNeedLogin
+    public String test2(@RequestParam("query") String query) throws Exception {
+
+        HarnessAgent agent = HarnessAgent.builder()
+                .name("test")
+                .model(dashScopeChatModel)
+                .sysPrompt("你是一个有帮助的助手。")
+                .build();
+
+        Flux<AgentEvent> agentEventFlux = agent.streamEvents(new UserMessage(query));
+        agentEventFlux.subscribe(event -> {
+            System.out.println(event.getType());
+
+            if (event.getType() == AgentEventType.TEXT_BLOCK_DELTA) {
+                System.out.println(((TextBlockDeltaEvent) event).getDelta());
+            }
+        }, (exception) -> {
+            System.out.println("error");
+        }, () -> {
+            System.out.println("complete");
+        });
+
+
+        return "hello world";
     }
 
 }

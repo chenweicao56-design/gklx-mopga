@@ -27,6 +27,8 @@ public class WeaviateTest {
     public static void main(String[] args) throws AuthException {
         JiebaSegmenter segmenter = new JiebaSegmenter();
 
+
+
         String className = "TestClass";
         EmbeddingModel embeddingModel = new EmbeddingModel();
         Config config = new Config("http", "10.167.104.116:8081");
@@ -45,13 +47,14 @@ public class WeaviateTest {
                 new ApachePdfBoxDocumentParser()
         );
         log.info("PDF 内容:{}", pdfDocument.text());
+        List<String> strings = segmenter.sentenceProcess(pdfDocument.text());
+
         DocumentSplitter recursiveSplitter = DocumentSplitters.recursive(512, 0);
         List<TextSegment> segments = recursiveSplitter.split(pdfDocument);
 
         List<Map<String, Object>> list = segments.stream().map(e ->
                 MapUtil.<String, Object>builder()
                         .put("content", embeddingModel.embedding(e.text()))
-                        .put("keywords", segmenter.)
                         .build()).toList();
 
 

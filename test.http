@@ -11,4 +11,4 @@
 #}
 
 
-GET http://127.0.0.1:1024/test
+GET http://127.0.0.1:1024/test2?query=你好

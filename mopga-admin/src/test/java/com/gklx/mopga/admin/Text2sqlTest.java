@@ -1,10 +1,8 @@
 package com.gklx.mopga.admin;
 
 
-import cn.hutool.core.io.FileUtil;
 import com.aliyun.core.utils.Base64Util;
 import com.gklx.ai.util.MimeTypeUtil;
-import com.gklx.mopga.admin.ai.agent.hook.FullObservabilityMiddleware;
 import com.gklx.mopga.admin.ai.serivce.BaseAgentService;
 import io.agentscope.core.ReActAgent;
 import io.agentscope.core.event.AgentEventType;
@@ -19,7 +17,6 @@ import io.agentscope.core.skill.SkillFilter;
 import io.agentscope.core.skill.repository.mysql.MysqlSkillRepository;
 import io.agentscope.core.state.SimpleSessionKey;
 import jakarta.annotation.Resource;
-import okhttp3.MediaType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -56,7 +56,7 @@
         <dependency>
             <groupId>io.agentscope</groupId>
             <artifactId>agentscope-harness</artifactId>
-            <version>2.0.0-RC1</version>
+            <version>2.0.0-RC4</version>
         </dependency>
 
         <dependency>
@@ -65,10 +65,23 @@
             <version>2.0.0-RC1</version>
         </dependency>
 
+<!--        <dependency>-->
+<!--            <groupId>io.agentscope</groupId>-->
+<!--            <artifactId>agentscope-extensions-skill-mysql-repository</artifactId>-->
+<!--            <version>2.0.0-RC4</version>-->
+<!--        </dependency>-->
+
+
         <dependency>
             <groupId>io.agentscope</groupId>
-            <artifactId>agentscope-extensions-skill-mysql-repository</artifactId>
-            <version>2.0.0-RC1</version>
+            <artifactId>agentscope</artifactId>
+            <version>1.0.11</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>json-schema-validator</artifactId>
+                    <groupId>com.networknt</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -89,18 +102,6 @@
             <version>1.10.0</version>
         </dependency>
 
-
-        <dependency>
-            <groupId>org.springframework.ai</groupId>
-            <artifactId>spring-ai-starter-vector-store-milvus</artifactId>
-            <version>1.0.0-M7</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.ai</groupId>
-            <artifactId>spring-ai-starter-vector-store-weaviate</artifactId>
-            <version>1.0.0-M7</version>
-        </dependency>
 
         <dependency>
             <groupId>com.huaban</groupId>

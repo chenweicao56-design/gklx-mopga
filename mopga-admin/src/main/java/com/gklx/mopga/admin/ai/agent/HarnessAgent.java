@@ -2,10 +2,10 @@ package com.gklx.mopga.admin.ai.agent;
 
 
 import cn.hutool.core.map.MapUtil;
-import com.gklx.ai.util.FreemarkerUtil;
 import com.gklx.mopga.admin.ai.core.ChatHandler;
 import com.gklx.mopga.admin.ai.domain.AgentContext;
 import com.gklx.mopga.admin.ai.serivce.BaseAgentService;
+import com.gklx.mopga.admin.util.FreemarkerUtil;
 import io.agentscope.core.event.AgentEvent;
 import io.agentscope.core.message.UserMessage;
 import io.agentscope.core.model.OpenAIChatModel;

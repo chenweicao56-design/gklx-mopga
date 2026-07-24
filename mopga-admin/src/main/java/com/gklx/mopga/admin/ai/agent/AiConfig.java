@@ -3,16 +3,9 @@ package com.gklx.mopga.admin.ai.agent;
 import com.zaxxer.hikari.HikariDataSource;
 import io.agentscope.core.model.DashScopeChatModel;
 import io.agentscope.core.model.OpenAIChatModel;
-import io.agentscope.core.session.Session;
-import io.agentscope.core.session.redis.RedisSession;
-import io.agentscope.core.skill.AgentSkill;
 import io.agentscope.core.skill.repository.mysql.MysqlSkillRepository;
-import io.lettuce.core.RedisClient;
-import io.lettuce.core.RedisURI;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.time.Duration;
 
 @Configuration
 public class AiConfig {
@@ -35,20 +28,6 @@ public class AiConfig {
                 .build();
     }
 
-    @Bean("redisSession")
-    public Session redisSession() {
-        RedisURI redisUri = RedisURI.builder()
-                .withHost("49.232.58.129")
-                .withPort(6379)
-                .withPassword("Qaz@wsx".toCharArray())
-                .withDatabase(2)
-                .withTimeout(Duration.ofSeconds(5))
-                .build();
-        RedisClient redisClient = RedisClient.create(redisUri);
-        return RedisSession.builder()
-                .lettuceClient(redisClient)
-                .build();
-    }
 
     @Bean("mysqlSkillRepository")
     public MysqlSkillRepository mysqlSkillRepository() {
