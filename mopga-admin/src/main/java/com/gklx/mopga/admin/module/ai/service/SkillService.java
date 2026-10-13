@@ -1,16 +1,20 @@
 package com.gklx.mopga.admin.module.ai.service;
 
 import com.gklx.mopga.admin.module.ai.dao.SkillDao;
+import com.gklx.mopga.admin.module.ai.dao.SkillFileDao;
 import com.gklx.mopga.admin.module.ai.domain.entity.SkillEntity;
+import com.gklx.mopga.admin.module.ai.domain.entity.SkillFileEntity;
 import com.gklx.mopga.admin.module.ai.domain.form.SkillAddForm;
 import com.gklx.mopga.admin.module.ai.domain.form.SkillQueryForm;
 import com.gklx.mopga.admin.module.ai.domain.form.SkillUpdateForm;
 import com.gklx.mopga.admin.module.ai.domain.vo.SkillVo;
+import com.gklx.mopga.admin.module.ai.domain.vo.SkillFileVo;
 import java.util.List;
 import com.gklx.mopga.base.common.util.SmartBeanUtil;
 import com.gklx.mopga.base.common.util.SmartPageUtil;
 import com.gklx.mopga.base.common.domain.ResponseDTO;
 import com.gklx.mopga.base.common.domain.PageResult;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.commons.collections4.CollectionUtils;
 
@@ -31,6 +35,9 @@ public class SkillService {
     @Resource
     private SkillDao skillDao;
 
+    @Resource
+    private SkillFileDao skillFileDao;
+
     /**
      * 分页查询
      */
@@ -45,8 +52,20 @@ public class SkillService {
      */
     public ResponseDTO<SkillVo> getDetail(Long id) {
         SkillEntity skillEntity = skillDao.selectById(id);
-	    SkillVo skillVo = SmartBeanUtil.copy(skillEntity,SkillVo.class);
-	    return ResponseDTO.ok(skillVo);
+        if (skillEntity == null) {
+            return ResponseDTO.ok();
+        }
+        SkillVo skillVo = SmartBeanUtil.copy(skillEntity, SkillVo.class);
+
+        // 技能文件（目录树由前端按 filePath 前缀解析）
+        LambdaQueryWrapper<SkillFileEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(SkillFileEntity::getSkillId, id)
+               .eq(SkillFileEntity::getDeletedFlag, false)
+               .orderByAsc(SkillFileEntity::getFilePath);
+        List<SkillFileEntity> fileEntities = skillFileDao.selectList(wrapper);
+        skillVo.setFiles(SmartBeanUtil.copyList(fileEntities, SkillFileVo.class));
+
+        return ResponseDTO.ok(skillVo);
     }
 
     /**

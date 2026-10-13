@@ -83,7 +83,7 @@ public class JdbcManager {
         props.put("minIdle", "5");
         props.put("maxWait", timeout.toString());
         props.put("testOnBorrow", "true");
-        props.put("validationQuery", "SELECT 1");
+//        props.put("validationQuery", "SELECT 1");
 
         DruidDataSource dataSource = (DruidDataSource) DruidDataSourceFactory.createDataSource(props);
         dataSource.setBreakAfterAcquireFailure(true);

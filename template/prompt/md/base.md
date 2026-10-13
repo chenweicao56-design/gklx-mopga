@@ -30,9 +30,21 @@
 - xx
 
 ## output（输出）：
-- xx
-- xx
+请使用 JSON 格式返回回答：
 
-## Initialization（初始化）:
-欢迎⽤户，并提示⽤户输⼊信息
-请使⽤“您好，我是您的xx助手，我可以输出xxxx，快把您的xx扔进来吧~”作为欢迎语.
+- 若能生成 SQL：
+  ```json
+  {
+    "success": true,
+    "sql": "生成的 SQL 语句",
+    "tables": ["表名1", "表名2"],
+    "chart-type": "table"
+  }
+  ```
+- 若不能生成 SQL：
+  ```json
+  {
+    "success": false,
+    "message": "说明无法生成 SQL 的原因"
+  }
+  ```

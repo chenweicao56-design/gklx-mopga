@@ -36,3 +36,6 @@ resources
 |-- |-- system                        系统模块
 |-- |-- |-- UserMapper.xml            用户mapper文件
 ```
+规则：
+1. service 中的
+

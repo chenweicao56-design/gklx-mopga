@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * $技能主表 列表VO
@@ -51,4 +52,7 @@ public class SkillVo {
 
     @Schema(description = "删除状态: 0-未删,1-已删")
     private Boolean deletedFlag;
+
+    @Schema(description = "技能文件列表（目录树由前端按 filePath 前缀解析）")
+    private List<SkillFileVo> files;
 }

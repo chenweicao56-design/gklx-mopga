@@ -39,7 +39,7 @@ public class OracleCollector extends JdbcManager implements IBaseCollector {
             whereSql = whereSql + String.format(" AND t.TABLE_NAME like %s", "'%" + params.getKeyword() + "%'"); //
 
         }
-        sql = String.format(sql, whereSql);
+        sql = sql + whereSql;
 
 
         Map<String, Object> countMap = this.querySingleRow(database, getCountSql(sql, "*"), null);
