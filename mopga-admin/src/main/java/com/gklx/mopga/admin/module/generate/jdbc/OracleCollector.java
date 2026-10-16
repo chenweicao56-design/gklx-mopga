@@ -33,10 +33,10 @@ public class OracleCollector extends JdbcManager implements IBaseCollector {
         String whereSql = "";
         if (StrUtil.isNotEmpty(tableNames)) {
             String[] tableNameArr = Convert.toStrArray(tableNames);
-            whereSql = whereSql + String.format(" AND t.TABLE_NAME in (%s)", getSqlStringForIn(Arrays.asList(tableNameArr))); //
+            whereSql = whereSql + String.format(" WHERE t.TABLE_NAME in (%s)", getSqlStringForIn(Arrays.asList(tableNameArr))); //
         }
         if (StrUtil.isNotEmpty(params.getKeyword())) {
-            whereSql = whereSql + String.format(" AND t.TABLE_NAME like %s", "'%" + params.getKeyword() + "%'"); //
+            whereSql = whereSql + String.format(" WHERE t.TABLE_NAME like %s", "'%" + params.getKeyword() + "%'"); //
 
         }
         sql = sql + whereSql;
