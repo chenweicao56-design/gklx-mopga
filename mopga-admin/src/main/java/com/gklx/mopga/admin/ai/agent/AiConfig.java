@@ -1,9 +1,7 @@
 package com.gklx.mopga.admin.ai.agent;
 
-import com.zaxxer.hikari.HikariDataSource;
 import io.agentscope.core.model.DashScopeChatModel;
 import io.agentscope.core.model.OpenAIChatModel;
-import io.agentscope.core.skill.repository.mysql.MysqlSkillRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -26,16 +24,6 @@ public class AiConfig {
                 .apiKey("sk-bc047ae27a7c4b478f049886da1c15f0")
                 .modelName("deepseek-v4-flash")
                 .build();
-    }
-
-
-    @Bean("mysqlSkillRepository")
-    public MysqlSkillRepository mysqlSkillRepository() {
-        HikariDataSource ds = new HikariDataSource();
-        ds.setJdbcUrl("jdbc:mysql://49.232.58.129:3306/mopga-gen");
-        ds.setUsername("root");
-        ds.setPassword("Qaz@wsx");
-        return new MysqlSkillRepository(ds, true, true);
     }
 
 //    @Bean(name = "qwenChatModel")

@@ -60,7 +60,7 @@ services:
       # 容器跑 test profile（由 Dockerfile ENTRYPOINT --spring.profiles.active=test 决定）
       # 数据源/Redis 由 jar 内 test/sa-base.yaml 提供：mysql/redis 服务名 + P6Spy 驱动，无需在此覆盖
     ports:
-      - "11024:11024"
+      - "1024:1024"
     volumes:
       # 上传目录与日志目录（与 prod/sa-base.yaml 中的路径保持一致）
       - admin-upload:/home/smart_admin_v3/upload
