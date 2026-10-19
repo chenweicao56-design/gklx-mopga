@@ -1,0 +1,17 @@
+.git
+.idea
+.vscode
+.trae
+.agentscope
+.work
+docs
+template
+mopga-study
+mopga-base/target
+mopga-sync/target
+mopga-ai/target
+*.log
+CONTEXT.md
+tmp.md
+test.http
+test.md

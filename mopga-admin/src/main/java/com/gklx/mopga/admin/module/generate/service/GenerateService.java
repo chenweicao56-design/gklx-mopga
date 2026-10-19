@@ -238,7 +238,7 @@ public class GenerateService {
                     log.error("未找到字段类型：{}:{}", table.getTableName(), column.getFieldName());
                 }
                 column.setIsRequired(column.getIsNull());
-                column.setIsInsert(!column.getIsBase()&&!column.getIsPk());
+                column.setIsInsert(!column.getIsBase() && !column.getIsPk());
                 column.setIsUpdate(column.getIsPk() || !column.getIsBase());
                 column.setIsWhere(false);
                 column.setIsTable(false);
@@ -320,7 +320,7 @@ public class GenerateService {
     public String createTable(TableVo table, boolean isSync) {
         DatabaseEntity database = databaseManager.getById(table.getDatabaseId());
         IBaseCollector collector = applicationContext.getBean(database.getDatabaseType(), IBaseCollector.class);
-        String createTableSql = buildSql(database,table,"create");
+        String createTableSql = buildSql(database, table, "create");
         if (collector instanceof JdbcManager manager) {
 //            manager.executeUpdate(database, createTableSql);
             manager.executeBatch(database, Arrays.stream(createTableSql.trim().split(";")).toList());
@@ -332,12 +332,10 @@ public class GenerateService {
     }
 
 
-
-
-    public String changeTable(TableVo table, boolean isSync,String type) {
+    public String changeTable(TableVo table, boolean isSync, String type) {
         DatabaseEntity database = databaseManager.getById(table.getDatabaseId());
         IBaseCollector collector = applicationContext.getBean(database.getDatabaseType(), IBaseCollector.class);
-        String sql = buildSql(database,table,type);
+        String sql = buildSql(database, table, type);
         if (collector instanceof JdbcManager manager) {
 //            manager.executeUpdate(database, createTableSql);
             manager.executeBatch(database, Arrays.stream(sql.trim().split(";")).toList());
@@ -348,7 +346,7 @@ public class GenerateService {
         return sql;
     }
 
-    public String buildSql(DatabaseEntity database,TableVo table,String type){
+    public String buildSql(DatabaseEntity database, TableVo table, String type) {
         VelocityContext velocityContext = new VelocityContext();
         velocityContext.put("tableName", table.getTableName());
         velocityContext.put("tableComment", table.getTableComment());
@@ -366,7 +364,7 @@ public class GenerateService {
         }
         velocityContext.put("columns", table.getColumns());
 
-        TemplateCodeItemEntity templateCodeItemEntity = templateCodeItemService.getByFileName(type+".sql", database.getTemplateId());
+        TemplateCodeItemEntity templateCodeItemEntity = templateCodeItemService.getByFileName(type + ".sql", database.getTemplateId());
         if (ObjectUtil.isNotEmpty(templateCodeItemEntity)) {
             StringWriter writer = new StringWriter();
             GenUtils.velocityEngine.evaluate(velocityContext, writer, templateCodeItemEntity.getFileName(), new StringReader(templateCodeItemEntity.getContent()));
@@ -375,7 +373,7 @@ public class GenerateService {
             VelocityInitializer.initVelocity();
             String databaseType = database.getDatabaseType();
             StringWriter sw = new StringWriter();
-            Template tpl = Velocity.getTemplate(String.format("vm/"+type+"/%s.vm", databaseType), "UTF-8");
+            Template tpl = Velocity.getTemplate(String.format("vm/" + type + "/%s.vm", databaseType), "UTF-8");
             tpl.merge(velocityContext, sw);
             return sw.toString();
         }
@@ -656,18 +654,21 @@ public class GenerateService {
 
                     // 从term表补充术语信息
                     if (ObjUtil.isNotNull(tableTermEntity)) {
-                        TableColumnTermEntity termColumn = columnTermListMap.get(tableTermEntity.getTableId())
-                                .stream()
-                                .filter(t -> t.getColumnId().equals(columnEntity.getColumnId()))
-                                .findFirst()
-                                .orElse(null);
-                        if (ObjUtil.isNotNull(termColumn)) {
-                            columnTermVo.setColumnCommentTerm(termColumn.getColumnCommentTerm());
-                            columnTermVo.setDicts(termColumn.getDicts());
-                            columnTermVo.setExample(termColumn.getExample());
-                            columnTermVo.setForeignKey(termColumn.getForeignKey());
-                            columnTermVo.setTerms(termColumn.getTerms());
+                        List<TableColumnTermEntity> tableColumnTermEntities = columnTermListMap.get(tableTermEntity.getTableId());
+                        if (CollectionUtil.isNotEmpty(tableColumnTermEntities)) {
+                            TableColumnTermEntity termColumn = tableColumnTermEntities.stream()
+                                    .filter(t -> t.getColumnId().equals(columnEntity.getColumnId()))
+                                    .findFirst()
+                                    .orElse(null);
+                            if (ObjUtil.isNotNull(termColumn)) {
+                                columnTermVo.setColumnCommentTerm(termColumn.getColumnCommentTerm());
+                                columnTermVo.setDicts(termColumn.getDicts());
+                                columnTermVo.setExample(termColumn.getExample());
+                                columnTermVo.setForeignKey(termColumn.getForeignKey());
+                                columnTermVo.setTerms(termColumn.getTerms());
+                            }
                         }
+
                     }
                     columnTermVos.add(columnTermVo);
                 }
@@ -687,8 +688,8 @@ public class GenerateService {
         if (CollectionUtils.isNotEmpty(tableEntities)) {
             tableEntities.forEach(tableEntity -> {
                 TableTermEntity tableTerm = tableTermManager.getByTableId(tableEntity.getTableId());
-                if(ObjUtil.isNotNull(tableTerm)){
-                    tableTerm = new  TableTermEntity();
+                if (ObjUtil.isNotNull(tableTerm)) {
+                    tableTerm = new TableTermEntity();
                     tableTermManager.save(tableTerm);
                 }
                 List<GenTableColumnEntity> genTableColumnEntities = tableColumnManager.listByTableIds(Collections.singletonList(tableEntity.getTableId()));

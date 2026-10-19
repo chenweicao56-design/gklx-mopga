@@ -1,0 +1,73 @@
+version: "3.8"
+
+services:
+  mysql:
+    image: mysql:8.0.46
+    container_name: mopga-mysql
+    restart: unless-stopped
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-Qaz@wsx}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-mopga-gen}
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      # 必须用 CMD-SHELL，否则 exec 数组不会展开 $MYSQL_ROOT_PASSWORD 环境变量
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -p$$MYSQL_ROOT_PASSWORD | grep -q alive"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d:ro
+
+  redis:
+    image: redis:6-alpine
+    container_name: mopga-redis
+    restart: unless-stopped
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-Qaz@wsx}
+    command: redis-server --requirepass ${REDIS_PASSWORD:-Qaz@wsx}
+    healthcheck:
+      # 必须用 CMD-SHELL，否则 exec 数组不会展开 $REDIS_PASSWORD 环境变量，AUTH 会失败
+      test: ["CMD-SHELL", "redis-cli -a $$REDIS_PASSWORD ping | grep -q PONG"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis-data:/data
+
+  admin:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: mopga-admin:latest
+    container_name: mopga-admin
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      TZ: Asia/Shanghai
+      # 容器跑 test profile（由 Dockerfile ENTRYPOINT --spring.profiles.active=test 决定）
+      # 数据源/Redis 由 jar 内 test/sa-base.yaml 提供：mysql/redis 服务名 + P6Spy 驱动，无需在此覆盖
+    ports:
+      - "11024:11024"
+    volumes:
+      # 上传目录与日志目录（与 prod/sa-base.yaml 中的路径保持一致）
+      - admin-upload:/home/smart_admin_v3/upload
+      - admin-logs:/home/logs
+
+volumes:
+  admin-upload:
+  admin-logs:
+  mysql-data:
+  redis-data:
