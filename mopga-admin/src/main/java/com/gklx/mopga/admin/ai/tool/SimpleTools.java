@@ -1,7 +1,7 @@
 package com.gklx.mopga.admin.ai.tool;
 
-import io.agentscope.core.tool.Tool;
-import io.agentscope.core.tool.ToolParam;
+import org.springframework.ai.tool.annotation.Tool;
+import org.springframework.ai.tool.annotation.ToolParam;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -9,13 +9,9 @@ import java.time.format.DateTimeFormatter;
 
 public class SimpleTools {
 
-    @Tool(
-            name = "get_current_time",
-            description = "Returns the current time in a given IANA timezone.",
-            readOnly = true,
-            concurrencySafe = true)
+    @Tool(description = "Returns the current time in a given IANA timezone.")
     public String getCurrentTime(
-            @ToolParam(name = "timezone", description = "IANA timezone, e.g. Asia/Shanghai")
+            @ToolParam(description = "IANA timezone, e.g. Asia/Shanghai")
             String timezone) {
         return LocalDateTime.now(ZoneId.of(timezone))
                 .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);

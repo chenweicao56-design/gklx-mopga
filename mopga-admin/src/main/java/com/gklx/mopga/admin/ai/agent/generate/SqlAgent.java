@@ -14,18 +14,17 @@ import com.gklx.mopga.admin.util.PaddleOcrClient;
 import com.gklx.mopga.base.common.domain.ResponseDTO;
 import com.gklx.mopga.base.module.support.file.domain.vo.FileDownloadVO;
 import com.gklx.mopga.base.module.support.file.service.FileService;
-import io.agentscope.core.message.ContentBlock;
-import io.agentscope.core.message.Msg;
-import io.agentscope.core.message.MsgRole;
-import io.agentscope.core.message.TextBlock;
-import io.agentscope.core.model.ChatResponse;
-import io.agentscope.core.model.DashScopeChatModel;
-import io.agentscope.core.model.GenerateOptions;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.ai.chat.messages.Message;
+import org.springframework.ai.chat.messages.SystemMessage;
+import org.springframework.ai.chat.messages.UserMessage;
+import org.springframework.ai.chat.model.ChatModel;
+import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -39,7 +38,7 @@ public class SqlAgent extends BaseAgentService {
     private DatabaseService databaseService;
 
     @Resource
-    private DashScopeChatModel dashScopeChatModel;
+    private ChatModel chatModel;
 
     @Resource
     private PaddleOcrClient paddleOcrClient;
@@ -74,37 +73,16 @@ public class SqlAgent extends BaseAgentService {
                     .put("commonColumnType", "")
                     .put("designDrawing", designDrawing.toString())
                     .build();
-            GenerateOptions options = GenerateOptions.builder()
-                    .stream(true)  // 启用流式输出
-                    .build();
             String systemPrompt = FreemarkerUtil.render("generate/sql-create-system.txt", systemParams);
 
-            List<Msg> messages = List.of(
-                    Msg.builder()
-                            .role(MsgRole.SYSTEM)
-                            .textContent(systemPrompt)
-                            .build(), Msg.builder()
-                            .role(MsgRole.USER)
-                            .textContent(agentContext.getQuery())
-                            .build()
-            );
+            List<Message> messages = new ArrayList<>();
+            messages.add(new SystemMessage(systemPrompt));
+            messages.add(new UserMessage(agentContext.getQuery()));
 
-            Flux<ChatResponse> stream = dashScopeChatModel.stream(messages, List.of(), options);
-
-            stream.subscribe(chunk -> {
-                List<ContentBlock> content = chunk.getContent();
-                if (CollectionUtil.isNotEmpty(content)) {
-                    for (ContentBlock contentBlock : content) {
-                        if (contentBlock instanceof TextBlock) {
-                            handler.onAnswer(com.gklx.mopga.admin.ai.core.ChatResponse.builder().content(((TextBlock) contentBlock).getText()).agentAlias(AGENT_ALIAS).build());
-                        }
-                    }
-                }
-            }, handler::onError, () -> {
-                handler.onComplete(com.gklx.mopga.admin.ai.core.ChatResponse.builder().agentAlias(AGENT_ALIAS).build());
-            });
-
-
+            Prompt prompt = new Prompt(messages);
+            Flux<String> stream = chatModel.stream(prompt)
+                    .map(r -> r.getResult().getOutput().getText());
+            agentContext.subscribe(stream);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

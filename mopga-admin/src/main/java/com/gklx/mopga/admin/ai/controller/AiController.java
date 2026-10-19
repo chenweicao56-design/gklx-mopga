@@ -12,18 +12,16 @@ import com.gklx.mopga.base.common.annoation.NoNeedLogin;
 import com.gklx.mopga.base.common.domain.ResponseDTO;
 import com.gklx.mopga.base.module.support.file.domain.vo.FileDownloadVO;
 import com.gklx.mopga.base.module.support.file.service.FileService;
-import io.agentscope.core.event.AgentEvent;
-import io.agentscope.core.event.AgentEventType;
-import io.agentscope.core.event.TextBlockDeltaEvent;
-import io.agentscope.core.message.UserMessage;
-import io.agentscope.core.model.DashScopeChatModel;
-import io.agentscope.core.model.OpenAIChatModel;
-import io.agentscope.harness.agent.HarnessAgent;
 import jakarta.annotation.Resource;
+import org.springframework.ai.chat.messages.Message;
+import org.springframework.ai.chat.messages.SystemMessage;
+import org.springframework.ai.chat.messages.UserMessage;
+import org.springframework.ai.chat.model.ChatModel;
+import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
-import redis.clients.jedis.JedisPooled;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -36,6 +34,9 @@ public class AiController {
 
     @Resource
     private ChatService chatService;
+
+    @Resource
+    private ChatModel chatModel;
 
     @PostMapping("/chat")
     public Flux<ChatResponse> chat(@RequestBody AgentContext context) {
@@ -66,34 +67,17 @@ public class AiController {
         return Flux.just(run);
     }
 
-    @Resource
-    private DashScopeChatModel dashScopeChatModel;
-
     @GetMapping("/test2")
     @NoNeedLogin
-    public String test2(@RequestParam("query") String query) throws Exception {
+    public Flux<String> test2(@RequestParam("query") String query) throws Exception {
 
-        HarnessAgent agent = HarnessAgent.builder()
-                .name("test")
-                .model(dashScopeChatModel)
-                .sysPrompt("你是一个有帮助的助手。")
-                .build();
-
-        Flux<AgentEvent> agentEventFlux = agent.streamEvents(new UserMessage(query));
-        agentEventFlux.subscribe(event -> {
-            System.out.println(event.getType());
-
-            if (event.getType() == AgentEventType.TEXT_BLOCK_DELTA) {
-                System.out.println(((TextBlockDeltaEvent) event).getDelta());
-            }
-        }, (exception) -> {
-            System.out.println("error");
-        }, () -> {
-            System.out.println("complete");
-        });
-
-
-        return "hello world";
+        List<Message> messages = List.of(
+                new SystemMessage("你是一个有帮助的助手。"),
+                new UserMessage(query)
+        );
+        Prompt prompt = new Prompt(messages);
+        return chatModel.stream(prompt)
+                .map(r -> r.getResult().getOutput().getText());
     }
 
 }

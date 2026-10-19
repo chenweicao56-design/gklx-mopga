@@ -1,37 +1,36 @@
 package com.gklx.mopga.admin.ai.agent;
 
-import io.agentscope.core.model.DashScopeChatModel;
-import io.agentscope.core.model.OpenAIChatModel;
+import com.gklx.mopga.admin.ai.mcp.GenerateMcp;
+import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.model.ChatModel;
+import org.springframework.ai.tool.ToolCallbackProvider;
+import org.springframework.ai.tool.method.MethodToolCallbackProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Spring AI 配置
+ *
+ * <p>聊天模型（{@link ChatModel}）通过 Spring AI 自动配置生成，
+ * 见 application.yaml 的 spring.ai.deepseek 配置。</p>
+ */
 @Configuration
 public class AiConfig {
 
-
+    /**
+     * 流式聊天客户端，供各智能体使用。
+     */
     @Bean
-    public OpenAIChatModel openAIChatModel() {
-        return OpenAIChatModel.builder()
-                .apiKey("sk-6c187d7368924e54a7d4cf76fe1430f0")
-                .modelName("deepseek-v4-flash")
-                .baseUrl("https://api.deepseek.com")
-                .build();
+    public ChatClient chatClient(ChatModel chatModel) {
+        return ChatClient.builder(chatModel).build();
     }
 
+    /**
+     * 将 {@link GenerateMcp} 中的 {@link org.springframework.ai.tool.annotation.Tool}
+     * 方法注册为可被智能体调用的工具。
+     */
     @Bean
-    public DashScopeChatModel dashScopeChatModel() {
-        return DashScopeChatModel.builder()
-                .apiKey("sk-bc047ae27a7c4b478f049886da1c15f0")
-                .modelName("deepseek-v4-flash")
-                .build();
+    public ToolCallbackProvider generateMcpTools(GenerateMcp generateMcp) {
+        return MethodToolCallbackProvider.builder().toolObjects(generateMcp).build();
     }
-
-//    @Bean(name = "qwenChatModel")
-//    public OpenAIChatModel qwenChatModel() {
-//        return OpenAIChatModel.builder()
-//                .apiKey("sk-6c187d7368924e54a7d4cf76fe1430f0")
-//                .modelName("Qwen3-Coder-Next")
-//                .baseUrl("http://10.227.224.9:8000")
-//                .build();
-//    }
 }

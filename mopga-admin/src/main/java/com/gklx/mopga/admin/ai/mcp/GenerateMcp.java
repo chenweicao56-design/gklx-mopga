@@ -26,8 +26,8 @@ import com.gklx.mopga.admin.module.system.login.manager.LoginManager;
 import com.gklx.mopga.base.common.util.SmartRequestUtil;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.springaicommunity.mcp.annotation.McpTool;
-import org.springaicommunity.mcp.annotation.McpToolParam;
+import org.springframework.ai.tool.annotation.Tool;
+import org.springframework.ai.tool.annotation.ToolParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
@@ -61,9 +61,9 @@ public class GenerateMcp {
     @Autowired
     private TableManager tableManager;
 
-    @McpTool(description = "查询数据库所有的表名")
+    @Tool(description = "查询数据库所有的表名")
     public String queryDbTables(
-            @McpToolParam(description = "数据库主键") Long databaseId) {
+            @ToolParam(description = "数据库主键") Long databaseId) {
         DatabaseEntity database = databaseManager.getById(databaseId);
         IBaseCollector collector = applicationContext.getBean(database.getDatabaseType(), IBaseCollector.class);
         IPage<TableEntity> page = new Page<>();
@@ -83,10 +83,10 @@ public class GenerateMcp {
         return sb.toString();
     }
 
-    @McpTool(description = "根据表名查询表的详细信息")
+    @Tool(description = "根据表名查询表的详细信息")
     public String queryDbTableColumn(
-            @McpToolParam(description = "数据库主键") Long databaseId,
-            @McpToolParam(description = "表名", required = true) String tableName) {
+            @ToolParam(description = "数据库主键") Long databaseId,
+            @ToolParam(description = "表名", required = true) String tableName) {
         DatabaseEntity database = databaseManager.getById(databaseId);
         IBaseCollector collector = applicationContext.getBean(database.getDatabaseType(), IBaseCollector.class);
         List<GenTableColumnEntity> genTableColumnEntities = collector.selectDbTableColumnsByName(database, tableName);
@@ -109,12 +109,12 @@ public class GenerateMcp {
     }
 
 
-    @McpTool(description = "数据库建表/更新表")
+    @Tool(description = "数据库建表/更新表")
     public String executeTableSql(
-            @McpToolParam(description = "数据库主键") Long databaseId,
-            @McpToolParam(description = "表名") String tableName,
-            @McpToolParam(description = "SQL类型：CREATE（建表）或 UPDATE（更新）") String sqlType,
-            @McpToolParam(description = "SQL语句，多个用;隔开") String sql) {
+            @ToolParam(description = "数据库主键") Long databaseId,
+            @ToolParam(description = "表名") String tableName,
+            @ToolParam(description = "SQL类型：CREATE（建表）或 UPDATE（更新）") String sqlType,
+            @ToolParam(description = "SQL语句，多个用;隔开") String sql) {
         log.info("开始执行表SQL操作: databaseId={}, tableName={}, sqlType={}", databaseId, tableName, sqlType);
 
         if (!"CREATE".equalsIgnoreCase(sqlType) && !"UPDATE".equalsIgnoreCase(sqlType)) {
@@ -166,10 +166,10 @@ public class GenerateMcp {
     /**
      * 同步表结构到数据库并生成代码
      */
-    @McpTool(description = "生成代码到本地")
+    @Tool(description = "生成代码到本地")
     public String syncTableAndGenerateCode(
-            @McpToolParam(description = "数据库主键") Long databaseId,
-            @McpToolParam(description = "表名") String tableName) {
+            @ToolParam(description = "数据库主键") Long databaseId,
+            @ToolParam(description = "表名") String tableName) {
         log.info("开始同步表结构并生成代码: databaseId={}, tableName={}", databaseId, tableName);
         mcpLogin();
         generateService.syncTable(databaseId, true, tableName);
@@ -243,21 +243,21 @@ public class GenerateMcp {
         SmartRequestUtil.setRequestUser(requestEmployee);
     }
 
-    @McpTool(description = "更新表配置信息")
+    @Tool(description = "更新表配置信息")
     public String updateTable(
-            @McpToolParam(description = "数据库主键") Long databaseId,
-            @McpToolParam(description = "表名") String tableName,
-            @McpToolParam(description = "表设置") TableUpdateMcpForm table,
-            @McpToolParam(description = "表字段设置") List<TableColumnUpdateMcpForm> columns) {
+            @ToolParam(description = "数据库主键") Long databaseId,
+            @ToolParam(description = "表名") String tableName,
+            @ToolParam(description = "表设置") TableUpdateMcpForm table,
+            @ToolParam(description = "表字段设置") List<TableColumnUpdateMcpForm> columns) {
         tableManager.updateById(BeanUtil.copyProperties(table, TableEntity.class));
         return "更新成功";
     }
 
 
-    @McpTool(description = "获取表配置信息")
+    @Tool(description = "获取表配置信息")
     public TableVo getTableInfo(
-            @McpToolParam(description = "数据库主键") Long databaseId,
-            @McpToolParam(description = "表名") String tableName) {
+            @ToolParam(description = "数据库主键") Long databaseId,
+            @ToolParam(description = "表名") String tableName) {
         return tableService.getByName(databaseId, tableName);
     }
 

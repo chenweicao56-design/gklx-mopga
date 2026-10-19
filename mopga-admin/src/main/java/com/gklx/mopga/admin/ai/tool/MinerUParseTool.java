@@ -5,8 +5,8 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.gklx.mopga.admin.ai.domain.entity.MarkdownEntity;
 import com.gklx.mopga.admin.ai.domain.entity.MarkdownVo;
-import io.agentscope.core.tool.Tool;
-import io.agentscope.core.tool.ToolParam;
+import org.springframework.ai.tool.annotation.Tool;
+import org.springframework.ai.tool.annotation.ToolParam;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ public class MinerUParseTool {
 
     @Tool(description = "获取当前会话要处理数据的总页数")
     public String getMarkdownDataCount(
-            @ToolParam(name = "session", description = "会话ID") String session) {
+            @ToolParam(description = "会话ID") String session) {
         log.info("===============getMarkdownDataCount=======================");
 
         // 参数校验
@@ -59,9 +59,9 @@ public class MinerUParseTool {
 
     @Tool(description = "分页获取要处理数据的详细的原始数据，比如获取数据第1页至第10页的原始数据")
     public String getMarkdownData(
-            @ToolParam(name = "session", description = "会话ID") String session,
-            @ToolParam(name = "startPage", description = "开始页，从1开始") int startPage,
-            @ToolParam(name = "endPage", description = "结束页，默认10页") int endPage) {
+            @ToolParam(description = "会话ID") String session,
+            @ToolParam(description = "开始页，从1开始") int startPage,
+            @ToolParam(description = "结束页，默认10页") int endPage) {
 
         log.info("===============getMarkdownData=======================");
         log.info("======session:{}, currentPage:{}, pageSize:{}", session, startPage, endPage);
@@ -115,9 +115,9 @@ public class MinerUParseTool {
 
     @Tool(description = "生成数据操作")
     public String generateData(
-            @ToolParam(name = "session", description = "会话ID") String session,
-            @ToolParam(name = "operateType", description = "操作类型，新增：add;删除：delete;更新：update") String type,
-            @ToolParam(name = "data", description = "数据，JSON数组字符串。格式示例：[{\\\"id\\\": \\\"newId123\\\", \\\"ids\\\": [\\\"seg001\\\", \\\"seg002\\\"]}]。字段说明：id -合并的分段标识（自动生成，更新的时候根据该id更新）；ids - 待合并的原始分段ID列表，至少包含一个ID，注意只有这两个字段，不要生成其他的") String data
+            @ToolParam(description = "会话ID") String session,
+            @ToolParam(description = "操作类型，新增：add;删除：delete;更新：update") String type,
+            @ToolParam(description = "数据，JSON数组字符串。格式示例：[{\\\"id\\\": \\\"newId123\\\", \\\"ids\\\": [\\\"seg001\\\", \\\"seg002\\\"]}]。字段说明：id -合并的分段标识（自动生成，更新的时候根据该id更新）；ids - 待合并的原始分段ID列表，至少包含一个ID，注意只有这两个字段，不要生成其他的") String data
     ) {
 
         log.info("===============generateData=======================");
