@@ -1,6 +1,6 @@
 package com.gklx.mopga.admin.ai.agent;
 
-import com.gklx.mopga.admin.ai.mcp.GenerateMcp;
+import com.gklx.mopga.admin.ai.mcp.RequirementMcp;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.tool.ToolCallbackProvider;
@@ -26,11 +26,13 @@ public class AiConfig {
     }
 
     /**
-     * 将 {@link GenerateMcp} 中的 {@link org.springframework.ai.tool.annotation.Tool}
-     * 方法注册为可被智能体调用的工具。
+     * 将 {@link RequirementMcp} 中的 {@link org.springframework.ai.tool.annotation.Tool}
+     * 方法注册为可被智能体调用(CodeGenerateAgent)的工具。
      */
     @Bean
-    public ToolCallbackProvider generateMcpTools(GenerateMcp generateMcp) {
-        return MethodToolCallbackProvider.builder().toolObjects(generateMcp).build();
+    public ToolCallbackProvider requirementMcpTools(RequirementMcp requirementMcp) {
+        return MethodToolCallbackProvider.builder()
+                .toolObjects(requirementMcp)
+                .build();
     }
 }

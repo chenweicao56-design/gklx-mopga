@@ -26,6 +26,12 @@ public class AdminSwaggerTagConst extends SwaggerTagConst {
 
         public static final String OA_NOTICE = "OA办公-通知公告";
 
+        public static final String REQUIREMENT_PROJECT = "需求管理-项目";
+
+        public static final String REQUIREMENT_REPO = "需求管理-工程";
+
+        public static final String REQUIREMENT = "需求管理-需求";
+
     }
 
 

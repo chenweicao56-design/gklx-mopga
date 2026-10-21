@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gklx.mopga.admin.module.requirement.dao.RequirementDao">
+
+    <sql id="reqBaseColumns">
+        tr.requirement_id,
+        tr.req_number,
+        tr.project_id,
+        tr.title,
+        tr.content,
+        tr.acceptance_criteria,
+        tr.status,
+        tr.create_by,
+        tr.create_by_name,
+        tr.create_time,
+        tr.update_time,
+        tp.project_name,
+        tp.project_code
+    </sql>
+
+    <select id="queryPage" resultType="com.gklx.mopga.admin.module.requirement.domain.vo.RequirementVO">
+        SELECT
+        <include refid="reqBaseColumns"/>
+        FROM t_requirement tr
+        LEFT JOIN t_requirement_project tp ON tr.project_id = tp.project_id
+        <where>
+            <if test="queryForm.reqNumber != null and queryForm.reqNumber != ''">
+                AND INSTR(tr.req_number, #{queryForm.reqNumber})
+            </if>
+            <if test="queryForm.title != null and queryForm.title != ''">
+                AND INSTR(tr.title, #{queryForm.title})
+            </if>
+            <if test="queryForm.projectId != null">
+                AND tr.project_id = #{queryForm.projectId}
+            </if>
+            <if test="queryForm.status != null">
+                AND tr.status = #{queryForm.status}
+            </if>
+            <if test="queryForm.startTime != null">
+                AND DATE_FORMAT(tr.create_time, '%Y-%m-%d') &gt;= #{queryForm.startTime}
+            </if>
+            <if test="queryForm.endTime != null">
+                AND DATE_FORMAT(tr.create_time, '%Y-%m-%d') &lt;= #{queryForm.endTime}
+            </if>
+        </where>
+        ORDER BY tr.create_time DESC
+    </select>
+
+    <select id="getDetail" resultType="com.gklx.mopga.admin.module.requirement.domain.vo.RequirementVO">
+        SELECT
+        <include refid="reqBaseColumns"/>
+        FROM t_requirement tr
+        LEFT JOIN t_requirement_project tp ON tr.project_id = tp.project_id
+        WHERE tr.requirement_id = #{requirementId}
+    </select>
+
+    <select id="getByNumber" resultType="com.gklx.mopga.admin.module.requirement.domain.vo.RequirementVO">
+        SELECT
+        <include refid="reqBaseColumns"/>
+        FROM t_requirement tr
+        LEFT JOIN t_requirement_project tp ON tr.project_id = tp.project_id
+        WHERE tr.req_number = #{reqNumber}
+        LIMIT 1
+    </select>
+
+    <select id="queryList" resultType="com.gklx.mopga.admin.module.requirement.domain.vo.RequirementVO">
+        SELECT
+        <include refid="reqBaseColumns"/>
+        FROM t_requirement tr
+        LEFT JOIN t_requirement_project tp ON tr.project_id = tp.project_id
+        <where>
+            <if test="queryForm.date != null">
+                AND DATE_FORMAT(tr.create_time, '%Y-%m-%d') = #{queryForm.date}
+            </if>
+            <if test="queryForm.projectCode != null and queryForm.projectCode != ''">
+                AND tp.project_code = #{queryForm.projectCode}
+            </if>
+            <if test="queryForm.status != null">
+                AND tr.status = #{queryForm.status}
+            </if>
+        </where>
+        ORDER BY tr.create_time DESC, tr.requirement_id DESC
+    </select>
+
+    <select id="countByProjectId" resultType="java.lang.Long">
+        SELECT COUNT(1) FROM t_requirement WHERE project_id = #{projectId}
+    </select>
+
+</mapper>

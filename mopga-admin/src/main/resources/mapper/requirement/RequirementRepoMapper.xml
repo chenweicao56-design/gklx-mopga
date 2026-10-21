@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gklx.mopga.admin.module.requirement.dao.RequirementRepoDao">
+
+    <sql id="repoBaseColumns">
+        tr.repo_id,
+        tr.project_id,
+        tr.repo_name,
+        tr.repo_url,
+        tr.default_branch,
+        tr.local_path,
+        tr.description,
+        tr.status,
+        tr.create_user_id,
+        tr.create_user_name,
+        tr.create_time,
+        tr.update_time,
+        tp.project_name,
+        tp.project_code
+    </sql>
+
+    <select id="queryPage" resultType="com.gklx.mopga.admin.module.requirement.domain.vo.RequirementRepoVO">
+        SELECT
+        <include refid="repoBaseColumns"/>,
+        (SELECT COUNT(1) FROM t_requirement_repo_rel rr WHERE rr.repo_id = tr.repo_id) AS requirement_count
+        FROM t_requirement_repo tr
+        LEFT JOIN t_requirement_project tp ON tr.project_id = tp.project_id
+        <where>
+            <if test="queryForm.projectId != null">
+                AND tr.project_id = #{queryForm.projectId}
+            </if>
+            <if test="queryForm.repoName != null and queryForm.repoName != ''">
+                AND INSTR(tr.repo_name, #{queryForm.repoName})
+            </if>
+            <if test="queryForm.status != null">
+                AND tr.status = #{queryForm.status}
+            </if>
+        </where>
+        ORDER BY tr.create_time DESC
+    </select>
+
+    <select id="getDetail" resultType="com.gklx.mopga.admin.module.requirement.domain.vo.RequirementRepoVO">
+        SELECT
+        <include refid="repoBaseColumns"/>,
+        (SELECT COUNT(1) FROM t_requirement_repo_rel rr WHERE rr.repo_id = tr.repo_id) AS requirement_count
+        FROM t_requirement_repo tr
+        LEFT JOIN t_requirement_project tp ON tr.project_id = tp.project_id
+        WHERE tr.repo_id = #{repoId}
+    </select>
+
+    <select id="queryByProjectAndName" resultType="com.gklx.mopga.admin.module.requirement.domain.entity.RequirementRepoEntity">
+        SELECT *
+        FROM t_requirement_repo
+        WHERE project_id = #{projectId}
+          AND repo_name = #{repoName}
+        <if test="excludeRepoId != null">
+            AND repo_id != #{excludeRepoId}
+        </if>
+        LIMIT 1
+    </select>
+
+</mapper>

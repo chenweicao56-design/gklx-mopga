@@ -31,7 +31,9 @@ public class MvcConfig implements WebMvcConfigurer {
                 .excludePathPatterns(SwaggerConfig.SWAGGER_WHITELIST)
                 .addPathPatterns("/**")
                 .excludePathPatterns(
-                        "/chat","/sync","/test"
+                        "/chat","/sync","/test",
+                        // MCP 端点(MCP 协议自带鉴权,不走后台登录)
+                        "/mcp", "/mcp/**"
                 )
         ;
     }

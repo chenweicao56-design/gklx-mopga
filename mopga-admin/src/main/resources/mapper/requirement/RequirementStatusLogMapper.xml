@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gklx.mopga.admin.module.requirement.dao.RequirementStatusLogDao">
+
+    <select id="queryByRequirementId" resultType="com.gklx.mopga.admin.module.requirement.domain.vo.RequirementStatusLogVO">
+        SELECT log_id,
+               requirement_id,
+               from_status,
+               to_status,
+               operator,
+               operator_name,
+               source,
+               remark,
+               create_time
+        FROM t_requirement_status_log
+        WHERE requirement_id = #{requirementId}
+        ORDER BY create_time ASC, log_id ASC
+    </select>
+
+</mapper>

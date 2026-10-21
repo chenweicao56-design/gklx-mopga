@@ -42,7 +42,7 @@ import java.util.stream.Collectors;
  * MCP 工具类：数据库操作和代码生成
  */
 @Slf4j
-@Service
+//@Service
 public class GenerateMcp {
 
     @Resource
