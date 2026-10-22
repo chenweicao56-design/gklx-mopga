@@ -32,6 +32,12 @@ public class AdminSwaggerTagConst extends SwaggerTagConst {
 
         public static final String REQUIREMENT = "需求管理-需求";
 
+        public static final String KNOWLEDGE_BASE = "知识库-知识库";
+
+        public static final String KNOWLEDGE_DOCUMENT = "知识库-文档";
+
+        public static final String KNOWLEDGE_SEGMENT = "知识库-分段";
+
     }
 
 

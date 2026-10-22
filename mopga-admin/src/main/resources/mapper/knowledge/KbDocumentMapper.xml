@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gklx.mopga.admin.module.knowledge.dao.KbDocumentDao">
+
+    <sql id="docColumns">
+        td.document_id,
+        td.base_id,
+        td.file_name,
+        td.file_url,
+        td.file_size,
+        td.file_type,
+        td.status,
+        td.chunk_count,
+        td.error_message,
+        td.create_user_name,
+        td.create_time,
+        td.update_time,
+        tb.name AS base_name
+    </sql>
+
+    <select id="queryPage" resultType="com.gklx.mopga.admin.module.knowledge.domain.vo.KbDocumentVO">
+        SELECT
+        <include refid="docColumns"/>
+        FROM t_kb_document td
+        LEFT JOIN t_kb_base tb ON td.base_id = tb.base_id
+        <where>
+            <if test="queryForm.baseId != null">
+                AND td.base_id = #{queryForm.baseId}
+            </if>
+            <if test="queryForm.keyword != null and queryForm.keyword != ''">
+                AND INSTR(td.file_name, #{queryForm.keyword})
+            </if>
+            <if test="queryForm.status != null">
+                AND td.status = #{queryForm.status}
+            </if>
+        </where>
+        ORDER BY td.create_time DESC
+    </select>
+
+    <select id="countByBaseId" resultType="java.lang.Long">
+        SELECT COUNT(1) FROM t_kb_document WHERE base_id = #{baseId}
+    </select>
+
+</mapper>

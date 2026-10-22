@@ -60,3 +60,24 @@ langchain4j:
         model-name: text-embedding-v4
         api-key: <Your API Key>
 
+
+# ============================================================================
+# 知识库模块 配置
+# ============================================================================
+kb:
+  weaviate:
+    scheme: http
+    host: 127.0.0.1:8099
+  embedding:
+    base-url: http://10.169.100.49:9991/v1/embeddings
+    model: bge-m3-A4JQ3N6T
+  rerank:
+    base-url: http://10.169.100.49:9991/v1/rerank
+    model: bce-reranker-base_v1
+  segment:
+    length: 500
+    overlap: 50
+    min-length: 20
+  schedule:
+    parse-interval-ms: 5000
+    max-parse-retry: 3

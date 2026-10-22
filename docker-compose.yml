@@ -43,6 +43,19 @@ services:
     volumes:
       - redis-data:/data
 
+  weaviate:
+    image: semitechnologies/weaviate:1.27.0
+    container_name: mopga-weaviate
+    restart: unless-stopped
+    environment:
+      TZ: Asia/Shanghai
+      PERSISTENCE_DATA_PATH: /var/lib/weaviate
+      AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
+    ports:
+      - "${WEAVIATE_PORT:-8099}:8080"
+    volumes:
+      - weaviate-data:/var/lib/weaviate
+
   admin:
     build:
       context: .
@@ -71,3 +84,4 @@ volumes:
   admin-logs:
   mysql-data:
   redis-data:
+  weaviate-data:
