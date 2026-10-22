@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gklx.mopga.admin.module.ai.dao.ReqProjectDao">
+
+    <!-- 查询结果列 -->
+    <sql id="base_columns">
+        req_project.id,
+        req_project.project_no,
+        req_project.project_name,
+        req_project.description,
+        req_project.project_type,
+        req_project.owner_user_id,
+        req_project.start_date,
+        req_project.end_date,
+        req_project.status,
+        req_project.tags,
+        req_project.remark,
+        req_project.create_user_id,
+        req_project.create_time,
+        req_project.update_user_id,
+        req_project.update_time,
+        req_project.deleted_flag
+    </sql>
+
+    <!-- 分页查询 -->
+    <select id="queryPage" resultType="com.gklx.mopga.admin.module.ai.domain.vo.ReqProjectVo">
+        SELECT
+        <include refid="base_columns"/>
+        FROM req_project
+        <where>
+            <if test="queryForm.projectNo != null and queryForm.projectNo != ''">
+                AND req_project.project_no like concat('%',#{queryForm.projectNo, '%')
+            </if>
+            <if test="queryForm.projectType != null">
+                AND req_project.project_type = #{queryForm.projectType}
+            </if>
+            <if test="queryForm.status != null">
+                AND req_project.status = #{queryForm.status}
+            </if>
+        </where>
+	    ORDER BY req_project.update_time
+    </select>
+</mapper>

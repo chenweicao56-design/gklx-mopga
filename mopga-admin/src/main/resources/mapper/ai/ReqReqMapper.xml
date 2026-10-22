@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gklx.mopga.admin.module.ai.dao.ReqReqDao">
+
+    <!-- 查询结果列 -->
+    <sql id="base_columns">
+        req_req.id,
+        req_req.project_id,
+        req_req.req_no,
+        req_req.req_title,
+        req_req.req_type,
+        req_req.priority,
+        req_req.status,
+        req_req.content,
+        req_req.acceptance_criteria,
+        req_req.tags,
+        req_req.planned_date,
+        req_req.assigned_user_id,
+        req_req.parent_id,
+        req_req.source,
+        req_req.create_user_id,
+        req_req.create_time,
+        req_req.update_user_id,
+        req_req.update_time,
+        req_req.deleted_flag
+    </sql>
+
+    <!-- 分页查询 -->
+    <select id="queryPage" resultType="com.gklx.mopga.admin.module.ai.domain.vo.ReqReqVo">
+        SELECT
+        <include refid="base_columns"/>
+        FROM req_req
+	    ORDER BY req_req.update_time
+    </select>
+</mapper>
